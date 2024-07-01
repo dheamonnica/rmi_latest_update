@@ -1,0 +1,1 @@
+{{ $inventory->expired_date }}

@@ -1,0 +1,1 @@
+<td>{{ \Carbon\Carbon::parse($budget->date)->format('F') }}</td>

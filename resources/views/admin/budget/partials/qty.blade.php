@@ -1,0 +1,3 @@
+<td>
+    {{ $budget->qty }}
+</td>

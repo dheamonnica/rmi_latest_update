@@ -1,0 +1,1 @@
+<td>{{$offering->getProductName->name}}</td>

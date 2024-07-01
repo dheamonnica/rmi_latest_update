@@ -1,0 +1,1 @@
+<td>$ {{$offering->large_quantity_price}}</td>

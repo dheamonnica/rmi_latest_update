@@ -1,0 +1,1 @@
+<td>{{$offering->getCreatedOfferedByName->phone}}</td>

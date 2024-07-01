@@ -1,0 +1,1 @@
+<td>$ {{$offering->small_quantity_price}}</td>
