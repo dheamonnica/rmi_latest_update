@@ -318,11 +318,12 @@ class Dashboard extends Component
 
     protected function ordersBaseQuery()
     {
-        return DB::table('orders as o')
-        ->leftJoin('order_items as oi', 'o.id', '=', 'oi.order_id')
-        ->join('inventories as i', 'oi.inventory_id', '=', 'i.id')
-        ->join('products as p', 'i.product_id', '=', 'p.id')
-        ->join('customers as cust', 'o.customer_id', '=', 'cust.id');
+        return DB::table('order_items as oi')
+        ->leftJoin('orders as o', 'o.id', '=', 'oi.order_id')
+        ->leftJoin('customers as cust', 'cust.id' , '=', 'o.customer_id')
+        ->leftJoin('products AS p', function ($join) {
+            $join->on(DB::raw('SUBSTRING_INDEX(oi.item_description, "-", 1)'), '=', 'p.name');
+        });
     }
 
     protected function orderGeneralFilter()
@@ -375,7 +376,7 @@ class Dashboard extends Component
         })
         ->when($this->userName != '', function($q) use ($userName) {
             return $q->where('cust.name', 'LIKE', "%{$this->userName}%");
-        })->whereNotNull('customer_id');
+        });
     }
 
     protected function ordersFilters()
@@ -493,8 +494,7 @@ class Dashboard extends Component
                 // Handle invalid interval option (optional)
                 return $q;
             }
-        })
-        ->whereNotNull('customer_id');
+        });
     }
 
     protected function ordersTimeFrameFilter()
@@ -573,7 +573,6 @@ class Dashboard extends Component
     {   
 
         $this->customer_count = $this->ordersFilters()
-            ->distinct()
             ->count('o.customer_id');
 
         //updated
@@ -596,11 +595,9 @@ class Dashboard extends Component
         $selectedYearStart = $this->selectedYearStart;
         $selectedYearEnd = $this->selectedYearEnd;
 
-        $totalPurchasePrice = DB::table('order_items as oi')
-                    ->select(DB::raw('SUM((oi.quantity * p.purchase_price)) as total_profit'))
-                    ->join('orders as o', 'oi.order_id', '=', 'o.id')
+        $totalPurchasePrice = $this->ordersBaseQuery()
+                    ->select(DB::raw('SUM((oi.quantity*oi.unit_price) - (p.purchase_price * oi.quantity)) as total_profit'))
                     ->join('inventories as i', 'oi.inventory_id', '=', 'i.id')
-                    ->join('products as p', 'i.product_id', '=', 'p.id')
                     ->when($this->selectedWarehouseOption !== '', function($q) {
                         return $q->where('o.shop_id', $this->selectedWarehouseOption);
                     })
@@ -704,34 +701,31 @@ class Dashboard extends Component
                     })
                     ->whereNotNull('oi.inventory_id')->first('total_profit');
 
-        $grandTotal = $this->ordersFilters()
-                    ->select(DB::raw('SUM(grand_total) as grand_total'))
-                    ->first('grand_total');
 
-        $this->total_profit = intval($grandTotal->grand_total) - intval($totalPurchasePrice->total_profit);
+        $this->total_profit = intval($totalPurchasePrice->total_profit);
     }
 
     public function updatedTotalOrders()
     {
 
-        $totalOrder = $this->ordersFilters()->whereNotNull('o.customer_id')->count();
+        $totalOrder = $this->ordersFilters()->selectRaw('COUNT(DISTINCT oi.order_id) as all_order')->whereNotNull('oi.inventory_id')->first('all_order');
 
-        $this->total_order_created = $totalOrder;
+        $this->total_order_created = $totalOrder->all_order;
     }
 
     public function updatedQtyOrdered()
     {
 
-        $totalQuantityOrders = $this->ordersFilters()->whereNotNull('o.customer_id')->sum('o.quantity');
+        $totalQuantityOrders = $this->ordersFilters()->whereNotNull('oi.inventory_id')->sum('oi.quantity');
 
         $this->qty_ordered = $totalQuantityOrders;
     }
 
     public function updatedGrandTotal() {
 
-        $totalGrandTotalofOrders = $this->ordersFilters()->whereNotNull('o.customer_id')->sum('o.grand_total');
+        $totalGrandTotalofOrders = $this->ordersFilters()->selectRaw('SUM(oi.quantity * oi.unit_price) as grand_total')->whereNotNull('oi.inventory_id')->first('grand_total');
 
-        $this->gross_value = $totalGrandTotalofOrders;
+        $this->gross_value = $totalGrandTotalofOrders->grand_total;
     }
 
     public function toggleFilter($filter)
@@ -749,7 +743,8 @@ class Dashboard extends Component
     public function updatedOrdersProcess()
     {
         $totalOrderProcessed = $this->ordersFilters()
-        ->whereNotNull('o.customer_id')->count();
+        ->where('order_status_id', '>=', 3)
+        ->whereNotNull('oi.inventory_id')->count();
 
         $this->orders_process = $totalOrderProcessed;
     }
@@ -757,7 +752,7 @@ class Dashboard extends Component
     public function updatedPackingProcess()
     {
         $totalPackingProcessed = $this->ordersFilters()
-        ->whereNotNull(['o.customer_id', 'o.order_status_id'])->whereIn('o.order_status_id', [10, 6])->where('o.payment_status' ,3)->count();
+        ->whereNotNull(['oi.inventory_id', 'o.order_status_id'])->whereIn('o.order_status_id', [10,4,5,6])->count();
 
         $this->packing_process = $totalPackingProcessed;
     }
@@ -765,7 +760,7 @@ class Dashboard extends Component
     public function updatedDeliveryProcess()
     {
         $totalDeliveredProcessed = $this->ordersFilters()
-        ->whereNotNull(['o.customer_id', 'o.order_status_id'])->where('o.order_status_id', 6)->where('o.payment_status' ,3)->count();
+        ->whereNotNull(['o.customer_id', 'o.order_status_id'])->where('o.order_status_id', 6)->count();
 
         $this->delivery_process = $totalDeliveredProcessed;
     }
@@ -893,23 +888,20 @@ class Dashboard extends Component
         $selectedCategorySubGroupOption = $this->selectedCategorySubGroupOption;
         $selectedCategoryGroupOption = $this->selectedCategoryGroupOption;
 
-        $inventories = DB::table('inventories as i')
-            ->join('users as u', 'i.user_id', '=', 'u.id')
-            ->join('products', 'i.product_id', '=', 'products.id')
-            ->leftJoin('orders AS o', 'u.id', '=', 'o.created_by')
-            ->leftJoin('order_items as oi', 'o.id', '=', 'oi.order_id')
-            ->join('customers as cust', 'o.customer_id', '=', 'cust.id')
+        $inventories = $this->ordersBaseQuery()
+            ->leftJoin('inventories as i', 'i.id', '=', 'oi.inventory_id')
+            ->leftJoin('users as u', 'i.user_id', '=', 'u.id')
             ->select(
                 'u.warehouse_name as warehouse_name',
-                'products.name as product_name',
+                'p.name as product_name',
                 'i.expired_date as expired_date',
-                'i.stock_quantity as qty',
-                DB::raw('(i.sold_quantity / DATEDIFF(CURDATE(), i.available_from)) as avg_selling_qty'),
-                'i.sale_price as selling_price',
-                'i.purchase_price as buying_price',
-                DB::raw('(i.sale_price * i.stock_quantity) as total'),
+                'oi.quantity as qty',
+                DB::raw('(oi.quantity / DATEDIFF(CURDATE(), i.available_from)) as avg_selling_qty'),
+                'oi.unit_price as selling_price',
+                DB::raw('COALESCE(p.purchase_price, 0) as buying_price'),
+                DB::raw('(oi.unit_price * oi.quantity) as total'),
                 'i.condition_note as note',
-                DB::raw('SUM(i.sale_price * i.stock_quantity) OVER () as grand_total')
+                DB::raw('(COALESCE(p.purchase_price, 0) * oi.quantity) as grand_total')
             )
             ->when($this->selectedWarehouseOption !== '', function($q) {
                 return $q->where('o.shop_id', $this->selectedWarehouseOption);
@@ -954,7 +946,8 @@ class Dashboard extends Component
                 return $q->where('cust.name', 'LIKE', "%{$this->userName}%");
             })
             
-            ->whereNotNull('customer_id')
+            ->whereNotNull('oi.inventory_id')
+            ->whereNotNull('u.warehouse_name')
             ->get();
 
         $this->table1_data = $inventories->map(function ($inventory) use ($inventories) {
@@ -1012,9 +1005,6 @@ class Dashboard extends Component
             ->join('orders as o', 'al.subject_id', '=', 'o.id')
             ->join('users as u', 'al.causer_id', '=', 'u.id')
             ->join('customers as cust', 'o.customer_id', '=', 'cust.id')
-            ->leftJoin('order_items as oi', 'o.id', '=', 'oi.order_id')
-            ->join('inventories as i', 'oi.inventory_id', '=', 'i.id')
-            ->join('products as p', 'i.product_id', '=', 'p.id')
             ->select(
                 'o.created_at as date_order',
                 'u.name as username',
@@ -1260,12 +1250,18 @@ class Dashboard extends Component
         $selectedYearEnd = $this->selectedYearEnd;
 
         $worst_product = DB::table('order_items AS oi')
-            ->select('p.name', DB::raw('COUNT(*) AS count_order'), DB::raw('SUM(oi.unit_price * oi.quantity) AS revenue'),
-                DB::raw('(SELECT SUM(oi2.unit_price * oi2.quantity) FROM order_items AS oi2 WHERE oi2.inventory_id = oi.inventory_id AND MONTH(oi2.created_at) = MONTH(SUBDATE(CURDATE(), INTERVAL 1 MONTH)) AND YEAR(oi2.created_at) = YEAR(SUBDATE(CURDATE(), INTERVAL 1 MONTH))) AS last_month_revenue'),
-                DB::raw('(SELECT SUM(oi2.unit_price * oi2.quantity) FROM order_items AS oi2 WHERE oi2.inventory_id = oi.inventory_id AND YEAR(oi2.created_at) = YEAR(SUBDATE(CURDATE(), INTERVAL 1 YEAR))) AS last_year_revenue'))
-                ->join('orders as o', 'oi.order_id', '=', 'o.id')
+                ->select(
+                    'p.name', 
+                    DB::raw('COUNT(DISTINCT oi.order_id) AS count_order'), 
+                    DB::raw('SUM(oi.unit_price * oi.quantity) AS revenue'),
+                    DB::raw('SUM(CASE WHEN o.created_at >= DATE_SUB(CURDATE(), INTERVAL 1 MONTH) THEN oi.quantity * oi.unit_price ELSE 0 END) as  last_month_revenue'),
+                    DB::raw('SUM(CASE WHEN o.created_at >= DATE_SUB(CURDATE(), INTERVAL 1 YEAR) THEN oi.quantity * oi.unit_price ELSE 0 END) as last_year_revenue'))
+                ->leftJoin('orders as o', 'o.id', '=', 'oi.order_id')
+                ->leftJoin('customers as cust', 'cust.id' , '=', 'o.customer_id')
+                ->leftJoin('products AS p', function ($join) {
+                    $join->on(DB::raw('SUBSTRING_INDEX(oi.item_description, "-", 1)'), '=', 'p.name');
+                })
                 ->join('inventories as i', 'oi.inventory_id', '=', 'i.id')
-                ->join('products as p', 'i.product_id', '=', 'p.id')
                 ->when($this->selectedWarehouseOption !== '', function($q) {
                     return $q->where('o.shop_id', $this->selectedWarehouseOption);
                 })
@@ -1417,11 +1413,13 @@ class Dashboard extends Component
         $selectedYearEnd = $this->selectedYearEnd;
 
         $kpi_users = $query = DB::table('users AS u')
-            ->leftJoin('orders AS o', 'u.id', '=', 'o.created_by')
-            ->leftJoin('order_items as oi', 'o.id', '=', 'oi.order_id')
+            ->leftJoin('orders as o', 'u.id', '=', 'o.created_by')
+            ->leftJoin('order_items as oi', 'oi.order_id', '=', 'o.id')
+            ->leftJoin('customers as cust', 'cust.id' , '=', 'o.customer_id')
+            ->leftJoin('products AS p', function ($join) {
+                $join->on(DB::raw('SUBSTRING_INDEX(oi.item_description, "-", 1)'), '=', 'p.name');
+            })
             ->leftJoin('inventories as i', 'oi.inventory_id', '=', 'i.id')
-            ->leftJoin('products as p', 'i.product_id', '=', 'p.id')
-            ->leftJoin('customers as cust', 'o.customer_id', '=', 'cust.id')
             ->select([
                 'u.name AS employee_name',
                 'u.warehouse_name',

@@ -10,7 +10,7 @@
                 &nbsp;
                 @if(isset($options['is_count_plus']))
                     @if ($options['is_count_plus'])    
-                        <i class="icon ion-md-add"></i> {{ $count_plus ?? 0}} {{ $options['count_plus_name'] ?? '-' }}
+                        <i class="icon ion-md-add"></i> {{ $count2 ?? 0 }} {{ $options['count_plus_name'] ?? '-' }}
                     @endif
                 @endif
             </h6>
