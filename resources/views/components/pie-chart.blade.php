@@ -1,14 +1,23 @@
 <div>
-    <div class="box">
-        <div class="box-header with-border">
-        <h3 class="box-title">
-            <i class="fa fa-pie-chart"></i>
-            {{ $options['name'] }}
-        </div>
-        <div class="donutChart" style="min-height: 340px; max-height: 700px; padding: 30px 0;">
-        <canvas id="productChart" class=""></canvas>
-        </div>
+  <div class="row">
+    <div class="col-xs-12">
+      <div class="box">
+        <div class="nav-tabs-custom">
+          <ul class="nav nav-tabs nav-justified">
+            <div class="box-header with-border">
+              <h3 class="box-title"><i class="fa fa-pie-chart"></i>
+                {{ $options['name'] }}</h3>
+            </div>
+          </ul> <!-- /.nav .nav-tabs -->
+
+          <div class="tab-content">
+            <!-- Chart canvas container -->
+            <canvas id="productChart" style="height: 50vh !important;"></canvas>
+          </div> <!-- /.tab-content -->
+        </div> <!-- /.nav-tabs-custom -->
+      </div> <!-- /.box -->
     </div>
+  </div>
 </div>
 @push('js-scripts')
 <script>

@@ -7,13 +7,13 @@ use Illuminate\View\Component;
 class DashboardCard extends Component
 {
     public $count;
-    public $count_plus;
+    public $count2;
     public $options;
 
-    public function __construct($count ,$count_plus = 0, $options = [])
+    public function __construct($count ,$count2, $options = [])
     {
         $this->count = $count;
-        $this->count_plus = $count_plus;
+        $this->count2 = $count2;
         $this->options = $options;
     }
 
