@@ -18,14 +18,8 @@
         $order_statuses = \App\Helpers\ListHelper::order_statuses();
         $payment_statuses = \App\Helpers\ListHelper::payment_statuses()
     @endphp
-    <div class="box">
+    <div class="box">  
         <div class="box-header with-border">
-            @if (Auth::user()->isFromMerchant())
-            @can('create', \App\Models\Order::class)
-                <a href="javascript:void(0)" data-link="{{ route('admin.order.order.searchCustomer') }}"
-                    class="ajax-modal-btn btn btn-new btn-lg btn-flat">{{ trans('app.add_order') }}</a>
-            @endcan
-        @endif
             <div class="pull-left">
                 <h1 class="box-title mr-5 mt-2">{{ trans('app.orders') }}</h1>
             </div>
@@ -44,7 +38,6 @@
                         <option value={{ $payment_status_number }}>{{ $payment_status }}</option>
                     @endforeach
                 </select>
-            
             </div>
             <div class="pull-right">
               <div class="btn-group">
@@ -73,6 +66,8 @@
                     <li><a href="javascript:void(0)" data-link="{{ route('admin.order.order.downloadSelected') }}" class="massAction" data-doafter="reload">{{ trans('app.download') }} {{ trans('app.invoices') }}</a></li>
                 </ul>
               </div>
+              <a href="javascript:void(0)" data-link="{{ route('admin.order.order.searchCustomer') }}"
+              class="ajax-modal-btn btn btn-new btn-lg btn-flat ml-5">{{ trans('app.add_order') }}</a>
             </div>
         </div> {{-- Box header --}}
         <div class="">
