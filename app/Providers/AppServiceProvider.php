@@ -8,6 +8,8 @@ use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\ServiceProvider;
+use App\Repositories\CRM\CRMRepository;
+use App\Repositories\CRM\EloquentCRM;
 use App\Repositories\Target\TargetRepository;
 use App\Repositories\Target\EloquentTarget;
 use App\Repositories\Budget\BudgetRepository;
@@ -89,6 +91,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(OfferingRepository::class, EloquentOffering::class);
         $this->app->bind(BudgetRepository::class, EloquentBudget::class);
         $this->app->bind(TargetRepository::class, EloquentTarget::class);
+        $this->app->bind(CRMRepository::class, EloquentCRM::class);
 
         // Ondemand Img manupulation
         $this->app->singleton(

@@ -1,0 +1,1 @@
+<td>{{ \Carbon\Carbon::parse($crm->date)->format('d F Y') }}</td>

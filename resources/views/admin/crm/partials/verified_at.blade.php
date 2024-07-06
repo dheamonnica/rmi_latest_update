@@ -1,0 +1,1 @@
+<td>{{$crm->verified_at}}</td>

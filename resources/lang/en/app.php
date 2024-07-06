@@ -62,7 +62,8 @@ return [
         'warehouse' => 'Warehouse',
         'delivery_boy' => 'Delivery Boy',
         'budget' => 'Budget',
-        'target' => 'Target'
+        'target' => 'Target',
+        'crm' => 'CRM'
     ],
 
     // Application Levels
@@ -1272,6 +1273,13 @@ return [
         'actual_sales' => 'Actual Sales',
         'create_target' => 'Create Target',
         'select_hospital_group' => 'Select Hospital Group',
+
+        // crm
+        'verified_by' => 'Verified By',
+        'verified_at' => 'Verified At',
+        'create_crm' => 'Create CRM',
+        'photo' => 'Photo',
+        'client' => 'Client',
     ],
 
     'placeholder' => [

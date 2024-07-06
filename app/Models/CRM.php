@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\DB;
 
-class Budget extends BaseModel
+class CRM extends BaseModel
 {
     use HasFactory, SoftDeletes, Imageable;
 
@@ -16,7 +16,7 @@ class Budget extends BaseModel
      *
      * @var string
      */
-    protected $table = 'budget';
+    protected $table = 'crm';
 
     /**
      * The attributes that are mass assignable.
@@ -25,21 +25,28 @@ class Budget extends BaseModel
      */
     protected $fillable = [
         'date',
-        'requirement',
-        'qty',
-        'total',
-        'grand_total',
-        'created_at',
+        'client_id',
+        'verfified_by',
+        'verified_at',
         'created_by',
+        'created_at',
         'updated_at',
         'updated_by',
     ];
 
-    public function getCreatedBudgetByName() {
+    public function getCreatedCRMByName() {
         return $this->belongsTo(User::class, 'created_by');
     }
 
-    public function getUpdatedBudgetByName() {
+    public function getUpdatedCRMByName() {
         return $this->belongsTo(User::class, 'updated_by');
+    }
+
+    public function getClientByName() {
+        return $this->belongsTo(Customer::class, 'client_id');
+    }
+
+    public function getVerifiedByName() {
+        return $this->belongsTo(User::class, 'verified_by');
     }
 }

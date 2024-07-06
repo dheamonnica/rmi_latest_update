@@ -68,6 +68,8 @@ Route::middleware('auth')->name('admin.')->prefix('admin')->group(function () {
         include 'admin/Budget.php';
         // Target
         include 'admin/Target.php';
+        // CRM
+        include 'admin/CRM.php';
 
         Route::get('secretLogin/{user}', [
             Admin\DashboardController::class, 'secretLogin'

@@ -6,7 +6,7 @@
       <li class="{{ Request::is('admin/dashboard*') ? 'active' : '' }}">
         <a href="{{ url('admin/dashboard') }}">
           <i class="fa fa-dashboard"></i> <span>
-            @if(Auth::user()->isAdmin() || Auth::user()->isMerchant())
+            @if(Auth::user()->isAdmin() || Auth::user()->isMerchant() || Auth::user()->role_id === 13)
               {{ trans('nav.dashboard') }}
             @else
               Offering Status
@@ -784,7 +784,7 @@
       @endif
       @endif --}}
 
-      @if (Auth::user()->isAdmin() || Auth::user()->isMerchant() || Gate::allows('report', \Incevio\Package\Wallet\Models\Wallet::class))
+      @if (Auth::user()->isAdmin() || Auth::user()->isMerchant() || Auth::user()->isFromPlatform() || Gate::allows('report', \Incevio\Package\Wallet\Models\Wallet::class))
         <li class="treeview {{ Request::is('admin/report*') || Request::is('admin/shop/report*') ? 'active' : '' }}">
           <a href="javascript:void(0)">
             <i class="fa fa-bar-chart"></i>
@@ -804,13 +804,19 @@
 
             <li class="{{ Request::is('admin/budget*') ? 'active' : '' }}">
               <a href="{{ route('admin.budget.index') }}">
-                Budget
+                Budget Report
               </a>
             </li>
 
             <li class="{{ Request::is('admin/target*') ? 'active' : '' }}">
               <a href="{{ route('admin.target.index') }}">
-                Target
+                Target Report
+              </a>
+            </li>
+
+            <li class="{{ Request::is('admin/crm*') ? 'active' : '' }}">
+              <a href="{{ route('admin.crm.index') }}">
+                CRM Report
               </a>
             </li>
 
