@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Log;
 use App\Models\Merchant;
 use App\Models\Budget;
 use App\Models\Order;
+use Illuminate\Support\Facades\Auth;
 
 // use App\Models\Inventory;
 
@@ -55,11 +56,18 @@ class BudgetController extends Controller
 
         $trashes = $this->budget->trashOnly();
 
-        $getTotalIncomebyShop = Order::selectRaw('SUM(grand_total) as total_grand_total')
-            ->where('shop_id', 19)
-            ->whereNull('deleted_at')
-            ->orWhere('deleted_at', '')
-            ->first();
+        if (Auth::user()->isAdmin() || Auth::user()->isMerchant() || Auth::user()->isFromPlatform()) {
+            $getTotalIncomebyShop = Order::selectRaw('SUM(grand_total) as total_grand_total')
+                ->where('shop_id', Auth::user()->shop_id)
+                ->whereNull('deleted_at')
+                ->orWhere('deleted_at', '')
+                ->first();
+        } else {
+            $getTotalIncomebyShop = Order::selectRaw('SUM(grand_total) as total_grand_total')
+                ->whereNull('deleted_at')
+                ->orWhere('deleted_at', '')
+                ->first();
+        }
 
         return view('admin.budget.index', compact('merchants', 'years', 'budgets', 'trashes', 'getTotalIncomebyShop'));
     }
@@ -83,6 +91,9 @@ class BudgetController extends Controller
             })
             ->addColumn('requirement', function ($budget) {
                 return view('admin.budget.partials.requirement', compact('budget'));
+            })
+            ->addColumn('category', function ($budget) {
+                return view('admin.budget.partials.category', compact('budget'));
             })
             ->addColumn('qty', function ($budget) {
                 return view('admin.budget.partials.qty', compact('budget'));

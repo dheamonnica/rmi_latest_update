@@ -1,1 +1,1 @@
-<td>{{$budget->getCreatedBudgetByName->name}}</td>
+<td>{{ $budget->getCreatedBudgetByName->pic_name }}</td>

@@ -915,6 +915,10 @@
           'name': 'requirement'
         },
         {
+          'data': 'category',
+          'name': 'category'
+        },
+        {
           'data': 'qty',
           'name': 'qty'
         },
@@ -963,7 +967,7 @@
 
     // Filter the 'created_by' column with the name of the authenticated user
     @if(!Auth::user()->isAdmin())
-      tableBudgets.column('created_by:name').search('{{ Auth::user()->name }}').draw();
+      tableBudgets.column('created_by:name').search('{{ Auth::user()->pic_name }}').draw();
     @endif
 
     // Function to calculate the total amount

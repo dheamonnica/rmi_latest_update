@@ -1265,9 +1265,10 @@ return [
         'month' => 'Month',
         'requirement' => 'Requirement',
         'qty' => 'Qty',
-        'total' => 'Total for each Qty',
+        'price_budget' => 'Price for each Qty',
         'grand_total' => 'Grand Total', 
         'picture' => 'Picture',
+        'total' => 'Total',
 
         // target
         'actual_sales' => 'Actual Sales',

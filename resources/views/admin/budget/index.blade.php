@@ -61,8 +61,9 @@
                         <th>{{ trans('app.form.month') }}</th>
                         <th>{{ trans('app.form.year') }}</th>
                         <th>{{ trans('app.form.requirement') }}</th>
+                        <th>{{ trans('app.form.category') }}</th>
                         <th>{{ trans('app.form.qty') }}</th>
-                        <th>{{ trans('app.form.total') }}</th>
+                        <th>{{ trans('app.form.price_budget') }}</th>
                         <th>{{ trans('app.form.grand_total') }}</th>
                         <th>{{ trans('app.form.picture') }}</th>
                         <th>{{ trans('app.form.warehouse') }}</th>
@@ -81,10 +82,12 @@
                         <th></th>
                         <th></th>
                         <th></th>
-                        <th>TOTAL INCOME</th>
-                        <th>Rp. {{ number_format($getTotalIncomebyShop->total_grand_total, 0, '.', '.') }}</th>
+                        <th></th>
+                        <th></th>
                         <th>TOTAL BUDGET</th>
                         <th id="totalAmount"></th>
+                        <th>TOTAL INCOME</th>
+                        <th>Rp. {{ number_format($getTotalIncomebyShop->total_grand_total, 0, '.', '.') }}</th>
                         <th></th>
                         <th></th>
                     </tr>

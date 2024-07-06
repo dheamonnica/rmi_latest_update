@@ -29,6 +29,7 @@ class Budget extends BaseModel
         'qty',
         'total',
         'grand_total',
+        'category',
         'created_at',
         'created_by',
         'updated_at',
