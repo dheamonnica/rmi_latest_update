@@ -1,0 +1,1 @@
+<td>{{ $order->total }}</td>

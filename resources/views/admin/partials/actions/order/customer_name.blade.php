@@ -1,1 +1,1 @@
-<td>{{ $order->customer->getName() }}</td>
+<td>{{ $order->customer->name }}</td>

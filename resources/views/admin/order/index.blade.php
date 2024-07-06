@@ -83,7 +83,7 @@
                         <th>{{ trans('app.form.po_number_ref') }}</th>
                         <th>{{ trans('app.order_date') }}</th>
                         <th>{{ trans('app.form.due_date_payment') }}</th>
-                        <th>{{ trans('app.customer') }}</th>
+                        <th>{{ trans('app.client') }}</th>
                         <th>{{ trans('app.grand_total') }}</th>
                         <th>{{ trans('app.payment_status') }}</th>
                         <th>{{ trans('app.order_status') }}</th>
@@ -145,7 +145,7 @@
                             <td>{{ $archive->deleted_at->diffForHumans() }}</td>
                             <td class="row-options">
                                 @can('archive', $archive)
-                                    <a href="{{ route('admin.order.order.restore', $archive->id) }}"><i data-toggle="tooltip" data-placement="top" title="{{ trans('app.restore') }} class="fa fa-database"></i></a>
+                                    <a href="{{ route('admin.order.order.restore', $archive->id) }}"><i data-toggle="tooltip" data-placement="top" title="{{ trans('app.restore') }}" class="fa fa-database"></i></a>
                                 @endcan
 
                                 @can('delete', $archive)

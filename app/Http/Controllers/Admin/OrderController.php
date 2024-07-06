@@ -167,8 +167,8 @@ class OrderController extends Controller
         ->editColumn('product_qty', function ($order) {
             return view('admin.partials.actions.order.order_product_qty', compact('order'));
         })
-        ->editColumn('grand_total', function ($order) {
-            return view('admin.partials.actions.order.grand_total', compact('order'));
+        ->editColumn('grand_total_number', function ($order) {
+            return view('admin.partials.actions.order.grand_total_number', compact('order'));
         })
         ->editColumn('payment_status', function ($order) {
             return view('admin.partials.actions.order.payment_status', compact('order'));

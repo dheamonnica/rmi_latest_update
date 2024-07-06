@@ -80,6 +80,12 @@
                             </button>
                         </th>
                         <th>{{ trans('app.form.po_number_ref') }}</th>
+                        <th>{{ trans('app.customer') }}</th>
+                        <th>{{ trans('app.form.product_qty') }}</th>
+                        <th>{{ trans('app.grand_total') }}</th>
+                        <th>{{ trans('app.payment_status') }}</th>
+                        <th>{{ trans('app.order_status') }}</th>
+                        
                         <th>{{ trans('app.order_date') }}</th>
                         <th>{{ trans('app.form.create_order_by') }}</th>
                         <th>{{ trans('app.form.packed_date') }}</th>
@@ -97,12 +103,6 @@
                         @if (Auth::user()->isFromPlatform())
                             <th>{{ trans('app.business_area') }}</th>
                         @endif
-                        <th>{{ trans('app.customer') }}</th>
-                        <th>{{ trans('app.form.product_qty') }}</th>
-                        <th>{{ trans('app.grand_total') }}</th>
-                        <th>{{ trans('app.payment_status') }}</th>
-                        <th>{{ trans('app.order_status') }}</th>
-                        {{-- <th>{{ trans('app.options') }}</th> --}}
                         <th>&nbsp;</th>
                     </tr>
                 </thead>
@@ -111,68 +111,5 @@
             </table>
         </div>
     </div><!-- /.box -->
-    <div class="box collapsed-box">
-        <div class="box-header with-border">
-            <h3 class="box-title">
-                @can('massDestroy', \App\Models\Order::class)
-                    {!! Form::open(['route' => ['admin.order.order.emptyTrash'], 'method' => 'delete', 'class' => 'data-form']) !!}
-                    {!! Form::button('<i class="fa fa-trash-o"></i>', [ 'type' => 'submit','class' => 'confirm btn btn-default btn-flat ajax-silent','title' => trans('help.empty_trash'), 'data-toggle' => 'tooltip','data-placement' => 'right',]) !!}
-                    {!! Form::close() !!}
-                    {{ trans('app.archived_orders') }}
-                @else
-                    <i class="fa fa-trash-o"></i> {{ trans('app.archived_orders') }}
-                @endcan
-            </h3>
-            <div class="box-tools pull-right">
-                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i></button>
-                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-remove"></i></button>
-            </div>
-        </div> <!-- /.box-header -->
-        <div class="box-body responsive-table">
-            <table class="table table-hover table-no-sort">
-                <thead>
-                    <tr>
-                        {{-- <th>{{ trans('app.order_number') }}</th> --}}
-                        <th>{{ trans('app.order_date') }}</th>
-                        <th>{{ trans('app.grand_total') }}</th>
-                        <th>{{ trans('app.payment') }}</th>
-                        <th>{{ trans('app.status') }}</th>
-                        <th>{{ trans('app.archived_at') }}</th>
-                        <th>{{ trans('app.option') }}</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($archives as $archive)
-                        <tr>
-                            {{-- <td>
-                                @can('view', $archive)
-                                    <a href="{{ route('admin.order.order.show', $archive->id) }}">
-                                        {{ $archive->order_number }}
-                                    </a>
-                                @else
-                                    {{ $archive->order_number }}
-                                @endcan
-                            </td> --}}
-                            <td>{{ $archive->created_at->toDayDateTimeString() }}</td>
-                            <td>{{ get_formated_currency($archive->grand_total, 2, $archive->currency_id) }}</td>
-                            <td>{!! $archive->paymentStatusName() !!}</td>
-                            <td>{!! $archive->orderStatus() !!}</td>
-                            <td>{{ $archive->deleted_at->diffForHumans() }}</td>
-                            <td class="row-options">
-                                @can('archive', $archive)
-                                    <a href="{{ route('admin.order.order.restore', $archive->id) }}"><i data-toggle="tooltip" data-placement="top" title="{{ trans('app.restore') }} class="fa fa-database"></i></a>
-                                @endcan
-
-                                @can('delete', $archive)
-                                    {!! Form::open(['route' => ['admin.order.order.destroy', $archive->id], 'method' => 'delete','class' => 'data-form',]) !!}
-                                    {!! Form::button('<i class="glyphicon glyphicon-trash"></i>', ['type' => 'submit', 'class' => 'confirm ajax-silent', 'title' => trans('app.delete_permanently'), 'data-toggle' => 'tooltip', 'data-placement' => 'top', ]) !!}
-                                    {!! Form::close() !!}
-                                @endcan
-                            </td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div> <!-- /.box-body -->
-    </div> <!-- /.box -->
+   
 </div @endsection

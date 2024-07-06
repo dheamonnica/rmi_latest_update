@@ -538,6 +538,36 @@
           'data': 'po_number_ref',
           'name': 'po_number_ref'
         },
+        @if (Auth::user()->isFromPlatform())
+          {
+            'data': 'shop',
+            'name': 'shop'
+          },
+        @endif {
+          'data': 'customer_name',
+          'name': 'customer_name',
+          'searchable': true
+        },
+        {
+          'data': 'product_qty',
+          'name': 'product_qty',
+          'searchable': false
+        },
+        {
+          'data': 'grand_total_number',
+          'name': 'grand_total_number',
+          'searchable': false
+        },
+        {
+          'data': 'payment_status',
+          'name': 'payment_status',
+          'searchable': false
+        },
+        {
+          'data': 'order_status',
+          'name': 'order_status',
+          'searchable': false
+        },
         {
           'data': 'order_date',
           'name': 'order_date'
@@ -593,45 +623,7 @@
         {
           'data': 'cancel_by',
           'name': 'cancel_by'
-        },
-        @if (Auth::user()->isFromPlatform())
-          {
-            'data': 'shop',
-            'name': 'shop'
-          },
-        @endif {
-          'data': 'customer_name',
-          'name': 'customer_name',
-          'searchable': true
-        },
-        {
-          'data': 'product_qty',
-          'name': 'product_qty',
-          'searchable': false
-        },
-        {
-          'data': 'grand_total',
-          'name': 'grand_total',
-          'searchable': false
-        },
-        {
-          'data': 'payment_status',
-          'name': 'payment_status',
-          'searchable': false
-        },
-        {
-          'data': 'order_status',
-          'name': 'order_status',
-          'searchable': false
-        },
-        // {
-        //   'data': 'option',
-        //   'name': 'option',
-        //   'orderable': false,
-        //   'searchable': false,
-        //   'exportable': false,
-        //   'printable': false
-        // }
+        }
       ]
     }));
 

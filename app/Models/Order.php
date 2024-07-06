@@ -1108,21 +1108,35 @@ class Order extends BaseModel
         }
 
         switch ($this->order_status_id) {
-            case static::STATUS_WAITING_FOR_PAYMENT:
-            case static::STATUS_PAYMENT_ERROR:
-            case static::STATUS_CANCELED:
-            case static::STATUS_RETURNED:
-                return '<span class="label label-danger">' . $order_status . '</span>';
+            // case static::STATUS_WAITING_FOR_PAYMENT:
+            // case static::STATUS_PAYMENT_ERROR:
+            // case static::STATUS_CANCELED:
+            // case static::STATUS_RETURNED:
+            //     return '<span class="label label-danger">' . $order_status . '</span>';
+
+            // case static::STATUS_CONFIRMED:
+            // case static::STATUS_AWAITING_DELIVERY:
+            //     return '<span class="label label-outline">' . $order_status . '</span>';
+
+            // case static::STATUS_FULFILLED:
+            //     return '<span class="label label-info">' . $order_status . '</span>';
+
+            // case static::STATUS_DELIVERED:
+            //     return '<span class="label label-primary">' . $order_status . '</span>';
 
             case static::STATUS_CONFIRMED:
-            case static::STATUS_AWAITING_DELIVERY:
+                return '<span class="label label-danger">' . $order_status . '</span>';
+            case static::STATUS_PACKED:
+            case static::STATUS_WAITING_FOR_PAYMENT:
+            case static::STATUS_PAYMENT_ERROR:
+            case static::STATUS_RETURNED:
                 return '<span class="label label-outline">' . $order_status . '</span>';
-
             case static::STATUS_FULFILLED:
                 return '<span class="label label-info">' . $order_status . '</span>';
-
             case static::STATUS_DELIVERED:
                 return '<span class="label label-primary">' . $order_status . '</span>';
+            case static::STATUS_CANCELED:
+                return '<span class="label label-light" style="background-color:black; color:white">' . $order_status . '</span>';
         }
 
         return null;
@@ -1144,17 +1158,22 @@ class Order extends BaseModel
         }
 
         switch ($this->payment_status) {
+            // case static::PAYMENT_STATUS_UNPAID:
+            // case static::PAYMENT_STATUS_REFUNDED:
+            // case static::PAYMENT_STATUS_PARTIALLY_REFUNDED:
+            //     return '<span class="label label-outline">' . $payment_status . '</span>';
+
+            // case static::PAYMENT_STATUS_PENDING:
+            // case static::PAYMENT_STATUS_INITIATED_REFUND:
+            //     return '<span class="label label-info">' . $payment_status . '</span>';
+
+            // case static::PAYMENT_STATUS_PAID:
+            //     return '<span class="label label-info">' . $payment_status . '</span>';
+
             case static::PAYMENT_STATUS_UNPAID:
-            case static::PAYMENT_STATUS_REFUNDED:
-            case static::PAYMENT_STATUS_PARTIALLY_REFUNDED:
-                return '<span class="label label-outline">' . $payment_status . '</span>';
-
-            case static::PAYMENT_STATUS_PENDING:
-            case static::PAYMENT_STATUS_INITIATED_REFUND:
-                return '<span class="label label-info">' . $payment_status . '</span>';
-
+                return '<span class="label label-danger">' . $payment_status . '</span>';
             case static::PAYMENT_STATUS_PAID:
-                return '<span class="label label-info">' . $payment_status . '</span>';
+                return '<span class="label label-primary">' . $payment_status . '</span>';
         }
 
         return null;
