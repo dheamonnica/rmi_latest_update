@@ -60,7 +60,7 @@
                         <th>{{ trans('app.form.date') }}</th>
                         <th>{{ trans('app.form.month') }}</th>
                         <th>{{ trans('app.form.year') }}</th>
-                        <th>{{ trans('app.form.hospital_group') }}</th>
+                        <th>{{ trans('app.form.client') }}</th>
                         <th>{{ trans('app.form.actual_sales') }}</th>
                         <th>{{ trans('app.form.grand_total') }}</th>
                         <th>{{ trans('app.form.warehouse') }}</th>

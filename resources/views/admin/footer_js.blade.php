@@ -791,8 +791,8 @@
           
         },
         {
-          'data': 'hospital_group',
-          'name': 'hospital_group'
+          'data': 'hospital_name',
+          'name': 'hospital_name'
         },
         {
           'data': 'actual_sales',

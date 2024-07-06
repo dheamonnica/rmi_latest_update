@@ -26,7 +26,6 @@ class CreateTargetRequest extends Request
         return [
             'date' => 'required',
             'grand_total' => 'required',
-            'actual_sales' => 'required',
         ];
     }
 }

@@ -25,7 +25,7 @@ class Target extends BaseModel
      */
     protected $fillable = [
         'date',
-        'hospital_group',
+        'hospital_name',
         'grand_total',
         'actual_sales',
         'created_at',

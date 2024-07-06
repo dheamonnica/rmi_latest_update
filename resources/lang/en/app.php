@@ -1273,7 +1273,7 @@ return [
         // target
         'actual_sales' => 'Actual Sales',
         'create_target' => 'Create Target',
-        'select_hospital_group' => 'Select Hospital Group',
+        'select_hospital_name' => 'Select Hospital Name',
 
         // crm
         'verified_by' => 'Verified By',

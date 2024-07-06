@@ -15,8 +15,7 @@ use App\Models\Merchant;
 use App\Models\Target;
 use App\Models\Order;
 use App\Models\Customer;
-
-// use App\Models\Inventory;
+use Illuminate\Support\Facades\Auth;
 
 class TargetController extends Controller
 {
@@ -56,11 +55,18 @@ class TargetController extends Controller
 
         $trashes = $this->target->trashOnly();
 
-        $getTotalIncomebyShop = Order::selectRaw('SUM(grand_total) as total_grand_total')
-            ->where('shop_id', 19)
-            ->whereNull('deleted_at')
-            ->orWhere('deleted_at', '')
-            ->first();
+        if (Auth::user()->isAdmin() || Auth::user()->isMerchant() || Auth::user()->isFromPlatform()) {
+            $getTotalIncomebyShop = Order::selectRaw('SUM(grand_total) as total_grand_total')
+                ->where('shop_id', Auth::user()->shop_id)
+                ->whereNull('deleted_at')
+                ->orWhere('deleted_at', '')
+                ->first();
+        } else {
+            $getTotalIncomebyShop = Order::selectRaw('SUM(grand_total) as total_grand_total')
+                ->whereNull('deleted_at')
+                ->orWhere('deleted_at', '')
+                ->first();
+        }
 
         return view('admin.target.index', compact('merchants', 'years', 'targets', 'trashes', 'getTotalIncomebyShop'));
     }
@@ -82,14 +88,27 @@ class TargetController extends Controller
             ->addColumn('year', function ($target) {
                 return view('admin.target.partials.year', compact('target'));
             })
-            ->addColumn('hospital_group', function ($target) {
-                return view('admin.target.partials.hospital_group', compact('target'));
+            ->addColumn('hospital_name', function ($target) {
+                return view('admin.target.partials.hospital_name', compact('target'));
             })
             ->addColumn('grand_total', function ($target) {
                 return view('admin.target.partials.grand_total', compact('target'));
             })
-            ->addColumn('actual_sales', function ($target) {
-                return view('admin.target.partials.actual_sales', compact('target'));
+            ->addColumn('actual_sales', function ($getTotalIncomebyShop) {
+                if (Auth::user()->isAdmin() || Auth::user()->isMerchant() || Auth::user()->isFromPlatform()) {
+                    $getTotalIncomebyShop = Order::selectRaw('SUM(grand_total) as total_grand_total')
+                        ->where('shop_id', Auth::user()->shop_id)
+                        ->whereNull('deleted_at')
+                        ->orWhere('deleted_at', '')
+                        ->first();
+                } else {
+                    $getTotalIncomebyShop = Order::selectRaw('SUM(grand_total) as total_grand_total')
+                        ->whereNull('deleted_at')
+                        ->orWhere('deleted_at', '')
+                        ->first();
+                }
+
+                return view('admin.target.partials.actual_sales', compact('getTotalIncomebyShop'));
             })
             ->addColumn('warehouse', function ($target) {
                 return view('admin.target.partials.warehouse', compact('target'));
@@ -110,7 +129,7 @@ class TargetController extends Controller
                 return view('admin.target.partials.options', compact('target'));
             })
 
-            ->rawColumns(['checkbox', 'date', 'month', 'year', 'hospital_group', 'grand_total', 'actual_sales', 'warehouse', 'created_by', 'created_at', 'updated_at', 'updated_by', 'option'])
+            ->rawColumns(['checkbox', 'date', 'month', 'year', 'hospital_name', 'grand_total', 'actual_sales', 'warehouse', 'created_by', 'created_at', 'updated_at', 'updated_by', 'option'])
             ->make(true);
     }
 
@@ -121,9 +140,9 @@ class TargetController extends Controller
      */
     public function create()
     {
-        $hospital_group = Customer::get()->pluck('hospital_group', 'hospital_group')->toArray();
+        $hospital_name = Customer::get()->pluck('name', 'name')->toArray();
 
-        return view('admin.target._create', compact('hospital_group'));
+        return view('admin.target._create', compact('hospital_name'));
     }
 
     // /**
@@ -149,9 +168,9 @@ class TargetController extends Controller
     public function edit($id)
     {
         $target = $this->target->find($id);
-        $hospital_group = Customer::get()->pluck('hospital_group', 'hospital_group')->toArray();
+        $hospital_name = Customer::get()->pluck('name', 'name')->toArray();
 
-        return view('admin.target._edit', compact('target', 'hospital_group'));
+        return view('admin.target._edit', compact('target', 'hospital_name'));
     }
 
     /**
