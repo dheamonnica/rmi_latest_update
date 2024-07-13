@@ -1,4 +1,5 @@
-@if (!$visit->verified_by && Auth::user()->role_id === 13)
+{{-- leader and marketing --}}
+@if (!$visit->verified_by && Auth::user()->role_id === 13 || Auth::user()->role_id === 14)
     {!! Form::open(['route' => ['admin.visit.setApprove', $visit], 'method' => 'put', 'class' => 'inline']) !!}
     <a href="javascript:void(0)"><i class="confirm ajax-silent fa fa-check"></i></a>
     {!! Form::close() !!}
