@@ -63,7 +63,8 @@ return [
         'delivery_boy' => 'Delivery Boy',
         'budget' => 'Budget',
         'target' => 'Target',
-        'crm' => 'CRM'
+        'crm' => 'CRM',
+        'visit' => 'Visit'
     ],
 
     // Application Levels
@@ -1281,6 +1282,12 @@ return [
         'create_crm' => 'Create CRM',
         'photo' => 'Photo',
         'client' => 'Client',
+
+        // site visit
+        'assignee' => 'Assignee',
+        'note' => 'Note',
+        'next_visit_date' => 'Next Visit Date',
+        'create_site_visit' => 'Create Site Visit',
     ],
 
     'placeholder' => [

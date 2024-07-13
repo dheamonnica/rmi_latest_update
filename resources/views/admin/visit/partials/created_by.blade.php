@@ -1,0 +1,1 @@
+<td>{{$visit->getCreatedVisitByName->name}}</td>

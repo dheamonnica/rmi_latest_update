@@ -1,0 +1,1 @@
+<td>{{$visit->created_at}}</td>

@@ -1036,6 +1036,10 @@
           'name': 'client'
         },
         {
+          'data': 'warehouse',
+          'name': 'warehouse'
+        },
+        {
           'data': 'picture',
           'name': 'picture'
         },
@@ -1108,6 +1112,123 @@
     $('#monthFilterCRM').on('change', filterByMonthCRM);
     $('#merchantFilterCRM').on('change', filterByWarehouseCRM);
     $('#yearFilterCRM').on('change', filterByYearCRM);
+
+    // Site Visit
+    var tableVisits = $('#visit-tables').DataTable($.extend({}, dataTableOptions, {
+      "ajax": "{{ route('admin.admin.visit.getVisitsTables') }}",
+      "columns": [{
+          'data': 'checkbox',
+          'name': 'checkbox',
+          'orderable': false,
+          'searchable': false,
+          'exportable': false,
+          'printable': false
+        },
+        {
+          'data': 'date',
+          'name': 'date'
+        },
+        {
+          'data': 'month',
+          'name': 'month'
+        },
+        {
+          'data': 'year',
+          'name': 'year'
+        },
+        {
+          'data': 'warehouse',
+          'name': 'warehouse'
+        },
+        {
+          'data': 'client',
+          'name': 'client'
+        },
+        {
+          'data': 'assignee',
+          'name': 'assignee'
+        },
+        {
+          'data': 'picture',
+          'name': 'picture'
+        },
+        {
+          'data': 'note',
+          'name': 'note'
+        },
+        {
+          'data': 'next_visit_date',
+          'name': 'next_visit_date'
+        },
+        {
+          'data': 'status',
+          'name': 'status'
+        },
+        {
+          'data': 'verified_by',
+          'name': 'verified_by'
+        },
+        {
+          'data': 'verified_at',
+          'name': 'verified_at'
+        },
+        {
+          'data': 'created_at',
+          'name': 'created_at',
+        },
+        {
+          'data': 'created_by',
+          'name': 'created_by',
+        },
+        {
+          'data': 'updated_at',
+          'name': 'updated_at',
+        },
+        {
+          'data': 'updated_by',
+          'name': 'updated_by',
+        },
+        {
+          'data': 'options',
+          'name': 'options',
+          'orderable': false,
+          'searchable': false,
+          'exportable': false,
+          'printable': false
+        }
+      ]
+    }));
+
+    // Filter the 'created_by' column with the name of the authenticated user
+    @if(!Auth::user()->isFromPlatform())
+      tableVisits.column('created_by:name').search('{{ Auth::user()->name }}').draw();
+    @endif
+
+    function filterByMonthVisit() {
+        var selectedMonth = $('#monthFilterVisit').val();
+
+        // Apply the month filter to the 'month' column (assume the column name is 'month')
+        tableVisits.column('month:name').search(selectedMonth).draw();
+    }
+
+    function filterByWarehouseVisit() {
+        var selectedMerchant = $('#merchantFilterVisit').val();
+
+        // Apply the business area filter to the 'business area' column (assume the column name is 'business area')
+        tableVisits.column('warehouse:name').search(selectedMerchant).draw();
+    }
+
+    function filterByYearVisit() {
+        var selectedMerchant = $('#yearFilterVisit').val();
+
+        // Apply the year filter to the 'year' column (assume the column name is 'year')
+        tableVisits.column('year:name').search(selectedMerchant).draw();
+    }
+
+    // Bind the filter and calculation function to the month dropdown change event
+    $('#monthFilterVisit').on('change', filterByMonthVisit);
+    $('#merchantFilterVisit').on('change', filterByWarehouseVisit);
+    $('#yearFilterVisit').on('change', filterByYearVisit);
 
     // Load category list by Ajax
     $('#all-categories-table').DataTable($.extend({}, dataTableOptions, {

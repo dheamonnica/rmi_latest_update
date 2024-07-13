@@ -820,6 +820,12 @@
               </a>
             </li>
 
+            <li class="{{ Request::is('admin/visit*') ? 'active' : '' }}">
+              <a href="{{ route('admin.visit.index') }}">
+                Visit Plan Report
+              </a>
+            </li>
+
             @if (Auth::user()->isAdmin())
             <li class="{{ Request::is('admin/report/kpi*') ? 'active' : '' }}">
               <a href="{{ route('admin.kpi') }}">

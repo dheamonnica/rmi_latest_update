@@ -1,0 +1,1 @@
+<td>{{$visit->verified_at}}</td>
