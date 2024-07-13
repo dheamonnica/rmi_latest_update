@@ -129,7 +129,7 @@ class VisitController extends Controller
     public function create()
     {
         $customers = Customer::get()->pluck('name', 'id')->toArray();
-        $users = User::where('role_id', 14)->pluck('name', 'id')->toArray();
+        $users = User::where('role_id', 8)->pluck('name', 'id')->toArray();
 
         return view('admin.visit._create', compact('customers', 'users'));
     }
