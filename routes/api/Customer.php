@@ -20,8 +20,8 @@ use App\Http\Controllers\Api\WishlistController;
 use App\Http\Controllers\Api\AttachmentController;
 use App\Http\Controllers\Api\AuthSocialController;
 use App\Http\Controllers\Api\PaymentCredentialController;
-use Incevio\Package\LiveChat\Http\Controllers\Api\ConversationController;
-use Incevio\Package\OtpLogin\Http\Controllers\Api\PhoneVerificationController;
+// use Incevio\Package\LiveChat\Http\Controllers\Api\ConversationController;
+// use Incevio\Package\OtpLogin\Http\Controllers\Api\PhoneVerificationController;
 
 Route::middleware('customerApp')->group(function () {
   // Get Payment API Credentials
@@ -56,8 +56,8 @@ Route::middleware('customerApp')->group(function () {
   Route::get('shop/{slug}/listings', [ListingController::class, 'shop']);
   Route::get('shop/{slug}/feedbacks', [FeedbackController::class, 'show_shop_feedbacks']);
   Route::post('shop/{order}/feedback', [FeedbackController::class, 'save_shop_feedbacks']);
-  Route::get('shop/{shop}/contact', [ConversationController::class, 'conversation']);
-  Route::post('shop/{shop}/contact', [ConversationController::class, 'save_conversation']);
+  // Route::get('shop/{shop}/contact', [ConversationController::class, 'conversation']);
+  // Route::post('shop/{shop}/contact', [ConversationController::class, 'save_conversation']);
 
   // Brands
   Route::get('brands', [HomeController::class, 'allBrands']);
@@ -121,7 +121,7 @@ Route::middleware('customerApp')->group(function () {
     Route::get('reset/{token}', [AuthController::class, 'token']);
     Route::post('reset', [AuthController::class, 'reset']);
     Route::post('social/{provider}', [AuthSocialController::class, 'socialLgin']);
-    Route::post('customer/phone/verify', [PhoneVerificationController::class, 'verifyotp']);
+    // Route::post('customer/phone/verify', [PhoneVerificationController::class, 'verifyotp']);
   });
 
   // Registered Customer API routes
@@ -131,7 +131,7 @@ Route::middleware('customerApp')->group(function () {
     Route::put('account/update', [AccountController::class, 'update']);
     Route::delete('account/delete', [AccountController::class, 'delete']);
     Route::put('password/update', [AccountController::class, 'password_update']);
-    Route::get('conversations', [ConversationController::class, 'conversations']);
+    // Route::get('conversations', [ConversationController::class, 'conversations']);
 
     // Address
     Route::get('addresses', [AddressController::class, 'index']);

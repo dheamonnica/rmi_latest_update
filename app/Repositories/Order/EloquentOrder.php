@@ -201,9 +201,21 @@ class EloquentOrder extends EloquentRepository implements BaseRepository, OrderR
                 $old = $order->inventories()->where('inventory_id', $id)->first();
                 $old_qtt = $old->pivot->quantity;
 
+                /**
+                 * Qty (dari Case di atas ini hanya bisa di input 5 Sesuai Stock) tapi Jika Order 10 Di stocknya kosong kita ttp bisa bikin Po meskipun stocknya kurang - Di stock inventory akan minus 
+                 * simulasi
+                 * $old_qtt = 5
+                 * $item->quantity = 10
+                 * if (5 > 10) //false
+                 * else if (5 < 10 ) //true
+                 *  -> 10 - 5 = 5 => change into 5 - 10 = -5 (differential)
+                 *  -> update order_items -> is_partial = true
+                 */
+
                 if ($old_qtt > $item->quantity) {
                     Inventory::find($id)->increment('stock_quantity', $old_qtt - $item->quantity);
                 } elseif ($old_qtt < $item->quantity) {
+                    // Inventory::find($id)->decrement('stock_quantity', $item->quantity - $old_qtt);
                     Inventory::find($id)->decrement('stock_quantity', $item->quantity - $old_qtt);
                 }
             } else {

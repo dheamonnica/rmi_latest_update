@@ -62,6 +62,14 @@ class EloquentInventory extends EloquentRepository implements BaseRepository, In
 
     public function store(Request $request)
     {
+        //check SKU if SKU exist && expired date new, so then update the existig
+
+        $findInventory = $this->model->where(['sku' => $request->sku, 'expired_date' => $request->expired_date])->first();
+
+        if ($findInventory) {
+            return $this->update($request, $findInventory->id);
+        }
+
         $inventory = parent::store($request);
 
         $this->setAttributes($inventory, $request->input('variants'));

@@ -1569,8 +1569,8 @@
 
       showResult.html('');
 
-      if (q.length < 3) {
-        showResult.html('<span class="lead indent50">{{ trans('validation.min.string', ['attribute' => trans('app.form.search'), 'min' => '3']) }}</span>');
+      if (q.length < 0) {
+        showResult.html('<span class="lead indent50">{{ trans('validation.min.string', ['attribute' => trans('app.form.search'), 'min' => '0']) }}</span>');
         return;
       }
 
@@ -1587,6 +1587,29 @@
     });
     //End product Seach
 
+    $('#searchProduct').on('focus', function(e) {
+      var showResult = $("#productFounds");
+      var q = $(this).val();
+
+      showResult.html('');
+
+      if (q.length < 0) {
+        showResult.html('<span class="lead indent50">{{ trans('validation.min.string', ['attribute' => trans('app.form.search'), 'min' => '0']) }}</span>');
+        return;
+      }
+
+      showResult.html('<span class="lead indent50">{{ trans('responses.searching') }}</span>');
+
+      $.ajax({
+        data: "q=" + q,
+        url: "{{ route('search.product') }}",
+        // contentType: "application/json; charset=utf-8",
+        success: function(results) {
+          showResult.html(results);
+        }
+      });
+    });
+
     //Customer Search
     $('.searchCustomer').select2({
       ajax: {
@@ -1601,7 +1624,7 @@
         cache: true
       },
       placeholder: "{{ trans('app.placeholder.search_customer') }}",
-      minimumInputLength: 3,
+      // minimumInputLength: 3,
     });
     //End Customer Seach
 

@@ -47,7 +47,8 @@ class CreateInventoryRequest extends Request
 
         $rules = [
             'title' => 'required',
-            'sku' => 'bail|required|composite_unique:inventories,sku,shop_id:' .  $user->merchantId(),
+            // 'sku' => 'bail|required|composite_unique:inventories,sku,shop_id:' .  $user->merchantId(),
+            'sku' => 'bail|required',
             'sale_price' => 'nullable|required_without:base_price|numeric|min:' . $min_price . ($max_price ? '|max:' . $max_price : ''),
             'base_price' => 'nullable|required_without:sale_price|numeric|min:' . $min_price . ($max_price ? '|max:' . $max_price : ''),
             'offer_price' => 'nullable|numeric',
@@ -55,7 +56,7 @@ class CreateInventoryRequest extends Request
             'auction_end' => 'nullable|date|after:available_from',
             'offer_start' => 'nullable|date|required_with:offer_price',
             'offer_end' => 'nullable|date|required_with:offer_price|after:offer_start',
-            'slug' => 'required|alpha_dash|unique:inventories,slug',
+            'slug' => 'nullable|alpha_dash|unique:inventories,slug',
             'image' => 'mimes:jpg,jpeg,png,gif',
             'shipping_weight' => 'required',
         ];

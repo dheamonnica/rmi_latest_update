@@ -182,7 +182,7 @@
             @endif
 
             @if ($shipping_options != 'NaN' && !isset($order_cart) && Gate::allows('create', \App\Models\Order::class))
-              <button name='action' type="submit" class='btn btn-flat btn-lg btn-new'>
+              <button name='action' type="submit" class='btn btn-flat btn-lg btn-new action-submit'>
                 {{ trans('app.place_order') }}
               </button>
             @endif
@@ -470,12 +470,15 @@
         function() {
           var ID = $("#product-to-add").select2('data')[0].id;
 
+          console.log('product data', productObj[ID]);
           console.log('stock', productObj[ID].stockQtt);
           if(productObj[ID].stockQtt === 0) {
             $("#global-alert-msg").html('{{ trans('messages.notice.out_of_stock') }}');
             $("#global-alert-box").removeClass('hidden');
           } else {
             var itemDescription = $("#product-to-add").select2('data')[0].text;
+
+            var isPartial = "0";
 
               if (ID == '' || itemDescription == '') {
                 return false;
@@ -492,32 +495,46 @@
                 return;
               }
 
-              //Pick the string after the : to get the item description
-              itemDescription = itemDescription.substring(itemDescription.indexOf(":") + 2);
+              console.log(itemDescription)
+
+              //Pick the string after the - to get the item description
+              // itemDescription = itemDescription.substring(itemDescription.indexOf(" - ") - 1);
+
+              // Find the first occurrence of " - "
+              var indexOfSeparator = itemDescription.indexOf(" - ");
+
+              // Check if the separator exists
+              if (indexOfSeparator != -1) {
+                // Extract the substring from the beginning to before the separator
+                itemDescription = itemDescription.substring(0, indexOfSeparator);
+              }
+
+              console.log(itemDescription)
 
               var imgSrc = getFromPHPHelper('get_product_img_src', ID, 'tiny');
 
               var numOfRows = $("tbody#items tr").length;
 
               var dateOfferAvailable = productObj[ID].dateNow > productObj[ID].offerStart && productObj[ID].dateNow < productObj[ID].offerEnd;
-              var isOfferAvailable = dateOfferAvailable ? 'Offer Available' : 'Offer Unavailable';
+              // var isOfferAvailable = dateOfferAvailable ? 'Offer Available' : 'Offer Unavailable';
               var price = productObj[ID].offerPrice > 0 ? productObj[ID].offerPrice : productObj[ID].salePrice;
-
+              //cart item added
               var node = '<tr id="' + ID + '">' +
                 '<td><img src="' + imgSrc + '" class="img-circle img-md" alt="{{ trans('app.image') }}"></td>' +
                 '<td class="nopadding-right" width="55%">' + itemDescription +
                 '<input type="hidden" name="cart[' + numOfRows + '][inventory_id]" value="' + ID + '"></input>' +
                 '<input type="hidden" name="cart[' + numOfRows + '][item_description]" value="' + itemDescription + '"></input>' +
+                '<input type="hidden" name="cart[' + numOfRows + '][partial_status]" value="' + isPartial + '" id="partial-' + ID + '"></input>' +
                 '<input type="hidden" name="cart[' + numOfRows + '][shipping_weight]" value="' + productObj[ID].shipping_weight + '" id="weight-' + ID + '" class="itemWeight"></input>' +
                 '<input type="hidden" name="cart[' + numOfRows + '][stock_quantity]" value="' + productObj[ID].stockQtt + '" id="stock-' + ID + '" class="itemStock"></input>' +
                 '</td>' +
-                '<td class="small" width="15%">'+ isOfferAvailable + ` <i class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="" data-original-title="Offer Date: ${productObj[ID].offerStart} - ${productObj[ID].offerEnd}"></i></td>` +
+                // '<td class="small" width="15%">'+ isOfferAvailable + ` <i class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="" data-original-title="Offer Date: ${productObj[ID].offerStart} - ${productObj[ID].offerEnd}"></i></td>` +
                 '<td class="nopadding-right" width="15%">' +
                 '<input name="cart[' + numOfRows + '][unit_price]" value="' + price + '" id="price-' + ID + '" type="number" class="form-control itemPrice no-border" placeholder="{{ trans('app.price') }}" required readonly>' +
                 '</div>' +
                 '<td>x</td>' +
                 '<td class="nopadding-right" width="10%">' +
-                '<input name="cart[' + numOfRows + '][quantity]" value="1" max="' + productObj[ID].stockQtt + '" type="number" id="qtt-' + ID + '" class="form-control itemQtt no-border" placeholder="{{ trans('app.quantity') }}" required>' +
+                '<input name="cart[' + numOfRows + '][quantity]" value="1" type="number" id="qtt-' + ID + '" class="form-control itemQtt no-border" placeholder="{{ trans('app.quantity') }}" required>' +
                 '</td>' +
                 '<td class="nopadding-right text-center" width="10%">{{ get_formated_currency_symbol() }}' +
                 '<span id="total-' + ID + '"  class="itemTotal">' +
@@ -526,6 +543,10 @@
                 '</td>' +
                 '<td class="small"><i class="fa fa-trash text-muted deleteThisRow" data-toggle="tooltip" data-placement="left" title="{{ trans('help.remove_this_cart_item') }}"></i></td>' +
                 '</tr>';
+
+                /**
+                 * '<input name="cart[' + numOfRows + '][quantity]" value="1" max="' + productObj[ID].stockQtt + '" type="number" id="qtt-' + ID + '" class="form-control itemQtt no-border" placeholder="{{ trans('app.quantity') }}" required>' +
+                */
 
               $('tbody#items').append(node);
 
@@ -651,6 +672,11 @@
         return;
       }
 
+      function setPartialStatus(ID, status)
+      {
+        $("#partial-" + ID).val(status);
+      }
+
       function calculateTax() {
         var total = getTotalAmount();
         var taxrate = getTaxrate();
@@ -722,11 +748,27 @@
         console.log(getItemQtt(ID), 'getItemQtt')
         // stock_quantity
         var stock = $("#stock-" + ID).val();
+        
         console.log(stock, 'stock');
 
+        /**
+         * Qty (dari Case di atas ini hanya bisa di input 5 Sesuai Stock) tapi Jika Order 10 Di stocknya kosong kita ttp bisa bikin Po meskipun stocknya kurang - Di stock inventory akan minus 
+         * simulasi
+         * stock = 5
+         * getItemQtt(ID) = 10
+         * if (5 > 10) //false
+         * else if (5 < 10 ) //true
+         *  -> 10 - 5 = 5 => change into 5 - 10 = -5 (differential)
+         *  -> update order_items -> is_partial = true
+         */
+
+
         if(Number(getItemQtt(ID)) >= Number(stock)) {
-          $("#global-alert-msg").html('{{ trans('messages.notice.last_stock') }}');
+          $("#global-alert-msg").html('{{ trans('messages.notice.last_stock') }} - set as partial order'); //alert last stock
+          // $("#global-alert-msg").html('{{ trans('messages.notice.last_stock') }}'); 
+          var stock = $("#partial-" + ID).val(1);
           $("#global-alert-box").removeClass('hidden');
+          $("#action-submit").removeClass('disabled');
         } else {
           $("#global-alert-box").addClass('hidden');
         }

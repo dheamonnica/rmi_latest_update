@@ -32,10 +32,10 @@ use App\Http\Controllers\Api\Vendor\OrderFulfillmentController;
 use App\Http\Controllers\Api\Vendor\OrderCancellationController;
 use App\Http\Controllers\Api\Vendor\OrderConversationController;
 use App\Http\Controllers\SearchController;
-use Incevio\Package\LiveChat\Http\Controllers\Api\ConversationController;
-use Incevio\Package\OtpLogin\Http\Controllers\Api\PhoneVerificationController;
+// use Incevio\Package\LiveChat\Http\Controllers\Api\ConversationController;
+// use Incevio\Package\OtpLogin\Http\Controllers\Api\PhoneVerificationController;
 use Illuminate\Support\Facades\Route;
-use Incevio\Package\Packaging\Http\Api\VendorApi\Controllers\PackagingController;
+// use Incevio\Package\Packaging\Http\Api\VendorApi\Controllers\PackagingController;
 
 Route::prefix('vendor')->group(function () {
 
@@ -50,7 +50,7 @@ Route::prefix('vendor')->group(function () {
         Route::get('reset/{token}', [AuthController::class, 'token']);
         Route::post('reset', [AuthController::class, 'reset']);
         Route::post('logout', [AuthController::class, 'logout'])->middleware(['auth:vendor_api']);
-        Route::post('user/phone/verify', [PhoneVerificationController::class, 'verifyVendorotp']);
+        // Route::post('user/phone/verify', [PhoneVerificationController::class, 'verifyVendorotp']);
     });
 
     // Plugins
@@ -167,13 +167,13 @@ Route::prefix('vendor')->group(function () {
 
         // Packagings (Addon)
 
-        Route::get('packagings', [PackagingController::class, 'index']);
-        Route::post('packaging/create', [PackagingController::class, 'store']);
-        Route::get('packaging/{packaging}', [PackagingController::class, 'show']);
-        Route::match(['post', 'put'], 'packaging/{packaging}/update', [PackagingController::class, 'update']);
-        Route::delete('packaging/{packaging}/trash', [PackagingController::class, 'trash']);
-        Route::put('packaging/{packaging_id}/restore', [PackagingController::class, 'restore']);
-        Route::delete('packaging/{packaging_id}/delete', [PackagingController::class, 'destroy']);
+        // Route::get('packagings', [PackagingController::class, 'index']);
+        // Route::post('packaging/create', [PackagingController::class, 'store']);
+        // Route::get('packaging/{packaging}', [PackagingController::class, 'show']);
+        // Route::match(['post', 'put'], 'packaging/{packaging}/update', [PackagingController::class, 'update']);
+        // Route::delete('packaging/{packaging}/trash', [PackagingController::class, 'trash']);
+        // Route::put('packaging/{packaging_id}/restore', [PackagingController::class, 'restore']);
+        // Route::delete('packaging/{packaging_id}/delete', [PackagingController::class, 'destroy']);
 
 
         // Shipping
@@ -276,11 +276,11 @@ Route::prefix('vendor')->group(function () {
         //        Route::get('conversation/{customer}', [ConversationController::class, 'vendorConversation']);
         //        Route::post('conversation/save', [ConversationController::class, 'save_conversation']);
 
-        Route::get('conversations', [ConversationController::class, 'index']);
+        // Route::get('conversations', [ConversationController::class, 'index']);
 
-        Route::get('chat/{chat}', [ConversationController::class, 'show']);
+        // Route::get('chat/{chat}', [ConversationController::class, 'show']);
 
-        Route::post('chat/{chat}/reply', [ConversationController::class, 'reply']);
+        // Route::post('chat/{chat}/reply', [ConversationController::class, 'reply']);
 
         //Notification
         Route::post('fcm_token/create', [NotificationController::class, 'saveToken']);
