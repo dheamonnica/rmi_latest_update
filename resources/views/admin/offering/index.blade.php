@@ -52,15 +52,13 @@
                                 <th>{{ trans('app.form.small_quantity') }}</th>
                                 <th>{{ trans('app.form.medium_quantity') }}</th>
                                 <th>{{ trans('app.form.large_quantity') }}</th>
-                                @if (Auth::user()->isAdmin() || Auth::user()->isMerchant())
-                                    <th>{{ trans('app.form.created_at') }}</th>
-                                    <th>{{ trans('app.form.created_by') }}</th>
-                                    <th>{{ trans('app.form.company_name') }}</th>
-                                    <th>{{ trans('app.form.email') }}</th>
-                                    <th>{{ trans('app.form.phone') }}</th>
-                                    <th>{{ trans('app.form.updated_at') }}</th>
-                                    <th>{{ trans('app.form.updated_by') }}</th>
-                                @endif
+                                <th>{{ trans('app.form.created_at') }}</th>
+                                <th>{{ trans('app.form.created_by') }}</th>
+                                <th>{{ trans('app.form.company_name') }}</th>
+                                <th>{{ trans('app.form.email') }}</th>
+                                <th>{{ trans('app.form.phone') }}</th>
+                                <th>{{ trans('app.form.updated_at') }}</th>
+                                <th>{{ trans('app.form.updated_by') }}</th>
                                 <th>{{ trans('app.form.status') }}</th>
                                 <th>{{ trans('app.form.option') }}</th>
                             </tr>

@@ -700,7 +700,6 @@
           'data': 'large_quantity_price',
           'name': 'large_quantity_price'
         },
-        @if (Auth::user()->isAdmin() || Auth::user()->isMerchant())
         {
           'data': 'created_at',
           'name': 'created_at',
@@ -729,7 +728,6 @@
           'data': 'updated_by',
           'name': 'updated_by',
         },
-        @endif
         {
           'data': 'status',
           'name': 'status',
