@@ -132,15 +132,8 @@ class RegisterController extends Controller
         try {
             $merchant = $this->create($request->all());
 
-            if (!customer_can_register()) {
-                // Dispatching customer create job
-                CreateCustomerFromMerchant::dispatch($merchant);
-            }
-
-            // Dispatching Shop create job
-            CreateShopForMerchant::dispatch($merchant, $request->all());
-
             if($request['shop_name']) {
+
                 $merchant['role_id'] = 10;
                 $merchant['business_name'] = $request->input('shop_name');
                 $merchant['country_id'] = $request->input('country_id');
@@ -157,9 +150,18 @@ class RegisterController extends Controller
                     'manufacture_pic_email' => $request->input('personal_email'),
                     'manufacture_pic_phone' => $request->input('personal_phone'),
                 ]);
-            } else {
-                Auth::guard()->login($merchant);
+            } 
+
+            if (!customer_can_register()) {
+                // Dispatching customer create job
+                CreateCustomerFromMerchant::dispatch($merchant);
             }
+            
+
+            // Dispatching Shop create job
+            CreateShopForMerchant::dispatch($merchant, $request->all());
+
+            Auth::guard()->login($merchant);
 
             if (is_subscription_enabled()) {
                 SubscribeShopToNewPlan::dispatch($merchant, $request->input('plan'));
