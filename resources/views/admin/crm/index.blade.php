@@ -69,7 +69,7 @@
                         <th>{{ trans('app.form.created_by') }}</th>
                         <th>{{ trans('app.form.updated_at') }}</th>
                         <th>{{ trans('app.form.updated_by') }}</th>
-                        <th width=70>{{ trans('app.form.option') }}</th>
+                        <th>{{ trans('app.form.option') }}</th>
                     </tr>
                 </thead>
                 <tbody id="massSelectArea">

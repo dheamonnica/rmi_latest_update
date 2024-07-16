@@ -1050,10 +1050,6 @@
           'name': 'verified_at'
         },
         {
-          'data': 'warehouse',
-          'name': 'warehouse'
-        },
-        {
           'data': 'created_at',
           'name': 'created_at',
         },

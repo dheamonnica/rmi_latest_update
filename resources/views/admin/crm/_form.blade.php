@@ -1,5 +1,5 @@
 <div class="row">
-    <div class="col-md-3">
+    <div class="col-md-3 nopadding-right">
         <div class="form-group">
             {!! Form::label('date', trans('app.form.date'), ['class' => 'with-help']) !!}
             {!! Form::text('date', null, [
@@ -11,7 +11,7 @@
         </div>
     </div>
 
-    <div class="col-md-4">
+    <div class="col-md-4 nopadding-left nopadding-right">
         <div class="form-group">
             {!! Form::label('client_id', trans('app.form.client') . '*', ['class' => 'with-help']) !!}
             {!! Form::select('client_id', ['' => 'Select Client'] + $customers, null, [
@@ -22,7 +22,7 @@
         </div>
     </div>
 
-    <div class="col-md-5">
+    <div class="col-md-5 nopadding-left">
         {!! Form::label('photo', trans('app.form.photo') . '*', ['class' => 'with-help']) !!}
 
         <div class="row">
