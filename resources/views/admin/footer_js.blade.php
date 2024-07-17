@@ -1014,17 +1014,20 @@
     // Load offering list by Ajax
     var tableCRMs = $('#crm-tables').DataTable($.extend({}, dataTableOptions, {
       "ajax": "{{ route('admin.admin.crm.getCRMsTables') }}",
-      "columns": [{
+      "columns": [
+        {
+            className: 'dt-control',
+            orderable: false,
+            data: null,
+            defaultContent: ''
+        },
+        {
           'data': 'checkbox',
           'name': 'checkbox',
           'orderable': false,
           'searchable': false,
           'exportable': false,
           'printable': false
-        },
-        {
-          'data': 'date',
-          'name': 'date'
         },
         {
           'data': 'month',
@@ -1035,40 +1038,33 @@
           'name': 'year'
         },
         {
-          'data': 'client',
-          'name': 'client'
-        },
-        {
           'data': 'warehouse',
           'name': 'warehouse'
         },
+        {
+          'data': 'client',
+          'name': 'client'
+        },
+       
         {
           'data': 'picture',
           'name': 'picture'
         },
         {
-          'data': 'verified_by',
-          'name': 'verified_by'
+          'data': 'total_plan',
+          'name': 'total_plan'
         },
         {
-          'data': 'verified_at',
-          'name': 'verified_at'
+          'data': 'total_plan_actual',
+          'name': 'total_plan_actual'
         },
         {
-          'data': 'created_at',
-          'name': 'created_at',
+          'data': 'success_rate',
+          'name': 'success_rate'
         },
         {
-          'data': 'created_by',
-          'name': 'created_by',
-        },
-        {
-          'data': 'updated_at',
-          'name': 'updated_at',
-        },
-        {
-          'data': 'updated_by',
-          'name': 'updated_by',
+          'data': 'status',
+          'name': 'status'
         },
         {
           'data': 'options',
@@ -1111,6 +1107,58 @@
     $('#monthFilterCRM').on('change', filterByMonthCRM);
     $('#merchantFilterCRM').on('change', filterByWarehouseCRM);
     $('#yearFilterCRM').on('change', filterByYearCRM);
+
+    // Formatting function for row details - modify as you need
+    function format(d) {
+        // `d` is the original data object for the row
+
+        return (
+            '<dl>' +
+            '<dt>Created At:</dt>' +
+            '<dd>' +
+            d.created_at +
+            '</dd>' +
+            '<dt>Created By:</dt>' +
+            '<dd>' +
+            d.created_by +
+            '</dd>' +
+            '</dl>'
+        );
+
+        if(d.updated_at) {
+          return (
+            '<dl>' +
+            '<dt>Updated At:</dt>' +
+            '<dd>' +
+            d.updated_at +
+            '</dd>' +
+            '<dt>Updated By:</dt>' +
+            '<dd>' +
+            d.updated_by +
+            '</dd>' +
+            '</dl>'
+        );
+        }
+    }
+
+    // Add event listener for opening and closing details
+    tableCRMs.on('click', 'td.dt-control', function (e) {
+        let tr = e.target.closest('tr');
+        let row = tableCRMs.row(tr);
+    
+        if (row.child.isShown()) {
+            // This row is already open - close it
+            row.child.hide();
+            $(tr).removeClass('dt-hasChild');
+        }
+        else {
+            // Open this row
+            row.child(format(row.data())).show();
+            // row.child("<tr><td>test</td></tr>").show();
+
+            $(tr).addClass('dt-hasChild');
+        }
+    });
 
     // Site Visit
     var tableVisits = $('#visit-tables').DataTable($.extend({}, dataTableOptions, {
@@ -1160,8 +1208,8 @@
           'name': 'next_visit_date'
         },
         {
-          'data': 'status',
-          'name': 'status'
+          'data': 'success_rate',
+          'name': 'success_rate'
         },
         {
           'data': 'verified_by',
@@ -1199,8 +1247,8 @@
     }));
 
     // Filter the 'created_by' column with the name of the authenticated user
-    @if(!Auth::user()->isFromPlatform())
-      tableVisits.column('created_by:name').search('{{ Auth::user()->name }}').draw();
+    @if(!Auth::user()->role_id === 13 || !Auth::user()->role_id === 1)
+      tableVisits.column('assignee:name').search('{{ Auth::user()->name }}').draw();
     @endif
 
     function filterByMonthVisit() {

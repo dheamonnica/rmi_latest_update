@@ -51,24 +51,22 @@
             <table class="table table-hover" id="crm-tables">
                 <thead>
                     <tr>
+                        <th></th>
                         <th class="massActionWrapper">
                             <button type="button" class="btn btn-xs btn-default checkbox-toggle">
                                 <i class="fa fa-square-o" data-toggle="tooltip" data-placement="top"
                                     title="{{ trans('app.select_all') }}"></i>
                             </button>
                         </th>
-                        <th>{{ trans('app.form.date') }}</th>
                         <th>{{ trans('app.form.month') }}</th>
                         <th>{{ trans('app.form.year') }}</th>
-                        <th>{{ trans('app.form.client') }}</th>
-                        <th>{{ trans('app.form.photo') }}</th>
-                        <th>{{ trans('app.form.verified_by') }}</th>
-                        <th>{{ trans('app.form.verified_at') }}</th>
                         <th>{{ trans('app.form.warehouse') }}</th>
-                        <th>{{ trans('app.form.created_at') }}</th>
-                        <th>{{ trans('app.form.created_by') }}</th>
-                        <th>{{ trans('app.form.updated_at') }}</th>
-                        <th>{{ trans('app.form.updated_by') }}</th>
+                        <th>{{ trans('app.form.client') }}</th>
+                        <th>{{ trans('app.form.picture') }}</th>
+                        <th>{{ trans('app.form.total_plan') }}</th>
+                        <th>{{ trans('app.form.total_actual_visit') }}</th>
+                        <th>{{ trans('app.form.success_rate') }}</th>
+                        <th>{{ trans('app.form.status') }}</th>
                         <th>{{ trans('app.form.option') }}</th>
                     </tr>
                 </thead>
@@ -78,3 +76,26 @@
         </div>
     </div>
 @endsection
+
+<style>
+    table.dataTable td.dt-control {
+        cursor: pointer;
+    }
+
+    table.dataTable td.dt-control:before {
+        display: inline-block;
+        box-sizing: border-box;
+        content: "";
+        border-top: 5px solid transparent;
+        border-left: 10px solid rgba(0, 0, 0, 0.5);
+        border-bottom: 5px solid transparent;
+        border-right: 0px solid transparent;
+    }
+
+    table.dataTable tr.dt-hasChild td.dt-control:before {
+        border-top: 10px solid rgba(0, 0, 0, 0.5);
+        border-left: 5px solid transparent;
+        border-bottom: 0px solid transparent;
+        border-right: 5px solid transparent;
+    }
+</style>

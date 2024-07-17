@@ -1291,6 +1291,9 @@ return [
         'create_crm' => 'Create CRM',
         'photo' => 'Photo',
         'client' => 'Client',
+        'total_plan' => 'Total Plan',
+        'total_actual_visit' => 'Total Actual Visit',
+        'success_rate' => 'Success Rate',
 
         // site visit
         'assignee' => 'Assignee',
