@@ -26,6 +26,7 @@ class Visit extends BaseModel
     protected $fillable = [
         'date',
         'client_id',
+        'shop_id',
         'assignee_user_id',
         'note',
         'next_visit_date',
