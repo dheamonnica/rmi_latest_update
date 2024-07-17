@@ -784,7 +784,9 @@
       @endif
       @endif --}}
 
-      @if (Auth::user()->isAdmin() || Auth::user()->isMerchant() || Auth::user()->isFromPlatform() || Gate::allows('report', \Incevio\Package\Wallet\Models\Wallet::class))
+      {{-- @if (Auth::user()->isAdmin() || Auth::user()->isMerchant() || Auth::user()->isFromPlatform() || Gate::allows('report', \Incevio\Package\Wallet\Models\Wallet::class)) --}}
+      {{-- Except vendor --}}
+      @if(Auth::user()->id !== 10)
         <li class="treeview {{ Request::is('admin/report*') || Request::is('admin/shop/report*') ? 'active' : '' }}">
           <a href="javascript:void(0)">
             <i class="fa fa-bar-chart"></i>
@@ -890,6 +892,7 @@
           </ul>
         </li>
       @endif
+      {{-- @endif --}}
 
       <!--
         <li class="header">LABELS</li>
