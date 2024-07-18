@@ -58,4 +58,8 @@ class Visit extends BaseModel
     public function getAssigneeByName() {
         return $this->belongsTo(User::class, 'assignee_user_id');
     }
+
+    public function getWarehouseByShop() {
+        return $this->belongsTo(Shop::class, 'shop_id');
+    }
 }
