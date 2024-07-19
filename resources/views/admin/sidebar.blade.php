@@ -882,19 +882,23 @@
                                         </a>
                                     </li>
 
-                                    <li class="{{ Request::is('admin/target*') ? 'active' : '' }}">
-                                        <a href="{{ route('admin.target.index') }}">
-                                            Target Data
-                                        </a>
-                                    </li>
-                                </ul>
-                            </li>
-                        @endif
-                        <li class="{{ Request::is('admin/visit*') ? 'active' : '' }}">
-                            <a href="{{ route('admin.visit.index') }}">
-                                Visit Plan Report
-                            </a>
-                        </li>
+            <li class="{{ Request::is('admin/crm*') ? 'active' : '' }}">
+              <a href="{{ route('admin.crm.index') }}">
+                CRM Report
+              </a>
+            </li>
+
+            <li class="{{ Request::is('admin/crm*') ? 'active' : '' }}">
+              <a href="{{ route('admin.crm.data') }}">
+                CRM Data
+              </a>
+            </li>
+
+            <li class="{{ Request::is('admin/visit*') ? 'active' : '' }}">
+              <a href="{{ route('admin.visit.index') }}">
+                Visit Plan Report
+              </a>
+            </li>
 
                         @if (Auth::user()->isAdmin())
                             <li class="{{ Request::is('admin/report/kpi*') ? 'active' : '' }}">

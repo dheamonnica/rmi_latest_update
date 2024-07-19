@@ -76,6 +76,22 @@ class CRMController extends Controller
         return view('admin.crm.data', compact('trashes', 'crms', 'merchants', 'years'));
     }
 
+    public function data()
+    {
+        $crms = $this->crm->all();
+
+        $trashes = $this->crm->trashOnly();
+
+        $merchants = Merchant::get()->pluck('warehouse_name', 'id')->toArray();
+
+        $years = CRM::selectRaw('YEAR(created_at) as year')
+            ->distinct()
+            ->orderBy('year', 'desc')
+            ->pluck('year');
+
+        return view('admin.crm.data', compact('trashes', 'crms', 'merchants', 'years'));
+    }
+
     public function getCRMsTables(Request $request)
     {
         $query = Visit::selectRaw('
@@ -179,21 +195,13 @@ class CRMController extends Controller
             ->addColumn('status', function ($crm) {
                 return view('admin.crm.partials.status', ['crm' => $crm['visit']]);
             })
-            ->rawColumns(['checkbox', 'month', 'year', 'warehouse', 'status', 'total_plan', 'total_plan_actual', 'success_rate'])
+            ->rawColumns(['checkbox', 'month', 'year', 'status', 'total_plan', 'total_plan_actual', 'success_rate'])
             ->make(true);
-
     }
 
     public function getCRMsDataTables(Request $request)
     {
-        if (Auth::user()->role_id === 8 || Auth::user()->role_id === 13) {
-            $crms = $this->crm->all()->filter(function ($crm) {
-                return $crm->shop_id == Auth::user()->shop_id;
-            });
-
-        } else if (Auth::user()->role_id === 1) {
-            $crms = $this->crm->all();
-        }
+        $crms = $this->crm->all();
 
         return Datatables::of($crms)
             ->addColumn('checkbox', function ($crm) {
@@ -217,20 +225,11 @@ class CRMController extends Controller
             ->addColumn('picture', function ($crm) {
                 return view('admin.crm.partials.picture', ['crm' => $crm]);
             })
-            ->addColumn('verified_status', function ($crm) {
-                return view('admin.crm.partials.verified_status', ['crm' => $crm]);
-            })
             ->addColumn('created_at', function ($crm) {
                 return view('admin.crm.partials.created_at', ['crm' => $crm]);
             })
             ->addColumn('created_by', function ($crm) {
                 return view('admin.crm.partials.created_by', ['crm' => $crm]);
-            })
-            ->addColumn('verified_at', function ($crm) {
-                return view('admin.crm.partials.verified_at', ['crm' => $crm]);
-            })
-            ->addColumn('verified_by', function ($crm) {
-                return view('admin.crm.partials.verified_by', ['crm' => $crm]);
             })
             ->addColumn('updated_at', function ($crm) {
                 return view('admin.crm.partials.updated_at', ['crm' => $crm]);
@@ -240,8 +239,9 @@ class CRMController extends Controller
             })
             ->addColumn('options', function ($crm) {
                 return view('admin.crm.partials.options', ['crm' => $crm]);
+                return view('admin.crm.partials.options', ['crm' => $crm]);
             })
-            ->rawColumns(['checkbox', 'date', 'month', 'year', 'warehouse', 'client', 'picture', 'status', 'created_at', 'created_by', 'verified_status', 'verified_at', 'verified_by', 'updated_at', 'updated_by', 'options'])
+            ->rawColumns(['checkbox', 'date', 'month', 'year', 'warehouse', 'client', 'picture', 'created_at', 'created_by', 'updated_at', 'updated_by', 'options'])
             ->make(true);
     }
 
