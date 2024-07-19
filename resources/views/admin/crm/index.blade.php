@@ -60,14 +60,10 @@
                         </th>
                         <th>{{ trans('app.form.month') }}</th>
                         <th>{{ trans('app.form.year') }}</th>
-                        <th>{{ trans('app.form.warehouse') }}</th>
-                        <th>{{ trans('app.form.client') }}</th>
-                        <th>{{ trans('app.form.picture') }}</th>
                         <th>{{ trans('app.form.total_plan') }}</th>
                         <th>{{ trans('app.form.total_actual_visit') }}</th>
                         <th>{{ trans('app.form.success_rate') }}</th>
                         <th>{{ trans('app.form.status') }}</th>
-                        <th>{{ trans('app.form.option') }}</th>
                     </tr>
                 </thead>
                 <tbody id="massSelectArea">

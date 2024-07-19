@@ -26,6 +26,7 @@ class CRM extends BaseModel
     protected $fillable = [
         'date',
         'client_id',
+        'shop_id',
         'verfified_by',
         'verified_at',
         'created_by',

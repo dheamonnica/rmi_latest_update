@@ -62,131 +62,99 @@ class CRMController extends Controller
     public function getCRMsTables(Request $request)
     {
         $crms = $this->crm->all();
+        $query = Visit::selectRaw('
+            *,
+            YEAR(date) as year,
+            MONTH(date) as month,
+            COUNT(CASE WHEN status = 0 THEN 1 END) as total_plan,
+            COUNT(CASE WHEN status = 1 THEN 1 END) as total_plan_actual
+        ')
+            ->whereNull('deleted_at')
+            ->orWhere('deleted_at', '');
 
-        return Datatables::of($crms)
+        // Apply shop_id filter if the user has role_id 1 or 13
+        if (Auth::user()->role_id === 1 || Auth::user()->role_id === 13) {
+            $query->where('shop_id', Auth::user()->shop_id);
+        }
+
+        $crm_groups = $query
+            ->groupBy('year', 'month')
+            ->get();
+
+        // Process the data
+        $grouped_data = [];
+        foreach ($crm_groups as $group) {
+            $year = $group->year;
+            $month = $group->month;
+
+            if (!isset($grouped_data[$year])) {
+                $grouped_data[$year] = [];
+            }
+            if (!isset($grouped_data[$year][$month])) {
+                $grouped_data[$year][$month] = [
+                    'total_plan' => 0,
+                    'total_plan_actual' => 0,
+                    'data' => []
+                ];
+            }
+
+            $grouped_data[$year][$month]['total_plan'] += $group->total_plan;
+            $grouped_data[$year][$month]['total_plan_actual'] += $group->total_plan_actual;
+            $grouped_data[$year][$month]['data'][] = $group;
+        }
+
+        // Flatten the grouped data for DataTables
+        $flattened_data = [];
+        foreach ($grouped_data as $year => $months) {
+            foreach ($months as $month => $data) {
+                foreach ($data['data'] as $visit) {
+                    $flattened_data[] = [
+                        'year' => $year,
+                        'month' => $month,
+                        'total_plan' => $data['total_plan'],
+                        'total_plan_actual' => $data['total_plan_actual'],
+                        'visit' => $visit,
+                    ];
+                }
+            }
+        }
+
+        return Datatables::of($flattened_data)
             ->addColumn('checkbox', function ($crm) {
-                return view('admin.crm.partials.checkbox', compact('crm'));
+                return view('admin.crm.partials.checkbox', ['crm' => $crm['visit']]);
             })
             ->addColumn('month', function ($crm) {
-                return view('admin.crm.partials.month', compact('crm'));
+                return view('admin.crm.partials.month', ['crm' => $crm['visit']]);
             })
             ->addColumn('year', function ($crm) {
-                return view('admin.crm.partials.year', compact('crm'));
+                return view('admin.crm.partials.year', ['crm' => $crm['visit']]);
             })
             ->addColumn('warehouse', function ($crm) {
-                return view('admin.crm.partials.warehouse', compact('crm'));
+                return view('admin.crm.partials.warehouse', ['crm' => $crm['visit']]);
             })
             ->addColumn('client', function ($crm) {
-                return view('admin.crm.partials.client', compact('crm'));
+                return view('admin.crm.partials.client', ['crm' => $crm['visit']]);
             })
             ->addColumn('picture', function ($crm) {
-                return view('admin.crm.partials.picture', compact('crm'));
+                return view('admin.crm.partials.picture', ['crm' => $crm['visit']]);
             })
             ->addColumn('total_plan', function ($crm) {
-                if (Auth::user()->role_id === 1 || Auth::user()->role_id === 13) {
-                    $getTotalPlanVisit = Visit::selectRaw('COUNT(id) as total_plan')
-                        ->where('status', 0)
-                        ->whereNull('deleted_at')
-                        ->orWhere('deleted_at', '')
-                        ->first();
-                } else {
-                    $getTotalPlanVisit = Visit::selectRaw('COUNT(id) as total_plan')
-                        ->where('shop_id', Auth::user()->shop_id)
-                        ->where('status', 0)
-                        ->whereNull('deleted_at')
-                        ->orWhere('deleted_at', '')
-                        ->first();
-                }
-                return view('admin.crm.partials.total_plan', compact('crm', 'getTotalPlanVisit'));
+                return $crm['total_plan'];
             })
             ->addColumn('total_plan_actual', function ($crm) {
-                if (Auth::user()->role_id === 1 || Auth::user()->role_id === 13) {
-                    $getTotalVerifiedVisit = Visit::selectRaw('COUNT(id) as total_plan_actual')
-                        ->where('status', 1)
-                        ->whereNull('deleted_at')
-                        ->orWhere('deleted_at', '')
-                        ->first();
-                } else {
-                    $getTotalVerifiedVisit = Visit::selectRaw('COUNT(id) as total_plan_actual')
-                        ->where('shop_id', Auth::user()->shop_id)
-                        ->where('status', 1)
-                        ->whereNull('deleted_at')
-                        ->orWhere('deleted_at', '')
-                        ->first();
-                }
-                return view('admin.crm.partials.total_plan_actual', compact('crm', 'getTotalVerifiedVisit'));
+                return $crm['total_plan_actual'];
             })
             ->addColumn('success_rate', function ($crm) {
-
-                if (Auth::user()->role_id === 1 || Auth::user()->role_id === 13) {
-                    $getTotalPlanVisit = Visit::selectRaw('COUNT(id) as total_plan')
-                        ->where('status', 0)
-                        ->whereNull('deleted_at')
-                        ->orWhere('deleted_at', '')
-                        ->first();
-                } else {
-                    $getTotalPlanVisit = Visit::selectRaw('COUNT(id) as total_plan')
-                        ->where('shop_id', Auth::user()->shop_id)
-                        ->where('status', 0)
-                        ->whereNull('deleted_at')
-                        ->orWhere('deleted_at', '')
-                        ->first();
-                }
-
-                if (Auth::user()->role_id === 1 || Auth::user()->role_id === 13) {
-                    $getTotalVerifiedVisit = Visit::selectRaw('COUNT(id) as total_plan_actual')
-                        ->where('status', 1)
-                        ->whereNull('deleted_at')
-                        ->orWhere('deleted_at', '')
-                        ->first();
-                } else {
-                    $getTotalVerifiedVisit = Visit::selectRaw('COUNT(id) as total_plan_actual')
-                        ->where('shop_id', Auth::user()->shop_id)
-                        ->where('status', 1)
-                        ->whereNull('deleted_at')
-                        ->orWhere('deleted_at', '')
-                        ->first();
-                }
-                return view('admin.crm.partials.success_rate', compact('crm', 'getTotalPlanVisit', 'getTotalVerifiedVisit'));
+                $total_plan = $crm['total_plan'];
+                $total_plan_actual = $crm['total_plan_actual'];
+                return $total_plan > 0 ? ($total_plan_actual / $total_plan) * 100 : 0;
             })
-
             ->addColumn('status', function ($crm) {
-
-                if (Auth::user()->role_id === 1 || Auth::user()->role_id === 13) {
-                    $getTotalPlanVisit = Visit::selectRaw('COUNT(id) as total_plan')
-                        ->where('status', 0)
-                        ->whereNull('deleted_at')
-                        ->orWhere('deleted_at', '')
-                        ->first();
-                } else {
-                    $getTotalPlanVisit = Visit::selectRaw('COUNT(id) as total_plan')
-                        ->where('shop_id', Auth::user()->shop_id)
-                        ->where('status', 0)
-                        ->whereNull('deleted_at')
-                        ->orWhere('deleted_at', '')
-                        ->first();
-                }
-
-                if (Auth::user()->role_id === 1 || Auth::user()->role_id === 13) {
-                    $getTotalVerifiedVisit = Visit::selectRaw('COUNT(id) as total_plan_actual')
-                        ->where('status', 1)
-                        ->whereNull('deleted_at')
-                        ->orWhere('deleted_at', '')
-                        ->first();
-                } else {
-                    $getTotalVerifiedVisit = Visit::selectRaw('COUNT(id) as total_plan_actual')
-                        ->where('shop_id', Auth::user()->shop_id)
-                        ->where('status', 1)
-                        ->whereNull('deleted_at')
-                        ->orWhere('deleted_at', '')
-                        ->first();
-                }
-                return view('admin.crm.partials.status', compact('crm', 'getTotalPlanVisit', 'getTotalVerifiedVisit'));
+                return view('admin.crm.partials.status', ['crm' => $crm['visit']]);
             })
             ->addColumn('options', function ($crm) {
-                return view('admin.crm.partials.options', compact('crm'));
+                return view('admin.crm.partials.options', ['crm' => $crm['visit']]);
             })
-
             ->rawColumns(['checkbox', 'month', 'year', 'warehouse', 'client', 'picture', 'total_plan', 'total_plan_actual', 'success_rate', 'status', 'options'])
             ->make(true);
     }
