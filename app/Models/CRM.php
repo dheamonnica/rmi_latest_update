@@ -39,6 +39,10 @@ class CRM extends BaseModel
         return $this->belongsTo(User::class, 'created_by');
     }
 
+    public function getWarehouseCRMByName() {
+        return $this->belongsTo(Shop::class, 'shop_id');
+    }
+
     public function getUpdatedCRMByName() {
         return $this->belongsTo(User::class, 'updated_by');
     }

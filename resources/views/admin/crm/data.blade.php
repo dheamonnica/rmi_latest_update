@@ -48,22 +48,26 @@
         </div>
 
         <div class="table-responsive">
-            <table class="table table-hover" id="crm-tables">
+            <table class="table table-hover" id="crm-data-tables">
                 <thead>
                     <tr>
-                        <th></th>
                         <th class="massActionWrapper">
                             <button type="button" class="btn btn-xs btn-default checkbox-toggle">
                                 <i class="fa fa-square-o" data-toggle="tooltip" data-placement="top"
                                     title="{{ trans('app.select_all') }}"></i>
                             </button>
                         </th>
+                        <th>{{ trans('app.form.date') }}</th>
                         <th>{{ trans('app.form.month') }}</th>
                         <th>{{ trans('app.form.year') }}</th>
-                        <th>{{ trans('app.form.total_plan') }}</th>
-                        <th>{{ trans('app.form.total_actual_visit') }}</th>
-                        <th>{{ trans('app.form.success_rate') }}</th>
-                        <th>{{ trans('app.form.status') }}</th>
+                        <th>{{ trans('app.form.warehouse') }}</th>
+                        <th>{{ trans('app.form.client') }}</th>
+                        <th>{{ trans('app.form.picture') }}</th>
+                        <th>{{ trans('app.form.created_at') }}</th>
+                        <th>{{ trans('app.form.created_by') }}</th>
+                        <th>{{ trans('app.form.updated_at') }}</th>
+                        <th>{{ trans('app.form.updated_by') }}</th>
+                        <th>{{ trans('app.form.option') }}</th>
                     </tr>
                 </thead>
                 <tbody id="massSelectArea">

@@ -59,9 +59,24 @@ class CRMController extends Controller
         return view('admin.crm.index', compact('trashes', 'crms', 'merchants', 'years'));
     }
 
-    public function getCRMsTables(Request $request)
+    public function data()
     {
         $crms = $this->crm->all();
+
+        $trashes = $this->crm->trashOnly();
+
+        $merchants = Merchant::get()->pluck('warehouse_name', 'id')->toArray();
+
+        $years = CRM::selectRaw('YEAR(created_at) as year')
+            ->distinct()
+            ->orderBy('year', 'desc')
+            ->pluck('year');
+
+        return view('admin.crm.data', compact('trashes', 'crms', 'merchants', 'years'));
+    }
+
+    public function getCRMsTables(Request $request)
+    {
         $query = Visit::selectRaw('
             *,
             YEAR(date) as year,
@@ -129,15 +144,6 @@ class CRMController extends Controller
             ->addColumn('year', function ($crm) {
                 return view('admin.crm.partials.year', ['crm' => $crm['visit']]);
             })
-            ->addColumn('warehouse', function ($crm) {
-                return view('admin.crm.partials.warehouse', ['crm' => $crm['visit']]);
-            })
-            ->addColumn('client', function ($crm) {
-                return view('admin.crm.partials.client', ['crm' => $crm['visit']]);
-            })
-            ->addColumn('picture', function ($crm) {
-                return view('admin.crm.partials.picture', ['crm' => $crm['visit']]);
-            })
             ->addColumn('total_plan', function ($crm) {
                 return $crm['total_plan'];
             })
@@ -152,10 +158,52 @@ class CRMController extends Controller
             ->addColumn('status', function ($crm) {
                 return view('admin.crm.partials.status', ['crm' => $crm['visit']]);
             })
-            ->addColumn('options', function ($crm) {
-                return view('admin.crm.partials.options', ['crm' => $crm['visit']]);
+            ->rawColumns(['checkbox', 'month', 'year', 'status', 'total_plan', 'total_plan_actual', 'success_rate'])
+            ->make(true);
+    }
+
+    public function getCRMsDataTables(Request $request)
+    {
+        $crms = $this->crm->all();
+
+        return Datatables::of($crms)
+            ->addColumn('checkbox', function ($crm) {
+                return view('admin.crm.partials.checkbox', ['crm' => $crm]);
             })
-            ->rawColumns(['checkbox', 'month', 'year', 'warehouse', 'client', 'picture', 'total_plan', 'total_plan_actual', 'success_rate', 'status', 'options'])
+            ->addColumn('date', function ($crm) {
+                return view('admin.crm.partials.date', ['crm' => $crm]);
+            })
+            ->addColumn('month', function ($crm) {
+                return view('admin.crm.partials.month', ['crm' => $crm]);
+            })
+            ->addColumn('year', function ($crm) {
+                return view('admin.crm.partials.year', ['crm' => $crm]);
+            })
+            ->addColumn('warehouse', function ($crm) {
+                return view('admin.crm.partials.warehouse', ['crm' => $crm]);
+            })
+            ->addColumn('client', function ($crm) {
+                return view('admin.crm.partials.client', ['crm' => $crm]);
+            })
+            ->addColumn('picture', function ($crm) {
+                return view('admin.crm.partials.picture', ['crm' => $crm]);
+            })
+            ->addColumn('created_at', function ($crm) {
+                return view('admin.crm.partials.created_at', ['crm' => $crm]);
+            })
+            ->addColumn('created_by', function ($crm) {
+                return view('admin.crm.partials.created_by', ['crm' => $crm]);
+            })
+            ->addColumn('updated_at', function ($crm) {
+                return view('admin.crm.partials.updated_at', ['crm' => $crm]);
+            })
+            ->addColumn('updated_by', function ($crm) {
+                return view('admin.crm.partials.updated_by', ['crm' => $crm]);
+            })
+            ->addColumn('options', function ($crm) {
+                return view('admin.crm.partials.options', ['crm' => $crm]);
+            })
+            ->rawColumns(['checkbox', 'date', 'month', 'year', 'warehouse', 'client', 'picture', 'created_at', 'created_by', 'updated_at', 'updated_by', 'options'])
             ->make(true);
     }
 

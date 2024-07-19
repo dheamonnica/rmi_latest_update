@@ -822,6 +822,12 @@
               </a>
             </li>
 
+            <li class="{{ Request::is('admin/crm*') ? 'active' : '' }}">
+              <a href="{{ route('admin.crm.data') }}">
+                CRM Data
+              </a>
+            </li>
+
             <li class="{{ Request::is('admin/visit*') ? 'active' : '' }}">
               <a href="{{ route('admin.visit.index') }}">
                 Visit Plan Report
