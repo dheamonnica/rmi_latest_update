@@ -63,8 +63,11 @@
                         <th>{{ trans('app.form.warehouse') }}</th>
                         <th>{{ trans('app.form.client') }}</th>
                         <th>{{ trans('app.form.picture') }}</th>
+                        <th>{{ trans('app.form.status') }}</th>
                         <th>{{ trans('app.form.created_at') }}</th>
                         <th>{{ trans('app.form.created_by') }}</th>
+                        <th>{{ trans('app.form.verified_at') }}</th>
+                        <th>{{ trans('app.form.verified_by') }}</th>
                         <th>{{ trans('app.form.updated_at') }}</th>
                         <th>{{ trans('app.form.updated_by') }}</th>
                         <th>{{ trans('app.form.option') }}</th>

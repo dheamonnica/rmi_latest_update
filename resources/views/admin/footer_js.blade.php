@@ -1051,12 +1051,24 @@
                     'name': 'picture'
                 },
                 {
+                    'data': 'verified_status',
+                    'name': 'verified_status'
+                },
+                {
                     'data': 'created_at',
                     'name': 'created_at'
                 },
                 {
                     'data': 'created_by',
                     'name': 'created_by'
+                },
+                {
+                    'data': 'verified_at',
+                    'name': 'verified_at'
+                },
+                {
+                    'data': 'verified_by',
+                    'name': 'verified_by'
                 },
                 {
                     'data': 'updated_at',
