@@ -1038,19 +1038,6 @@
           'name': 'year'
         },
         {
-          'data': 'warehouse',
-          'name': 'warehouse'
-        },
-        {
-          'data': 'client',
-          'name': 'client'
-        },
-       
-        {
-          'data': 'picture',
-          'name': 'picture'
-        },
-        {
           'data': 'total_plan',
           'name': 'total_plan'
         },
@@ -1066,15 +1053,31 @@
           'data': 'status',
           'name': 'status'
         },
-        {
-          'data': 'options',
-          'name': 'options',
-          'orderable': false,
-          'searchable': false,
-          'exportable': false,
-          'printable': false
-        }
-      ]
+      ],
+      columnDefs: [{ visible: false, targets: 2 }],
+    order: [[2, 'asc']],
+    displayLength: 25,
+    drawCallback: function (settings) {
+        var api = this.api();
+        var rows = api.rows({ page: 'current' }).nodes();
+        var last = null;
+ 
+        // api.column(2, { page: 'current' })
+        //     .data()
+        //     .each(function (group, i) {
+        //         if (last !== group) {
+        //             $(rows)
+        //                 .eq(i)
+        //                 .before(
+        //                     '<tr class="group"><td colspan="5">' +
+        //                         group +
+        //                         '</td></tr>'
+        //                 );
+ 
+        //             last = group;
+        //         }
+        //     });
+    }
     }));
 
     // Filter the 'created_by' column with the name of the authenticated user
@@ -1109,37 +1112,49 @@
     $('#yearFilterCRM').on('change', filterByYearCRM);
 
     // Formatting function for row details - modify as you need
-    function format(d) {
-        // `d` is the original data object for the row
-
-        return (
-            '<dl>' +
-            '<dt>Created At:</dt>' +
-            '<dd>' +
-            d.created_at +
-            '</dd>' +
-            '<dt>Created By:</dt>' +
-            '<dd>' +
-            d.created_by +
-            '</dd>' +
-            '</dl>'
-        );
-
-        if(d.updated_at) {
-          return (
-            '<dl>' +
-            '<dt>Updated At:</dt>' +
-            '<dd>' +
-            d.updated_at +
-            '</dd>' +
-            '<dt>Updated By:</dt>' +
-            '<dd>' +
-            d.updated_by +
-            '</dd>' +
-            '</dl>'
-        );
-        }
-    }
+//     function format(d) {
+//       console.log(d, 'dataaa')
+//     return `
+//         <div class="table-responsive">
+//             <table class="table table-hover">
+//                 <thead>
+//                     <tr>
+//                         <th></th>
+//                         <th></th>
+//                         <th>Date</th>
+//                         <th>Month</th>
+//                         <th>Year</th>
+//                         <th>Warehouse</th>
+//                         <th>Client</th>
+//                         <th>Picture</th>
+//                         <th>Created At</th>
+//                         <th>Created By</th>
+//                         <th>Updated At</th>
+//                         <th>Updated By</th>
+//                         <th>Option</th>
+//                     </tr>
+//                 </thead>
+//                 <tbody id="massSelectArea">
+//                     <tr>
+//                         <td></td>
+//                         <td></td>
+//                         <td>${d.date}</td>
+//                         <td>${d.month}</td>
+//                         <td>${d.year}</td>
+//                         <td>${d.warehouse}</td>
+//                         <td>${d.client}</td>
+//                         <td>${d.picture}</td>
+//                         <td>${d.created_at}</td>
+//                         <td>${d.created_by}</td>
+//                         <td>${d.updated_at}</td>
+//                         <td>${d.updated_by}</td>
+//                         <td>${d.option}</td>
+//                     </tr>
+//                 </tbody>
+//             </table>
+//         </div>
+//     `;
+// }
 
     // Add event listener for opening and closing details
     tableCRMs.on('click', 'td.dt-control', function (e) {
@@ -1184,12 +1199,12 @@
           'name': 'year'
         },
         {
-          'data': 'warehouse',
-          'name': 'warehouse'
-        },
-        {
           'data': 'client',
           'name': 'client'
+        },
+        {
+          'data': 'warehouse',
+          'name': 'warehouse'
         },
         {
           'data': 'assignee',
@@ -1208,8 +1223,8 @@
           'name': 'next_visit_date'
         },
         {
-          'data': 'success_rate',
-          'name': 'success_rate'
+          'data': 'status',
+          'name': 'status'
         },
         {
           'data': 'verified_by',

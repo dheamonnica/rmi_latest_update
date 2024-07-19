@@ -1,1 +1,1 @@
-<td>{{ $getTotalPlanVisit->total_plan }}</td>
+<td>{{ $crm->total_plan }}</td>

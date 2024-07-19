@@ -1,1 +1,1 @@
-<td>{{ $getTotalVerifiedVisit->total_plan_actual }}</td>
+<td>{{ $crm->total_plan_actual }}</td>
