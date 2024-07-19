@@ -81,7 +81,7 @@ class CRMController extends Controller
             *,
             YEAR(date) as year,
             MONTH(date) as month,
-            COUNT(CASE WHEN status = 0 THEN 1 END) as total_plan,
+            COUNT(id) as total_plan,
             COUNT(CASE WHEN status = 1 THEN 1 END) as total_plan_actual
         ')
             ->whereNull('deleted_at')
