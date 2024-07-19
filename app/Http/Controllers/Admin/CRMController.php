@@ -153,7 +153,7 @@ class CRMController extends Controller
             ->addColumn('success_rate', function ($crm) {
                 $total_plan = $crm['total_plan'];
                 $total_plan_actual = $crm['total_plan_actual'];
-                return $total_plan > 0 ? ($total_plan_actual / $total_plan) * 100 : 0;
+                return $total_plan > 0 ? ($total_plan_actual / $total_plan) * 100 + '%': 0;
             })
             ->addColumn('status', function ($crm) {
                 return view('admin.crm.partials.status', ['crm' => $crm['visit']]);
