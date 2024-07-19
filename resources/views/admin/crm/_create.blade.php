@@ -8,6 +8,7 @@
       <div class="modal-body">
         @include('admin.crm._form')
         {!! Form::hidden('created_by', Auth::user()->id) !!}
+        {!! Form::hidden('shop_id', Auth::user()->shop_id) !!}
         {!! Form::hidden('created_at', now()) !!}
         {!! Form::hidden('updated_at', null) !!}
       </div>

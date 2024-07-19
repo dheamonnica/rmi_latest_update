@@ -6,10 +6,18 @@ Route::get('crm', [
     CRMController::class,
     'index'
 ])->name('admin.crm.index');
+Route::get('crm/data', [
+    CRMController::class,
+    'data'
+])->name('crm.data');
 Route::get('getCRMsTables', [
     CRMController::class,
     'getCRMsTables'
 ])->name('admin.crm.getCRMsTables')->middleware('ajax');
+Route::get('getCRMsDataTables', [
+    CRMController::class,
+    'getCRMsDataTables'
+])->name('admin.crm.getCRMsDataTables')->middleware('ajax');
 Route::get('create', [
     CRMController::class,
     'create'
