@@ -87,8 +87,8 @@ class CRMController extends Controller
             ->whereNull('deleted_at')
             ->orWhere('deleted_at', '');
 
-        // Apply shop_id filter if the user has role_id 1 or 13
-        if (Auth::user()->role_id === 1 || Auth::user()->role_id === 13) {
+        // marketing and leader
+        if (Auth::user()->role_id === 8 || Auth::user()->role_id === 13) {
             $query->where('shop_id', Auth::user()->shop_id);
         }
 
@@ -153,7 +153,7 @@ class CRMController extends Controller
             ->addColumn('success_rate', function ($crm) {
                 $total_plan = $crm['total_plan'];
                 $total_plan_actual = $crm['total_plan_actual'];
-                return $total_plan > 0 ? ($total_plan_actual / $total_plan) * 100 . '%': 0;
+                return $total_plan > 0 ? ($total_plan_actual / $total_plan) * 100 . '%' : 0;
             })
             ->addColumn('status', function ($crm) {
                 return view('admin.crm.partials.status', ['crm' => $crm['visit']]);
@@ -164,7 +164,14 @@ class CRMController extends Controller
 
     public function getCRMsDataTables(Request $request)
     {
-        $crms = $this->crm->all();
+        if (Auth::user()->role_id === 8 || Auth::user()->role_id === 13) {
+            $crms = $this->crm->all()->filter(function ($crm) {
+                return $crm->shop_id == Auth::user()->shop_id;
+            });
+
+        } else if (Auth::user()->role_id === 1) {
+            $crms = $this->crm->all();
+        }
 
         return Datatables::of($crms)
             ->addColumn('checkbox', function ($crm) {
