@@ -22,10 +22,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Events\Order\OrderCancellationRequestApproved;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Common\Imageable;
 
 class Order extends BaseModel
 {
-    use HasFactory, SoftDeletes, Loggable, Attachable;
+    use HasFactory, SoftDeletes, Loggable, Attachable, Imageable;
 
     const STATUS_WAITING_FOR_PAYMENT = 1;    // Default
     const STATUS_PAYMENT_ERROR = 2;

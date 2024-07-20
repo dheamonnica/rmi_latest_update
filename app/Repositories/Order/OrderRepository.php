@@ -18,5 +18,7 @@ interface OrderRepository
 
     public function fulfill(Request $request, $order);
 
+    public function confimedDelivered(Request $request, $order);
+
     public function updateOrderStatus(Request $request, $order);
 }

@@ -13,11 +13,11 @@ class AddPartialStatusToOrderItemsTable extends Migration
      */
     public function up()
     {
-        if (!Schema::hasColumn('order_items', 'fulfilment_type')) {
-            Schema::table('order_items', function (Blueprint $table) {
-                $table->integer('partial_status')->default(0);
-            });
-        }
+        // if (!Schema::hasColumn('order_items', 'fulfilment_type')) {
+        //     Schema::table('order_items', function (Blueprint $table) {
+        //         $table->integer('partial_status')->default(0);
+        //     });
+        // }
     }
 
     /**
@@ -27,10 +27,10 @@ class AddPartialStatusToOrderItemsTable extends Migration
      */
     public function down()
     {
-        if (Schema::hasColumn('order_items', 'payment_instruction')) {
-            Schema::table('order_items', function (Blueprint $table) {
-                $table->dropColumn('is_partial');
-            });
-        }
+        // if (Schema::hasColumn('order_items', 'payment_instruction')) {
+        //     Schema::table('order_items', function (Blueprint $table) {
+        //         $table->dropColumn('is_partial');
+        //     });
+        // }
     }
 }

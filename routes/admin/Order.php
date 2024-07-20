@@ -47,7 +47,11 @@ Route::get('order/searchCustomer', [OrderController::class, 'searchCustomer'])->
 
 Route::get('order/{order}/fulfill', [OrderController::class, 'fulfillment'])->name('order.fulfillment');
 
+Route::get('order/{order}/deliveredConfirmation', [OrderController::class, 'deliveredConfirmation'])->name('order.deliveredConfirmation');
+
 Route::put('order/{order}/fulfill', [OrderController::class, 'fulfill'])->name('order.fulfill');
+
+Route::put('order/{order}/deliveredConfirmed', [OrderController::class, 'deliveredConfirmed'])->name('order.deliveredConfirmed');
 
 Route::put('order/{order}/updateOrderStatus', [OrderController::class, 'updateOrderStatus'])->name('order.updateOrderStatus');
 

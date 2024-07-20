@@ -1049,7 +1049,7 @@ return [
         'packaging_name' => 'Packaging name',
         'shipping_carrier_name' => 'Carrier name',
         'shipping_tracking_url' => 'Tracking url',
-        'order_tracking_id' => 'Tracking ID',
+        'order_tracking_id' => 'Tracking ID or Receipt of Goods Forms (Surat Jalan)',
         'set_as_default_packaging' => 'Set as default packaging',
         'width' => 'Width',
         'height' => 'Height',

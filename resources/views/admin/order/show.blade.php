@@ -340,9 +340,14 @@
                   @endif
                   {{-- SET AS DELIVERED --}}
                   @if($order->order_status_id === 4)
-                    {!! Form::open(['route' => ['admin.order.order.setAsDelivered', $order], 'method' => 'put', 'class' => 'inline']) !!}
+                    <a href="javascript:void(0)" data-link="{{ route('admin.order.order.deliveredConfirmation', $order) }}" class='ajax-modal-btn' style="color: white">
+                      <button type="submit" class="btn btn-lg btn-danger">
+                          SET AS DELIVERED 
+                      </button>
+                    </a>
+                    {{-- {!! Form::open(['route' => ['admin.order.order.setAsDelivered', $order], 'method' => 'put', 'class' => 'inline']) !!}
                     <button type="submit" class="confirm ajax-silent btn btn-lg btn-warning">SET AS DELIVERED</button>
-                    {!! Form::close() !!}
+                    {!! Form::close() !!} --}}
                   @endif
                   {{-- MARK AS PAID --}}
                   @if($order->order_status_id === 6 && $order->payment_status !== 3)
@@ -535,7 +540,7 @@
               {{ trans('app.form.po_number_ref') . ': ' . $order->po_number_ref }}
             </span>
             @endif
-
+            
             <span class="spacer10"></span>
 
             @if(Auth::user()->role_id !== 9)
@@ -552,6 +557,25 @@
             @if ($order->dispute)
               <a href="{{ route('admin.support.dispute.show', $order->dispute) }}" class="btn btn-sm btn-danger btn-flat">{{ trans('app.view_dispute') }}</a>
             @endif
+
+            <span class="spacer10"></span>
+
+            @if($order->payment_status !== 3)
+                <div class="form-group">
+                  @php
+                      $payment_terms = [
+                        '15' => '15 > Days',
+                        '40' => '40 Days'
+                      ];
+                  @endphp
+                  {!! Form::label('payment_terms', trans('app.form.payment_terms')) !!}
+                  {!! Form::select('payment_terms', $payment_terms, '', ['class' => 'form-control select2-normal', 'placeholder' => trans('app.placeholder.payment'), 'required']) !!}
+                  <div class="help-block with-errors"></div>
+                </div>
+
+                <a href="javascript:void(0)" data-link="{{ route('admin.support.orderConversation.create', $order->id) }}" class="ajax-modal-btn btn btn-new btn-sm">{{ trans('app.update_payment_terms') }}</a>
+            @endif
+            <span class="spacer10"></span>
 
             @if (is_incevio_package_loaded('pharmacy'))
               <fieldset>
@@ -665,4 +689,11 @@
 
     </div> <!-- /.col-md-4 -->
   </div> <!-- /.row -->
+
+@push('script')
+<script src="https://cdn.jsdelivr.net/npm/signature_pad@2.3.2/dist/signature_pad.min.js"></script>
+
+@endpush
+
 @endsection
+

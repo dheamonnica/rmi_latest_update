@@ -10,6 +10,7 @@ use App\Helpers\ListHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Validations\CreateOrderRequest;
 use App\Http\Requests\Validations\FulfillOrderRequest;
+use App\Http\Requests\Validations\DeliveredConfirmedOrderRequest;
 use App\Models\Order;
 use App\Repositories\Order\OrderRepository;
 use App\Services\FCMService;
@@ -351,6 +352,13 @@ class OrderController extends Controller
         return view('admin.order._fulfill', compact('order', 'carriers'));
     }
 
+    public function deliveredConfirmation($id)
+    {
+        $order = $this->order->find($id);
+
+        return view('admin.order._delivered_fulfill', compact('order'));
+    }
+
     public function deliveryBoys($id)
     {
         $order = $this->order->find($id);
@@ -419,6 +427,26 @@ class OrderController extends Controller
             return redirect()->route('admin.order.order.index')
                 ->with('success', trans('messages.fulfilled_and_archived'));
         }
+
+        return back()->with('success', trans('messages.updated', ['model' => $this->model_name]));
+    }
+
+    /**
+     * Fulfill the order
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function deliveredConfirmed(Request $request, $id)
+    {
+        $order = $this->order->find($id);
+
+        $this->order->confimedDelivered($request, $order);
+
+        $this->order->updateStatusDelivered($request, $order);
+
+        // event(new OrderFulfilled($order, $request->filled('notify_customer')));
 
         return back()->with('success', trans('messages.updated', ['model' => $this->model_name]));
     }

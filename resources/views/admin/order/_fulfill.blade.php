@@ -23,6 +23,16 @@
         <div class="help-block with-errors"></div>
       </div>
 
+      <div class="form-group">
+        {!! Form::label('images', trans('app.form.image_uploads') . '*', ['class' => 'with-help']) !!}
+        <i class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="{{ trans('help.order_fulfillment_carrier') }}"></i>
+        <div class="file-loading">
+            <input type="file" name="images" id="uploadBtn" class="upload" />
+        </div>
+          <span class="small"><i class="fa fa-info-circle"></i> {{ trans('help.multi_img_upload_instruction', ['size' => getAllowedMaxImgSize(), 'number' => 2, 'dimension' => '800 x 800']) }}</span>
+        <div class="help-block with-errors"></div>
+      </div>
+
       <small>
         {!! Form::checkbox('notify_customer', 1, null, ['class' => 'icheck', 'id' => 'notify_customer', 'checked']) !!}
         {!! Form::label('notify_customer', strtoupper(trans('app.notify_customer')), ['class' => 'indent5']) !!}
