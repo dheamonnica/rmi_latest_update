@@ -1,5 +1,5 @@
-<td>
-    @if ($crm->verified_by)
+@if ($crm->verified_by)
+    <td>
         {{ $crm->getVerifiedByName->name }}
-    @endif
-</td>
+    </td>
+@endif
