@@ -1087,7 +1087,7 @@
 
 
         // Filter the 'created_by' column with the name of the authenticated user
-        @if (!Auth::user()->role_id === 8 || Auth::user()->role_id === 1)
+        @if (!Auth::user()->role_id === 8 || !Auth::user()->role_id === 1)
             tableCRMsData.column('created_by:name').search('{{ Auth::user()->name }}').draw();
         @endif
 
@@ -1195,7 +1195,7 @@
         }));
 
         // Filter the 'created_by' column with the name of the authenticated user
-        @if (!Auth::user()->isFromPlatform())
+        @if (!Auth::user()->role_id === 8 || !Auth::user()->role_id === 1)
             tableCRMs.column('created_by:name').search('{{ Auth::user()->name }}').draw();
         @endif
 

@@ -849,7 +849,6 @@
                                     <i class="fa fa-angle-left pull-right"></i>
                                 </a>
                                 <ul class="treeview-menu">
-
                                     <li class="{{ Request::is('admin/crm*') ? 'active' : '' }}">
                                         <a href="{{ route('admin.crm.index') }}">
                                             CRM Report
@@ -862,6 +861,7 @@
                                         </a>
                                     </li>
                                 </ul>
+                            </li>
                         @endif
                         <li class="{{ Request::is('admin/visit*') ? 'active' : '' }}">
                             <a href="{{ route('admin.visit.index') }}">
