@@ -8,7 +8,7 @@
     <div class="box border-small p-2">
         <div class="box-header with-border">
             <div class="box-tools pull-right p-2">
-                @if (Auth::user()->role_id === 8 || Auth::user()->role_id === 13)
+                @if (Auth::user()->role_id === 1 || Auth::user()->role_id === 8 || Auth::user()->role_id === 13)
                     <a href="javascript:void(0)" data-link="{{ route('admin.crm.create') }}"
                         class="ajax-modal-btn btn btn-new btn-flat">{{ trans('app.form.create_crm') }}</a>
                 @endif
