@@ -16,6 +16,7 @@ use App\Models\Customer;
 use App\Models\Merchant;
 use App\Models\CRM;
 use App\Models\Visit;
+use App\Models\Shop;
 use Illuminate\Support\Facades\Auth;
 
 class CRMController extends Controller
@@ -79,6 +80,7 @@ class CRMController extends Controller
     {
         $query = Visit::selectRaw('
             *,
+            shop_id,
             YEAR(date) as year,
             MONTH(date) as month,
             COUNT(id) as total_plan,
@@ -87,49 +89,55 @@ class CRMController extends Controller
             ->whereNull('deleted_at')
             ->orWhere('deleted_at', '');
 
-        // marketing and leader
         if (Auth::user()->role_id === 8 || Auth::user()->role_id === 13) {
             $query->where('shop_id', Auth::user()->shop_id);
         }
 
         $crm_groups = $query
-            ->groupBy('year', 'month')
+            ->groupBy('shop_id', 'year', 'month')
             ->get();
 
         // Process the data
         $grouped_data = [];
         foreach ($crm_groups as $group) {
+            $shop_id = $group->shop_id;
             $year = $group->year;
             $month = $group->month;
 
-            if (!isset($grouped_data[$year])) {
-                $grouped_data[$year] = [];
+            if (!isset($grouped_data[$shop_id])) {
+                $grouped_data[$shop_id] = [];
             }
-            if (!isset($grouped_data[$year][$month])) {
-                $grouped_data[$year][$month] = [
+            if (!isset($grouped_data[$shop_id][$year])) {
+                $grouped_data[$shop_id][$year] = [];
+            }
+            if (!isset($grouped_data[$shop_id][$year][$month])) {
+                $grouped_data[$shop_id][$year][$month] = [
                     'total_plan' => 0,
                     'total_plan_actual' => 0,
                     'data' => []
                 ];
             }
 
-            $grouped_data[$year][$month]['total_plan'] += $group->total_plan;
-            $grouped_data[$year][$month]['total_plan_actual'] += $group->total_plan_actual;
-            $grouped_data[$year][$month]['data'][] = $group;
+            $grouped_data[$shop_id][$year][$month]['total_plan'] += $group->total_plan;
+            $grouped_data[$shop_id][$year][$month]['total_plan_actual'] += $group->total_plan_actual;
+            $grouped_data[$shop_id][$year][$month]['data'][] = $group;
         }
 
         // Flatten the grouped data for DataTables
         $flattened_data = [];
-        foreach ($grouped_data as $year => $months) {
-            foreach ($months as $month => $data) {
-                foreach ($data['data'] as $visit) {
-                    $flattened_data[] = [
-                        'year' => $year,
-                        'month' => $month,
-                        'total_plan' => $data['total_plan'],
-                        'total_plan_actual' => $data['total_plan_actual'],
-                        'visit' => $visit,
-                    ];
+        foreach ($grouped_data as $shop_id => $years) {
+            foreach ($years as $year => $months) {
+                foreach ($months as $month => $data) {
+                    foreach ($data['data'] as $visit) {
+                        $flattened_data[] = [
+                            'shop_id' => $shop_id,
+                            'year' => $year,
+                            'month' => $month,
+                            'total_plan' => $data['total_plan'],
+                            'total_plan_actual' => $data['total_plan_actual'],
+                            'visit' => $visit,
+                        ];
+                    }
                 }
             }
         }
@@ -137,6 +145,16 @@ class CRMController extends Controller
         return Datatables::of($flattened_data)
             ->addColumn('checkbox', function ($crm) {
                 return view('admin.crm.partials.checkbox', ['crm' => $crm['visit']]);
+            })
+            ->addColumn('warehouse', function ($crm) {
+                // Get the shop_id from the $crm instance
+                $shop_id = $crm['shop_id'];
+
+                // Query the Shop model to get the related shop
+                $warehouse = Shop::where('id', $shop_id)->first();
+
+                // Return the view with the fetched warehouse data
+                return "<td>$warehouse->name</td>";
             })
             ->addColumn('month', function ($crm) {
                 return view('admin.crm.partials.month', ['crm' => $crm['visit']]);
@@ -158,8 +176,9 @@ class CRMController extends Controller
             ->addColumn('status', function ($crm) {
                 return view('admin.crm.partials.status', ['crm' => $crm['visit']]);
             })
-            ->rawColumns(['checkbox', 'month', 'year', 'status', 'total_plan', 'total_plan_actual', 'success_rate'])
+            ->rawColumns(['checkbox', 'month', 'year', 'warehouse', 'status', 'total_plan', 'total_plan_actual', 'success_rate'])
             ->make(true);
+
     }
 
     public function getCRMsDataTables(Request $request)
