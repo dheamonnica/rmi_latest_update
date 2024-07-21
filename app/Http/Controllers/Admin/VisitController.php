@@ -15,6 +15,7 @@ use App\Models\User;
 use App\Models\Customer;
 use App\Models\Merchant;
 use App\Models\CRM;
+use Illuminate\Support\Facades\Auth;
 
 class VisitController extends Controller
 {
@@ -59,7 +60,20 @@ class VisitController extends Controller
 
     public function getVisitsTables(Request $request)
     {
-        $visits = $this->visit->all();
+        if (Auth::user()->role_id !== 1) {
+
+            $visits = $this->visit->all(); // Retrieves all visits
+            $shop_id = Auth::user()->shop_id;
+
+            // Convert the result to a collection if not already
+            $visits = collect($visits);
+
+            $visits = $visits->filter(function ($item) use ($shop_id) {
+                return $item->shop_id == $shop_id;
+            });
+        } else {
+            $visits = $this->visit->all(); // Retrieves all visits
+        }
 
         return Datatables::of($visits)
             ->addColumn('checkbox', function ($visit) {
@@ -150,7 +164,7 @@ class VisitController extends Controller
 
     public function setApprove(Request $request, $id)
     {
-        
+
         $visit = $this->visit->find($id);
 
         $this->visit->updateStatusApprove($request, $visit);
