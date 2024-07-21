@@ -89,10 +89,6 @@ class CRMController extends Controller
             ->whereNull('deleted_at')
             ->orWhere('deleted_at', '');
 
-        if (Auth::user()->role_id === 8 || Auth::user()->role_id === 13) {
-            $query->where('shop_id', Auth::user()->shop_id);
-        }
-
         $crm_groups = $query
             ->groupBy('shop_id', 'year', 'month')
             ->get();
@@ -140,6 +136,13 @@ class CRMController extends Controller
                     }
                 }
             }
+        }
+
+        if (!Auth::user()->role_id == 1) {
+            $shop_id = Auth::user()->shop_id;
+            $flattened_data = array_filter($flattened_data, function ($item) use ($shop_id) {
+                return $item['shop_id'] == $shop_id;
+            });
         }
 
         return Datatables::of($flattened_data)
