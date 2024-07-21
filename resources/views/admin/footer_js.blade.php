@@ -880,6 +880,8 @@
             calculateTotalTarget();
         });
 
+        // BUDGET
+
         // Load offering list by Ajax
         var tableBudgets = $('#budget-tables').DataTable($.extend({}, dataTableOptions, {
             "ajax": "{{ route('admin.admin.budget.getBudgets') }}",
@@ -1014,6 +1016,8 @@
             calculateTotal();
         });
 
+        // END BUGDET
+
         // CRM DATA
         // Load offering list by Ajax
         var tableCRMsData = $('#crm-data-tables').DataTable($.extend({}, dataTableOptions, {
@@ -1143,6 +1147,10 @@
                 {
                     'data': 'year',
                     'name': 'year'
+                },
+                {
+                    'data': 'warehouse',
+                    'name': 'warehouse',
                 },
                 {
                     'data': 'total_plan',
