@@ -94,7 +94,18 @@ class SearchController extends Controller
         // }
 
         // $customers = Customer::search($term)->where('active', 1)->take(5)->get();
-        $customers = Customer::where('name', 'LIKE', '%'.$term.'%')->where('nice_name', 'LIKE', '%'.$term.'%')->where('active', 1)->take(5)->get();
+        //find user warehouses service & Unit And Aksesoris
+        $warehouse = User::
+            where('warehouse_name', 'LIKE', '%SERVICE%')
+            ->orWhere('warehouse_name', 'LIKE', '%service%')
+            ->orWhere('warehouse_name', 'LIKE', '%Unit%')
+            ->orWhere('warehouse_name', 'LIKE', '%Unit And Aksesoris%')
+            ->orWhere('warehouse_name', 'LIKE', '%Unit And Accessories%')
+            ->get()->pluck('id')->toArray();
+
+        array_push($warehouse, Auth::user()->id);
+
+        $customers = Customer::where('name', 'LIKE', '%'.$term.'%')->whereIn('merchant_id', $warehouse)->where('active', 1)->take(5)->get();
 
         foreach ($customers as $customer) {
             $results[] = ['text' => get_formated_cutomer_str($customer), 'id' => $customer->id];

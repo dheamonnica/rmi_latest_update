@@ -570,11 +570,16 @@
                   @endphp
                   {!! Form::open(['route' => ['admin.order.order.saveDueDatePayment', $order], 'method' => 'put', 'class' => 'inline']) !!}
                   
+                  {!! Form::open(['route' => ['admin.order.order.saveDueDatePayment', $order], 'method' => 'put', 'class' => 'inline']) !!}
+                  
                   {!! Form::label('payment_terms', trans('app.form.payment_terms')) !!}
+                  {!! Form::select('payment_terms', $payment_terms, $order->due_date_payment ?? '', ['class' => 'form-control select2-normal', 'placeholder' => trans('app.placeholder.payment'), 'required']) !!}
                   {!! Form::select('payment_terms', $payment_terms, $order->due_date_payment ?? '', ['class' => 'form-control select2-normal', 'placeholder' => trans('app.placeholder.payment'), 'required']) !!}
                   <div class="help-block with-errors"></div>
                 </div>
 
+                <button type="submit" class="ajax-silent btn btn-sm ">{{ trans('app.update_payment_terms') }}</button>
+              {!! Form::close() !!}
                 <button type="submit" class="ajax-silent btn btn-sm ">{{ trans('app.update_payment_terms') }}</button>
               {!! Form::close() !!}
             @endif
@@ -621,6 +626,30 @@
 
                   {!! address_str_to_html($order->shipping_address) !!}
 
+                  {!! address_str_to_html($order->shipping_address) !!}
+
+                <div class="row">
+                  @if ($order->receiver_name)
+                    <div class="col-md-12">
+                      receiver_name : {{ $order->receiver_name ?? '-' }}
+                    </div>
+                  @endif
+                  <div class="col-md-12">
+                    @if ($order->confirmed_delivered_image)
+                      <div class="col-md-6">
+                        <img src="{{ url($order->confirmed_delivered_image) }}" class="img-md" alt="{{ trans('app.image') }}">
+                      </div>
+                    @endif
+                    
+                    @if ($order->digital_sign_image)
+                      <div class="col-md-6">
+                        <img src="{{ url($order->digital_sign_image) }}" class="img-md" alt="{{ trans('app.image') }}">
+                      </div>
+                    @endif
+                  </div>
+                </div>
+
+                <span class="spacer10"></span>
                 <div class="row">
                   @if ($order->receiver_name)
                     <div class="col-md-12">
@@ -714,7 +743,7 @@
               @endif
             </div>
             <div class="col-md-6">
-              @if ($order->confirmed_shipping_image)
+              @if ($order->confirmed_delivered_image)
                 <div class="col-md-6">
                   <img src="{{ url($order->confirmed_shipping_image) }}" class="img-md" alt="{{ trans('app.image') }}">
                 </div>

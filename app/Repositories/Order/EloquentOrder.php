@@ -261,6 +261,7 @@ class EloquentOrder extends EloquentRepository implements BaseRepository, OrderR
                  * else if (5 < 10 ) //true
                  *  -> 10 - 5 = 5 => change into 5 - 10 = -5 (differential)
                  *  -> update order_items -> is_partial = true
+                 *  -> update orders -> partial_status_id = true
                  */
 
                 if ($old_qtt > $item->quantity) {

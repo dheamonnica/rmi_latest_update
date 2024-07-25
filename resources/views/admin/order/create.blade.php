@@ -516,12 +516,12 @@
               // itemDescription = itemDescription.substring(itemDescription.indexOf(" - ") - 1);
 
               // Find the first occurrence of " - "
-              var indexOfSeparator = itemDescription.indexOf(" - ");
+              var indexOfSeparator = itemDescription.indexOf(") - ");
 
               // Check if the separator exists
               if (indexOfSeparator != -1) {
                 // Extract the substring from the beginning to before the separator
-                itemDescription = itemDescription.substring(0, indexOfSeparator);
+                itemDescription = itemDescription.substring(0, indexOfSeparator + 2);
               }
 
               console.log(itemDescription)
@@ -552,8 +552,13 @@
                 '<input name="cart[' + numOfRows + '][unit_price]" value="' + getFormatedValue(price) + '" id="price-' + ID + '" type="number" class="form-control itemPrice no-border" placeholder="{{ trans('app.price') }}" required readonly>' +
                 '</div>' +
                 '<td>x</td>' +
-                '<td class="nopadding-right" width="10%">' +
-                '<input name="cart[' + numOfRows + '][quantity]" value="1" type="number" id="qtt-' + ID + '" class="form-control itemQtt no-border" placeholder="{{ trans('app.quantity') }}" required>' +
+                '<td class="nopadding-right text-center" width="10%">' +
+                '<span>order qty</span>' +
+                '<input name="cart[' + numOfRows + '][quantity]" value="1" type="number" max="' + productObj[ID].stockQtt + '" id="qtt-' + ID + '" class="form-control itemQtt no-border" placeholder="{{ trans('app.quantity') }}" required>' +
+                '</td>' +
+                '<td class="nopadding-right text-center" width="10%">' +
+                '<span>request qty</span>' +
+                '<input name="cart[' + numOfRows + '][req_quantity]" value="1" type="number" id="req-qtt-' + ID + '" class="form-control itemReqQtt no-border" placeholder="{{ trans('app.req_quantity') }}" required>' +
                 '</td>' +
                 '<td class="nopadding-right text-center" width="10%">{{ get_formated_currency_symbol() }}' +
                 '<span id="total-' + ID + '"  class="itemTotal">' +
@@ -796,8 +801,8 @@
          */
 
 
-        if(Number(getItemQtt(ID)) >= Number(stock)) {
-          $("#global-alert-msg").html('{{ trans('messages.notice.last_stock') }} - set as partial order'); //alert last stock
+        if(Number(getItemQtt(ID)) > Number(stock)) {
+          $("#global-alert-msg").html('{{ trans('messages.notice.last_stock') }} - set as partial order , you can add the request quantity'); //alert last stock
           // $("#global-alert-msg").html('{{ trans('messages.notice.last_stock') }}'); 
           var stock = $("#partial-" + ID).val(1);
           $("#global-alert-box").removeClass('hidden');

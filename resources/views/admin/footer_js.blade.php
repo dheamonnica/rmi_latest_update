@@ -470,62 +470,67 @@
         $('#filter-all-order-table-order-status, #filter-all-order-table-payment-status').on('change',
             handleFilterChange);
 
-        // Load Order list by Ajax
-        $('#all-order-table').DataTable($.extend({}, dataTableOptions, {
-            "ajax": "{{ route('admin.order.bulkorder_process', ['paymentStatus' => '0', 'orderStatus' => '0']) }}",
-            "columns": [{
-                    'data': 'checkbox',
-                    'name': 'checkbox',
-                    'orderable': false,
-                    'searchable': false,
-                    'exportable': false,
-                    'printable': false
-                },
-                // {
-                //   'data': 'order',
-                //   'name': 'order',
-                //   'orderable': false,
-                //   'searchable': false
-                // },
-                {
-                    'data': 'po_number_ref',
-                    'name': 'po_number_ref'
-                },
-                {
-                    'data': 'order_date',
-                    'name': 'order_date'
-                },
-                {
-                    'data': 'due_date_payment',
-                    'name': 'due_date_payment'
-                },
-                {
-                    'data': 'customer_name',
-                    'name': 'customer_name',
-                },
-                {
-                    'data': 'grand_total',
-                    'name': 'grand_total',
-                },
-                {
-                    'data': 'payment_status',
-                    'name': 'payment_status',
-                },
-                {
-                    'data': 'order_status',
-                    'name': 'order_status',
-                    'searchable': false
-                },
-                {
-                    'data': 'option',
-                    'name': 'option',
-                    'orderable': false,
-                    'searchable': false,
-                    'exportable': false,
-                    'printable': false
-                }
-            ]
-        }));
+    // Load Order list by Ajax
+    $('#all-order-table').DataTable($.extend({}, dataTableOptions, {
+      "ajax": "{{ route('admin.order.bulkorder_process', ['paymentStatus' => '0', 'orderStatus' => '0']) }}",
+      "columns": [{
+          'data': 'checkbox',
+          'name': 'checkbox',
+          'orderable': false,
+          'searchable': false,
+          'exportable': false,
+          'printable': false
+        },
+        // {
+        //   'data': 'order',
+        //   'name': 'order',
+        //   'orderable': false,
+        //   'searchable': false
+        // },
+        {
+          'data': 'po_number_ref',
+          'name': 'po_number_ref'
+        },
+        {
+          'data': 'order_date',
+          'name': 'order_date'
+        },
+        {
+          'data': 'due_date_payment',
+          'name': 'due_date_payment'
+        },
+        {
+          'data': 'customer_name',
+          'name': 'customer_name',
+        },
+        {
+          'data': 'grand_total',
+          'name': 'grand_total',
+        },
+        {
+          'data': 'payment_status',
+          'name': 'payment_status',
+        },
+        {
+          'data': 'order_status',
+          'name': 'order_status',
+          'searchable': false
+        },
+        {
+          'data': 'partial_status',
+          'name': 'partial_status',
+          'searchable': false
+        },
+        {
+          'data': 'option',
+          'name': 'option',
+          'orderable': false,
+          'searchable': false,
+          'exportable': false,
+          'printable': false
+        }
+      ]
+    }));
 
         // Load Order list by Ajax
         $('#all-order-table-full').DataTable($.extend({}, dataTableOptions, {
