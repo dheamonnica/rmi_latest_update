@@ -76,8 +76,8 @@ class UpdateInventoryRequest extends Request
             $rules['sku'] = 'bail|required|composite_unique:inventories,sku,shop_id:' . $shop_id . ',' . $inventory->id;
             $rules['slug'] = 'bail|required|alpha_dash|unique:inventories,slug, ' . $inventory->id;
         } else {
-            $rules['sku'] = 'bail|required|composite_unique:inventories,sku,shop_id:' . $shop_id . ',' . $inventory;
-            $rules['slug'] = 'bail|required|alpha_dash|unique:inventories,slug, ' . $inventory;
+            // $rules['sku'] = 'bail|required|composite_unique:inventories,sku,shop_id:' . $shop_id . ',' . $inventory;
+            // $rules['slug'] = 'bail|alpha_dash|exists:inventories,slug, ' . $inventory;
         }
 
         if (is_incevio_package_loaded('pharmacy')) {

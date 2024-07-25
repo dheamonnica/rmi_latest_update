@@ -1279,11 +1279,13 @@ if (!function_exists('get_formated_order_number')) {
     {
         $order_id = $order_id ?? str_pad(rand(1, 999999), 6, '0', STR_PAD_LEFT);
 
+        $date_stamp = date('Ymd');
+
         if ($shop_id == null && Auth::guard('web')->check()) {
             $shop_id = Auth::user()->merchantId();
         }
 
-        return getShopConfig($shop_id, 'order_number_prefix') . $order_id . getShopConfig($shop_id, 'order_number_suffix');
+        return getShopConfig($shop_id, 'order_number_prefix') . $date_stamp .'/'.$order_id . getShopConfig($shop_id, 'order_number_suffix');
     }
 }
 
@@ -2261,6 +2263,27 @@ if (!function_exists('get_payment_status_name')) {
                 return trans('app.statuses.refunded');
             default:
                 return trans('app.statuses.unpaid');
+        }
+    }
+}
+
+if (!function_exists('get_partial_status_name')) {
+    /**
+     * get_partial_status_name
+     *
+     * @param  int $label
+     *
+     * @return string
+     */
+    function get_partial_status_name($status = 1)
+    {
+        switch ($status) {
+            case Order::STATUS_PARTIAL:
+                return trans('app.statuses.partials');
+            case Order::STATUS_PARTIAL_FULFILLED:
+                return trans('app.statuses.partial_fulfilled');
+            default:
+                return '';
         }
     }
 }

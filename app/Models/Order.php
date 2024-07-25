@@ -49,6 +49,10 @@ class Order extends BaseModel
     const FULFILMENT_TYPE_DELIVER = 'deliver';
     const FULFILMENT_TYPE_PICKUP = 'pickup';
 
+    const STATUS_PARTIAL = 1;
+    const STATUS_PARTIAL_FULFILLED = 0;
+    
+
     /**
      * The database table used by the model.
      *
@@ -140,7 +144,9 @@ class Order extends BaseModel
         'paid_date',
         'packed_date',
         'packed_by',
-        'created_by'
+        'created_by',
+        'partial_status_id',
+        'due_date_payment',
     ];
 
     /**
@@ -1138,6 +1144,24 @@ class Order extends BaseModel
                 return '<span class="label label-primary">' . $order_status . '</span>';
             case static::STATUS_CANCELED:
                 return '<span class="label label-light" style="background-color:black; color:white">' . $order_status . '</span>';
+        }
+
+        return null;
+    }
+
+    public function partialStatus($plain = false)
+    {   
+        $partial_status = strtoupper(get_partial_status_name($this->partial_status_id));
+
+        if ($plain) {
+            return $partial_status;
+        }
+
+        switch ($this->partial_status_id) {
+            case static::STATUS_PARTIAL:
+                return '<span class="label label-danger">' . $partial_status . '</span>';
+            case static::STATUS_PARTIAL_FULFILLED:
+                return '<span class="label label-outline">' . $partial_status . '</span>';
         }
 
         return null;

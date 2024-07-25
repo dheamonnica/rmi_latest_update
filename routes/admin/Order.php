@@ -15,6 +15,8 @@ Route::get('order/{order}/adminNote', [OrderController::class, 'adminNote'])->na
 
 Route::put('order/{order}/adminNote', [OrderController::class, 'saveAdminNote'])->name('order.saveAdminNote');
 
+Route::put('order/{order}/saveDueDatePayment', [OrderController::class, 'saveDueDatePayment'])->name('order.saveDueDatePayment');
+
 Route::delete('order/{order}/archive', [OrderController::class, 'archive'])->name('order.archive'); // order move to trash
 
 Route::get('/{order}/details', [OrderController::class, 'show'])->name('details'); // order Details

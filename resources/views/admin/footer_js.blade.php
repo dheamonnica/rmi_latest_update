@@ -512,6 +512,11 @@
           'searchable': false
         },
         {
+          'data': 'partial_status',
+          'name': 'partial_status',
+          'searchable': false
+        },
+        {
           'data': 'option',
           'name': 'option',
           'orderable': false,

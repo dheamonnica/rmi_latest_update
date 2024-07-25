@@ -3,7 +3,7 @@
     {!! Form::model($order, ['method' => 'PUT', 'route' => ['admin.order.order.deliveredConfirmed', $order->id], 'files' => true, 'id' => 'form', 'data-toggle' => 'validator']) !!}
     <div class="modal-header">
       <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-      {{ trans('app.fulfill_order') }}
+      {{ trans('app.delivered_order') }}
     </div>
     <div class="modal-body">
       

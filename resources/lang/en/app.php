@@ -183,6 +183,7 @@ return [
     'low_stock_items' => 'Low stocks',
     'payment_statuses' => 'Payment statuses',
     'payment_methods' => 'Payment methods',
+    'partial' => 'Partial Status',
     'appearance' => 'Appearance',
     'approved' => 'Approved',
     'pending' => 'Pending',
@@ -856,6 +857,8 @@ return [
         'waiting'   => 'Waiting',
         'waiting_for_payment' => 'Waiting for payment',
         'packed' => 'Packed',
+        'partial' => 'Partial',
+        'partial_fulfilled' => 'Partial Fulfilled',
     ],
 
     'priorities' => [

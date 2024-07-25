@@ -84,6 +84,7 @@ class EloquentOrder extends EloquentRepository implements BaseRepository, OrderR
 
     public function store(Request $request)
     {
+        dd($request->all());
         setAdditionalCartInfo($request); // Set some system information using helper function
 
         $order = parent::store($request);
@@ -110,7 +111,8 @@ class EloquentOrder extends EloquentRepository implements BaseRepository, OrderR
         }
 
         if ($request->hasFile('images')) {
-            $file = $this->saveImage($request->images);
+            //add path /images/po_number_ref/abcd.png
+            $file = $this->saveImage($request->images, str_replace('/','-',$order->po_number_ref));
 
             $order->confirmed_shipping_image = $file['path'];
         }
@@ -134,13 +136,15 @@ class EloquentOrder extends EloquentRepository implements BaseRepository, OrderR
         }
 
         if ($request->hasFile('images')) {
-            $file = $this->saveImage($request->images);
+            //add path /images/po_number_ref/abcd.png
+            $file = $this->saveImage($request->images, str_replace('/','-',$order->po_number_ref));
 
             $order->confirmed_delivered_image = $file['path'];
         }
 
         if ($request->signed) {
-            $signed = $this->saveDigitalSignImage($request->signed, str_replace('/','-',$order->order_number));
+            //add path /images/po_number_ref/abcd.png
+            $signed = $this->saveDigitalSignImage($request->signed, str_replace('/','-',$order->po_number_ref));
 
             $order->hash_sign = $request->signed;
             $order->digital_sign_image = $signed;
@@ -159,6 +163,17 @@ class EloquentOrder extends EloquentRepository implements BaseRepository, OrderR
         }
 
         $order->order_status_id = $request->input('order_status_id');
+
+        return $order->save();
+    }
+
+    public function updateDueDatePayment(Request $request, $order)
+    {
+        if (!$order instanceof Order) {
+            $order = $this->model->find($order);
+        }
+
+        $order->due_date_payment = $request->input('payment_terms');
 
         return $order->save();
     }
@@ -246,6 +261,7 @@ class EloquentOrder extends EloquentRepository implements BaseRepository, OrderR
                  * else if (5 < 10 ) //true
                  *  -> 10 - 5 = 5 => change into 5 - 10 = -5 (differential)
                  *  -> update order_items -> is_partial = true
+                 *  -> update orders -> partial_status_id = true
                  */
 
                 if ($old_qtt > $item->quantity) {
@@ -253,6 +269,8 @@ class EloquentOrder extends EloquentRepository implements BaseRepository, OrderR
                 } elseif ($old_qtt < $item->quantity) {
                     // Inventory::find($id)->decrement('stock_quantity', $item->quantity - $old_qtt);
                     Inventory::find($id)->decrement('stock_quantity', $item->quantity - $old_qtt);
+
+                    $order->update('partial_status_id', 1);
                 }
             } else {
                 Inventory::find($id)->decrement('stock_quantity', $item->quantity);
