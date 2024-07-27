@@ -25,6 +25,7 @@ class Budget extends BaseModel
      */
     protected $fillable = [
         'date',
+        'shop_id',
         'requirement',
         'qty',
         'total',

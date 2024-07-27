@@ -828,12 +828,6 @@
                             @endcan
                         @endif
 
-                        <li class="{{ Request::is('admin/budget*') ? 'active' : '' }}">
-                            <a href="{{ route('admin.budget.index') }}">
-                                Budget Report
-                            </a>
-                        </li>
-
                         <li class="{{ Request::is('admin/target*') ? 'active' : '' }}">
                             <a href="{{ route('admin.target.index') }}">
                                 Target Report
@@ -842,8 +836,7 @@
 
                         {{-- marketing and leader --}}
                         @if (Auth::user()->role_id === 1 || Auth::user()->role_id === 8 || Auth::user()->role_id === 13)
-                            <li
-                                class="treeview {{ Request::is('admin/report*') || Request::is('admin/shop/report*') ? 'active' : '' }}">
+                            <li class="treeview {{ Request::is('admin/crm*') }}">
                                 <a href="javascript:void(0)">
                                     <span>CRM</span>
                                     <i class="fa fa-angle-left pull-right"></i>
@@ -858,6 +851,26 @@
                                     <li class="{{ Request::is('admin/crm*') ? 'active' : '' }}">
                                         <a href="{{ route('admin.crm.data') }}">
                                             CRM Data
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+
+                            <li class="treeview {{ Request::is('admin/budget*') }}">
+                                <a href="javascript:void(0)">
+                                    <span>Budget</span>
+                                    <i class="fa fa-angle-left pull-right"></i>
+                                </a>
+                                <ul class="treeview-menu">
+                                    <li class="{{ Request::is('admin/budget*') ? 'active' : '' }}">
+                                        <a href="{{ route('admin.budget.report') }}">
+                                            Budget Report
+                                        </a>
+                                    </li>
+
+                                    <li class="{{ Request::is('admin/budget*') ? 'active' : '' }}">
+                                        <a href="{{ route('admin.budget.index') }}">
+                                            Budget Data
                                         </a>
                                     </li>
                                 </ul>
