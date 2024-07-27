@@ -1270,11 +1270,20 @@ return [
         'grand_total' => 'Grand Total', 
         'picture' => 'Picture',
         'total' => 'Total',
+        'buying_product' => 'Buying Product',
+        'business_unit' => 'Business Unit',
+        'achieve' => 'Achieve',
+        'fee_management' => 'Fee Management',
+        'marketing' => 'Marketing',
+        'operational' => 'Operational',
 
         // target
         'actual_sales' => 'Actual Sales',
         'create_target' => 'Create Target',
         'select_hospital_name' => 'Select Hospital Name',
+        'total_budget' => 'Total Budget',
+        'total_selling' => 'Total Selling',
+        'rate' => 'Rate',
 
         // crm
         'verified_by' => 'Verified By',

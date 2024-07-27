@@ -881,7 +881,6 @@
         });
 
         // BUDGET
-
         // Load offering list by Ajax
         var tableBudgets = $('#budget-tables').DataTable($.extend({}, dataTableOptions, {
             "ajax": "{{ route('admin.admin.budget.getBudgets') }}",
@@ -1015,8 +1014,100 @@
         tableBudgets.on('draw', function() {
             calculateTotal();
         });
-
         // END BUGDET
+
+        // BUDGET REPORT
+        // Load offering list by Ajax
+        var tableBudgetsReport = $('#budget-report-tables').DataTable($.extend({}, dataTableOptions, {
+            "ajax": "{{ route('admin.admin.budget.getBudgetsReport') }}",
+            "columns": [{
+                    'data': 'month',
+                    'name': 'month'
+
+                },
+                {
+                    'data': 'year',
+                    'name': 'year'
+
+                },
+                {
+                    'data': 'business_unit',
+                    'name': 'business_unit'
+                },
+                {
+                    'data': 'buying_product',
+                    'name': 'buying_product'
+                },
+                {
+                    'data': 'fee_management',
+                    'name': 'fee_management'
+                },
+                {
+                    'data': 'marketing',
+                    'name': 'marketing'
+                },
+                {
+                    'data': 'operational',
+                    'name': 'operational'
+                },
+                {
+                    'data': 'total_budget',
+                    'name': 'total_budget'
+                },
+                {
+                    'data': 'total_selling',
+                    'name': 'total_selling'
+                },
+                {
+                    'data': 'achieve',
+                    'name': 'achieve'
+                },
+                {
+                    'data': 'status',
+                    'name': 'status'
+                },
+            ]
+        }));
+
+        // Filter the 'created_by' column with the name of the authenticated user
+        @if (!Auth::user()->isAdmin())
+            tableBudgetsReport.column('created_by:name').search('{{ Auth::user()->pic_name }}').draw();
+        @endif
+
+        function filterByMonth() {
+            var selectedMonth = $('#monthFilter').val();
+
+            // Apply the month filter to the 'month' column (assume the column name is 'month')
+            tableBudgetsReport.column('month:name').search(selectedMonth).draw();
+        }
+
+        function filterByWarehouse() {
+            var selectedMerchant = $('#merchantFilter').val();
+
+            // Apply the business area filter to the 'business area' column (assume the column name is 'business area')
+            tableBudgetsReport.column('warehouse:name').search(selectedMerchant).draw();
+        }
+
+        function filterByYear() {
+            var selectedMerchant = $('#yearFilter').val();
+
+            // Apply the year filter to the 'year' column (assume the column name is 'year')
+            tableBudgetsReport.column('year:name').search(selectedMerchant).draw();
+        }
+
+        // Initial calculation
+        calculateTotal();
+
+        // Bind the filter and calculation function to the month dropdown change event
+        $('#monthFilter').on('change', filterByMonth);
+        $('#merchantFilter').on('change', filterByWarehouse);
+        $('#yearFilter').on('change', filterByYear);
+
+        // Recalculate the total on each table draw
+        tableBudgetsReport.on('draw', function() {
+            calculateTotal();
+        });
+        // END BUGDET REPORT
 
         // CRM DATA
         // Load offering list by Ajax

@@ -13,10 +13,9 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 use App\Models\Merchant;
 use App\Models\Budget;
-use App\Models\Order;
+use App\Models\Inventory;
 use Illuminate\Support\Facades\Auth;
-
-// use App\Models\Inventory;
+use App\Http\Controllers\Admin\DB;
 
 class BudgetController extends Controller
 {
@@ -56,20 +55,23 @@ class BudgetController extends Controller
 
         $trashes = $this->budget->trashOnly();
 
-        if (Auth::user()->isAdmin() || Auth::user()->isMerchant() || Auth::user()->isFromPlatform()) {
-            $getTotalIncomebyShop = Order::selectRaw('SUM(grand_total) as total_grand_total')
-                ->where('shop_id', Auth::user()->shop_id)
-                ->whereNull('deleted_at')
-                ->orWhere('deleted_at', '')
-                ->first();
-        } else {
-            $getTotalIncomebyShop = Order::selectRaw('SUM(grand_total) as total_grand_total')
-                ->whereNull('deleted_at')
-                ->orWhere('deleted_at', '')
-                ->first();
-        }
+        return view('admin.budget.index', compact('merchants', 'years', 'budgets', 'trashes'));
+    }
 
-        return view('admin.budget.index', compact('merchants', 'years', 'budgets', 'trashes', 'getTotalIncomebyShop'));
+    public function report()
+    {
+        $merchants = Merchant::get()->pluck('warehouse_name', 'id')->toArray();
+
+        $years = Budget::selectRaw('YEAR(created_at) as year')
+            ->distinct()
+            ->orderBy('year', 'desc')
+            ->pluck('year');
+
+        $budgets = $this->budget->all();
+
+        $trashes = $this->budget->trashOnly();
+
+        return view('admin.budget.report', compact('merchants', 'years', 'budgets', 'trashes'));
     }
 
     public function getBudgets(Request $request)
@@ -127,6 +129,65 @@ class BudgetController extends Controller
             })
 
             ->rawColumns(['checkbox', 'date', 'month', 'year', 'requirement', 'qty', 'total', 'grand_total', 'picture', 'created_by', 'created_at', 'updated_by', 'updated_by', 'option'])
+            ->make(true);
+    }
+
+    public function getBudgetsReport(Request $request)
+    {
+        $budgets = Inventory::select('inventories.shop_id', 'shops.name as shop_name')
+            ->selectRaw('SUM(inventories.stock_quantity * products.purchase_price) as buying_product')
+            ->selectRaw('SUM(orders.grand_total) as total_selling')
+            ->join('shops', 'inventories.shop_id', '=', 'shops.id')
+            ->join('products', 'inventories.product_id', '=', 'products.id')
+            ->leftJoin('orders', 'inventories.shop_id', '=', 'orders.shop_id')
+            ->groupBy('inventories.shop_id', 'shops.name')
+            ->get();
+
+        return Datatables::of($budgets)
+            ->addColumn('month', function ($budget) {
+                return view('admin.budget.partials.month', compact('budget'));
+            })
+            ->addColumn('year', function ($budget) {
+                return view('admin.budget.partials.year', compact('budget'));
+            })
+            ->addColumn('business_unit', function ($budget) {
+                return $budget->shop_name;
+            })
+            ->addColumn('buying_product', function ($budget) {
+                return 'Rp. ' . number_format($budget->buying_product, 2, '.', '.');
+            })
+            ->addColumn('fee_management', function ($budget) {
+                return 'Rp. ' . number_format(($budget->total_selling * 7 / 100), 2, '.', '.');
+            })
+            ->addColumn('marketing', function ($budget) {
+                return 'Rp. ' . number_format(($budget->total_selling * 5 / 100), 2, '.', '.');
+            })
+            ->addColumn('operational', function ($budget) {
+                return 'Rp. ' . number_format(($budget->total_selling * 20 / 100), 2, '.', '.');
+            })
+            ->addColumn('total_budget', function ($budget) {
+                $buying_product = $budget->buying_product;
+                $fee_management = $budget->total_selling * 7 / 100;
+                $marketing = $budget->total_selling * 5 / 100;
+                $operational = $budget->total_selling * 20 / 100;
+                $total_budget = $buying_product + $fee_management + $marketing + $operational;
+
+                return 'Rp. ' . number_format($total_budget, 2, '.', '.');
+            })
+            ->addColumn('total_selling', function ($budget) {
+                return 'Rp. ' . number_format($budget->total_selling, 2, '.', '.');
+            })
+            ->addColumn('achieve', function ($budget) {
+                $achieve = ($budget->total_selling / $budget->buying_product) * 100;
+                return number_format($achieve, 2, '.', '.') . '%';
+            })
+            ->addColumn('status', function ($budget) {
+                $achieve = ($budget->total_selling / $budget->buying_product) * 100;
+                $status = $achieve >= 100 ? '<span class="label label-primary">ACHIEVE</span>' : '<span class="label label-danger">FAIL</span>';
+                return $status;
+            })
+
+            ->rawColumns(['month', 'year', 'business_unit', 'buying_product', 'total_selling', 'achieve', 'status'])
             ->make(true);
     }
 
