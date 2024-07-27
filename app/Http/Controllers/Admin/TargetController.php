@@ -15,6 +15,7 @@ use App\Models\Merchant;
 use App\Models\Target;
 use App\Models\Order;
 use App\Models\Customer;
+use App\Models\Inventory;
 use Illuminate\Support\Facades\Auth;
 
 class TargetController extends Controller
@@ -69,6 +70,35 @@ class TargetController extends Controller
         }
 
         return view('admin.target.index', compact('merchants', 'years', 'targets', 'trashes', 'getTotalIncomebyShop'));
+    }
+
+    public function report()
+    {
+        $merchants = Merchant::get()->pluck('warehouse_name', 'id')->toArray();
+
+        $years = Target::selectRaw('YEAR(created_at) as year')
+            ->distinct()
+            ->orderBy('year', 'desc')
+            ->pluck('year');
+
+        $targets = $this->target->all();
+
+        $trashes = $this->target->trashOnly();
+
+        if (Auth::user()->isAdmin() || Auth::user()->isMerchant() || Auth::user()->isFromPlatform()) {
+            $getTotalIncomebyShop = Order::selectRaw('SUM(grand_total) as total_grand_total')
+                ->where('shop_id', Auth::user()->shop_id)
+                ->whereNull('deleted_at')
+                ->orWhere('deleted_at', '')
+                ->first();
+        } else {
+            $getTotalIncomebyShop = Order::selectRaw('SUM(grand_total) as total_grand_total')
+                ->whereNull('deleted_at')
+                ->orWhere('deleted_at', '')
+                ->first();
+        }
+
+        return view('admin.target.report', compact('merchants', 'years', 'targets', 'trashes', 'getTotalIncomebyShop'));
     }
 
     public function getTargetsTables(Request $request)
@@ -130,6 +160,49 @@ class TargetController extends Controller
             })
 
             ->rawColumns(['checkbox', 'date', 'month', 'year', 'hospital_name', 'grand_total', 'actual_sales', 'warehouse', 'created_by', 'created_at', 'updated_at', 'updated_by', 'option'])
+            ->make(true);
+    }
+
+    public function getTargetsTablesReport(Request $request)
+    {
+        $targets = Inventory::select('inventories.shop_id', 'shops.name as shop_name')
+            ->selectRaw('SUM(orders.grand_total) as total_selling')
+            ->selectRaw('SUM(target.grand_total) as total_target')
+            ->join('shops', 'inventories.shop_id', '=', 'shops.id')
+            ->join('products', 'inventories.product_id', '=', 'products.id')
+            ->join('target', 'inventories.shop_id', '=', 'target.shop_id')
+            ->leftJoin('orders', 'inventories.shop_id', '=', 'orders.shop_id')
+            ->when(Auth::user()->role_id === 8 || Auth::user()->role_id === 13, function ($query) {
+                return $query->where('inventories.shop_id', Auth::user()->shop_id); // assuming the shop_id is available on the user
+            })
+            ->groupBy('inventories.shop_id', 'shops.name')
+            ->get();
+
+        return Datatables::of($targets)
+            ->addColumn('month', function ($target) {
+                return view('admin.target.partials.month', compact('target'));
+            })
+            ->addColumn('year', function ($target) {
+                return view('admin.target.partials.year', compact('target'));
+            })
+            ->addColumn('warehouse', function ($target) {
+                return $target->shop_name;
+            })
+            ->addColumn('total_target', function ($target) {
+                return 'Rp. ' . number_format($target->total_target, 2, '.', '.');
+            })
+            ->addColumn('total_selling', function ($target) {
+                return 'Rp. ' . number_format($target->total_selling, 2, '.', '.');
+            })
+            ->addColumn('rate', function ($target) {
+                return ($target->total_selling / $target->total_target) . ' %';
+            })
+            ->addColumn('status', function ($target) {
+                $achieve = ($target->total_selling / $target->total_target) * 100;
+                $status = $achieve >= 100 ? '<span class="label label-primary">ACHIEVE</span>' : '<span class="label label-danger">FAIL</span>';
+                return $status;
+            })
+            ->rawColumns(['month', 'year', 'warehouse', 'total_target', 'total_selling', 'rate', 'status'])
             ->make(true);
     }
 

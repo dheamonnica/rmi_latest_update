@@ -1293,6 +1293,7 @@ return [
         'total_budget' => 'Total Budget',
         'total_selling' => 'Total Selling',
         'rate' => 'Rate',
+        'total_target' => 'Total Target',
 
         // crm
         'verified_by' => 'Verified By',

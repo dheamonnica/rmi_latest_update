@@ -808,6 +808,7 @@
             tableOffering.column('product:name').search(selectedProduct).draw();
         });
 
+        // TARGET DATA
         // Load offering list by Ajax
         var tableTargets = $('#target-tables').DataTable($.extend({}, dataTableOptions, {
             "ajax": "{{ route('admin.admin.target.getTargetsTables') }}",
@@ -929,6 +930,71 @@
         tableTargets.on('draw', function() {
             calculateTotalTarget();
         });
+        // END TARGET DATA
+
+        // TARGET REPORT
+        // Load offering list by Ajax
+        var tableTargets = $('#target-tables-report').DataTable($.extend({}, dataTableOptions, {
+            "ajax": "{{ route('admin.admin.target.getTargetsTablesReport') }}",
+            "columns": [{
+                    'data': 'month',
+                    'name': 'month'
+
+                },
+                {
+                    'data': 'year',
+                    'name': 'year'
+
+                },
+                {
+                    'data': 'warehouse',
+                    'name': 'warehouse'
+                },
+                {
+                    'data': 'total_target',
+                    'name': 'total_target'
+                },
+                {
+                    'data': 'total_selling',
+                    'name': 'total_selling'
+                },
+                {
+                    'data': 'rate',
+                    'name': 'rate'
+                },
+                {
+                    'data': 'status',
+                    'name': 'status'
+                },
+            ]
+        }));
+
+        function filterByMonthTarget() {
+            var selectedMonth = $('#monthFilterTarget').val();
+
+            // Apply the month filter to the 'month' column (assume the column name is 'month')
+            tableTargets.column('month:name').search(selectedMonth).draw();
+        }
+
+        function filterByWarehouseTarget() {
+            var selectedMerchant = $('#merchantFilterTarget').val();
+
+            // Apply the business area filter to the 'business area' column (assume the column name is 'business area')
+            tableTargets.column('warehouse:name').search(selectedMerchant).draw();
+        }
+
+        function filterByYearTarget() {
+            var selectedMerchant = $('#yearFilterTarget').val();
+
+            // Apply the year filter to the 'year' column (assume the column name is 'year')
+            tableTargets.column('year:name').search(selectedMerchant).draw();
+        }
+
+        // Bind the filter and calculation function to the month dropdown change event
+        $('#monthFilterTarget').on('change', filterByMonthTarget);
+        $('#merchantFilterTarget').on('change', filterByWarehouseTarget);
+        $('#yearFilterTarget').on('change', filterByYearTarget);
+        // END TARGET REPORT
 
         // BUDGET
         // Load offering list by Ajax

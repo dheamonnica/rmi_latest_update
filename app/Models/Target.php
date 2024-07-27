@@ -25,6 +25,7 @@ class Target extends BaseModel
      */
     protected $fillable = [
         'date',
+        'shop_id',
         'hospital_name',
         'grand_total',
         'actual_sales',
@@ -40,5 +41,9 @@ class Target extends BaseModel
 
     public function getUpdatedTargetByName() {
         return $this->belongsTo(User::class, 'updated_by');
+    }
+
+    public function getWarehouse() {
+        return $this->belongsTo(Shop::class, 'shop_id');
     }
 }
