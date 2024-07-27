@@ -140,6 +140,9 @@ class BudgetController extends Controller
             ->join('shops', 'inventories.shop_id', '=', 'shops.id')
             ->join('products', 'inventories.product_id', '=', 'products.id')
             ->leftJoin('orders', 'inventories.shop_id', '=', 'orders.shop_id')
+            ->when(Auth::user()->role_id === 8 || Auth::user()->role_id === 13, function ($query) {
+                return $query->where('inventories.shop_id', Auth::user()->shop_id); // assuming the shop_id is available on the user
+            })
             ->groupBy('inventories.shop_id', 'shops.name')
             ->get();
 
@@ -187,7 +190,7 @@ class BudgetController extends Controller
                 return $status;
             })
 
-            ->rawColumns(['month', 'year', 'business_unit', 'buying_product', 'total_selling', 'achieve', 'status'])
+            ->rawColumns(['month', 'year', 'business_unit', 'buying_product', 'fee_management', 'marketing', 'operational', 'total_budget', 'achieve', 'status'])
             ->make(true);
     }
 
