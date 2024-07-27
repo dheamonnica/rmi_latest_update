@@ -1,3 +1,3 @@
 @if ($target->created_by)
-    <td>{{ $target->getCreatedTargetByName->warehouse_name }}</td>
+    <td>{{ $target->getWarehouse->name }}</td>
 @endif
