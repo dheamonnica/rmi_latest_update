@@ -1,1 +1,4 @@
-<td>{{ get_formated_currency($order->grand_total, 2, $order->currency_id) }}</td>
+<td>
+    <p style="text-align: right">
+        {{ number_format($order->grand_total, 0, '.', '.') }} </p>
+</td>
