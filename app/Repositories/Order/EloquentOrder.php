@@ -10,9 +10,14 @@ use App\Repositories\BaseRepository;
 use App\Repositories\EloquentRepository;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use App\Common\ImageUploadManual;
 
 class EloquentOrder extends EloquentRepository implements BaseRepository, OrderRepository
 {
+
+    use ImageUploadManual;
+
     protected $model;
 
     public function __construct(Order $order)
@@ -105,6 +110,12 @@ class EloquentOrder extends EloquentRepository implements BaseRepository, OrderR
             $order = $this->model->find($order);
         }
 
+        if ($request->hasFile('images')) {
+            $file = $this->saveImage($request->images);
+
+            $order->confirmed_shipping_image = $file['path'];
+        }
+
         $order->shipping_date = date('Y-m-d');
         $order->shipped_by = Auth::user()->id;
         $order->update($request->all());
@@ -112,6 +123,31 @@ class EloquentOrder extends EloquentRepository implements BaseRepository, OrderR
         if ($order->hasPendingCancellationRequest()) {
             $order->cancellation->decline();
         }
+
+        return $order;
+    }
+
+    public function confimedDelivered(Request $request, $order)
+    {
+        if (!$order instanceof Order) {
+            $order = $this->model->find($order);
+        }
+
+        if ($request->hasFile('images')) {
+            $file = $this->saveImage($request->images);
+
+            $order->confirmed_delivered_image = $file['path'];
+        }
+
+        if ($request->signed) {
+            $signed = $this->saveDigitalSignImage($request->signed, str_replace('/','-',$order->order_number));
+
+            $order->hash_sign = $request->signed;
+            $order->digital_sign_image = $signed;
+        }
+
+        //update receiver name 
+        $order->receiver_name = $request->receiver_name;
 
         return $order;
     }
