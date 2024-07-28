@@ -714,7 +714,7 @@
               @endif
             </div>
             <div class="col-md-6">
-              @if ($order->confirmed_delivered_image)
+              @if ($order->confirmed_shipping_image)
                 <div class="col-md-6">
                   <img src="{{ url($order->confirmed_shipping_image) }}" class="img-md" alt="{{ trans('app.image') }}">
                 </div>

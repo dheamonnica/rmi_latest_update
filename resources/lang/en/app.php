@@ -797,6 +797,8 @@ return [
     'update_app_license' => 'Update license',
     'uninstall_app_license' => 'Uninstall license',
     'take_a_backup' => 'Take a backup',
+    'update_payment_terms' => 'Update Payment Term',
+    'delivered_order' => 'Order Delivered',
 
     'payment_method_type' => [
         'paypal' => [
@@ -1231,6 +1233,10 @@ return [
         'cancel_by' => 'Cancel By',
         'product_qty' => 'Product Qty',
         'due_date_payment' => 'Due Date Payment',
+        'payment_terms' => 'Payment Terms',
+        'image_uploads' => 'Upload Images',
+        'receiver_name' => 'Receiver Name',
+        'digital_sign' => 'Digital Signature',
 
         // manufacture
         'manufacture_pic_name' => 'Manufacture PIC Name',
