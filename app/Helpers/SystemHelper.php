@@ -141,6 +141,8 @@ if (!function_exists('setAdditionalCartInfo')) {
         foreach ($request->input('cart') as $cart) {
             $total = $total + ($cart['quantity'] * $cart['unit_price']);
 
+            //current_stock =< order_qty then is_partial = true
+
             // Sum total cart weight when its has value
             if ($cart['shipping_weight'] && is_numeric($cart['shipping_weight'])) {
                 $shipping_weight += $cart['shipping_weight'];
@@ -172,6 +174,9 @@ if (!function_exists('setAdditionalCartInfo')) {
                 $request->input('shipping_address') : $request->input('billing_address'),
             'approved' => 1,
         ]);
+
+        // 'is_partial' => false, //default
+        // 'payment_term_day' => 40, //default
 
         return $request;
     }

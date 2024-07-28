@@ -26,11 +26,17 @@ class SearchController extends Controller
 
         $results = [];
 
-        if (strlen($term) < 3) {
-            return Response::json($results);
-        }
+        // if (strlen($term) < 3) {
+         //     return Response::json($results);
+         // }
 
-        $query = Product::search($term)->where('active', 1);
+         // $query = Product::search($term)->where('active', 1);
+         $query = Product::where('name', 'LIKE', '%'.$term.'%')
+             ->orWhere('licence_number', 'LIKE', '%'.$term.'%')
+             ->orWhere('manufacture_skuid', 'LIKE', '%'.$term.'%')
+             ->orWhere('selling_skuid', 'LIKE', '%'.$term.'%')
+             ->orWhere('client_skuid', 'LIKE', '%'.$term.'%')
+             ->where('active', 1);
 
         // When vendor can use own catalog only
         if (Auth::user()->isFromMerchant() && config('system_settings.can_use_own_catalog_only')) {
@@ -65,11 +71,12 @@ class SearchController extends Controller
 
         $results = [];
 
-        if (strlen($term) < 3) {
-            return Response::json($results);
-        }
+        // if (strlen($term) < 3) {
+        //     return Response::json($results);
+        // }
 
-        $customers = Customer::search($term)->where('active', 1)->take(5)->get();
+        // $customers = Customer::search($term)->where('active', 1)->take(5)->get();
+        $customers = Customer::where('name', 'LIKE', '%'.$term.'%')->where('nice_name', 'LIKE', '%'.$term.'%')->where('active', 1)->take(5)->get();
 
         foreach ($customers as $customer) {
             $results[] = ['text' => get_formated_cutomer_str($customer), 'id' => $customer->id];
