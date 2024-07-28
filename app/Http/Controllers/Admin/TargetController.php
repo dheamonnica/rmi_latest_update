@@ -166,14 +166,12 @@ class TargetController extends Controller
     public function getTargetsTablesReport(Request $request)
     {
         $targets = Inventory::select('inventories.shop_id', 'shops.name as shop_name')
-            ->selectRaw('SUM(orders.grand_total) as total_selling')
-            ->selectRaw('SUM(target.grand_total) as total_target')
+            ->selectRaw('(SELECT SUM(orders.grand_total) FROM orders WHERE orders.shop_id = inventories.shop_id AND deleted_at IS NULL AND cancel_date IS NULL) as total_selling')
+            ->selectRaw('(SELECT SUM(target.grand_total) FROM target WHERE target.shop_id = inventories.shop_id) as total_target')
             ->join('shops', 'inventories.shop_id', '=', 'shops.id')
             ->join('products', 'inventories.product_id', '=', 'products.id')
-            ->join('target', 'inventories.shop_id', '=', 'target.shop_id')
-            ->leftJoin('orders', 'inventories.shop_id', '=', 'orders.shop_id')
             ->when(Auth::user()->role_id === 8 || Auth::user()->role_id === 13, function ($query) {
-                return $query->where('inventories.shop_id', Auth::user()->shop_id); // assuming the shop_id is available on the user
+                return $query->where('inventories.shop_id', Auth::user()->shop_id);
             })
             ->groupBy('inventories.shop_id', 'shops.name')
             ->get();
