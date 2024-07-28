@@ -156,6 +156,7 @@
                 'searchable': false,
                 'exportable': false,
                 'printable': false
+
             },
             {
                 'data': 'image',
@@ -455,64 +456,14 @@
             var orderStatusFilter = $('#filter-all-order-table-order-status').val();
             var paymentStatusFilter = $('#filter-all-order-table-payment-status').val();
 
-    // Load Order list by Ajax
-    $('#all-order-table').DataTable($.extend({}, dataTableOptions, {
-      "ajax": "{{ route('admin.order.bulkorder_process', ['paymentStatus' => '0', 'orderStatus' => '0']) }}",
-      "columns": [{
-          'data': 'checkbox',
-          'name': 'checkbox',
-          'orderable': false,
-          'searchable': false,
-          'exportable': false,
-          'printable': false
-        },
-        // {
-        //   'data': 'order',
-        //   'name': 'order',
-        //   'orderable': false,
-        //   'searchable': false
-        // },
-        {
-          'data': 'po_number_ref',
-          'name': 'po_number_ref'
-        },
-        {
-          'data': 'order_date',
-          'name': 'order_date'
-        },
-        {
-          'data': 'due_date_payment',
-          'name': 'due_date_payment'
-        },
-        {
-          'data': 'customer_name',
-          'name': 'customer_name',
-        },
-        {
-          'data': 'grand_total',
-          'name': 'grand_total',
-        },
-        {
-          'data': 'payment_status',
-          'name': 'payment_status',
-        },
-        {
-          'data': 'order_status',
-          'name': 'order_status',
-          'searchable': false
-        },
-        {
-          'data': 'partial_status',
-          'name': 'partial_status',
-          'searchable': false
-        },
-        {
-          'data': 'option',
-          'name': 'option',
-          'orderable': false,
-          'searchable': false,
-          'exportable': false,
-          'printable': false
+            // Use the filter values to construct url to filter data table
+            var filteredUrl =
+                "{{ route('admin.order.bulkorder_process', ['paymentStatus' => '0', 'orderStatus' => '0']) }}";
+            filteredUrl = filteredUrl.replace(/\/[^/]+\/[^/]+$/, `/${paymentStatusFilter}` +
+                `/${orderStatusFilter}`); // replaces the last two parameters of the url
+
+            // Reload the data table with the new url
+            $('#all-order-table').DataTable().ajax.url(filteredUrl).load();
         }
 
         // On changin filter trigger routes with appropriate filter values
@@ -1785,7 +1736,6 @@
                 'copy', 'csv', 'excel', 'pdf', 'print'
             ]
         });
-
         $('.table-no-option').DataTable({
             "sLength": "",
             "paging": true,
@@ -1969,10 +1919,6 @@
                 );
                 return;
             }
-      if (q.length < 0) {
-        showResult.html('<span class="lead indent50">{{ trans('validation.min.string', ['attribute' => trans('app.form.search'), 'min' => '0']) }}</span>');
-        return;
-      }
 
             showResult.html(
                 '<span class="lead indent50">{{ trans('responses.searching') }}</span>');
@@ -1987,39 +1933,6 @@
             });
         });
         //End product Seach
-      $.ajax({
-        data: "q=" + q,
-        url: "{{ route('search.product') }}",
-        // contentType: "application/json; charset=utf-8",
-        success: function(results) {
-          showResult.html(results);
-        }
-      });
-    });
-    //End product Seach
-
-    $('#searchProduct').on('focus', function(e) {
-      var showResult = $("#productFounds");
-      var q = $(this).val();
-
-      showResult.html('');
-
-      if (q.length < 0) {
-        showResult.html('<span class="lead indent50">{{ trans('validation.min.string', ['attribute' => trans('app.form.search'), 'min' => '0']) }}</span>');
-        return;
-      }
-
-      showResult.html('<span class="lead indent50">{{ trans('responses.searching') }}</span>');
-
-      $.ajax({
-        data: "q=" + q,
-        url: "{{ route('search.product') }}",
-        // contentType: "application/json; charset=utf-8",
-        success: function(results) {
-          showResult.html(results);
-        }
-      });
-    });
 
         //Customer Search
         $('.searchCustomer').select2({
@@ -2038,23 +1951,6 @@
             minimumInputLength: 3,
         });
         //End Customer Seach
-    //Customer Search
-    $('.searchCustomer').select2({
-      ajax: {
-        url: "{{ route('search.customer') }}",
-        dataType: 'json',
-        processResults: function(data) {
-          return {
-            results: data,
-            flag: 'selectprogram',
-          };
-        },
-        cache: true
-      },
-      placeholder: "{{ trans('app.placeholder.search_customer') }}",
-      // minimumInputLength: 3,
-    });
-    //End Customer Seach
 
         // Merchant Seach
         $('.searchMerchant').select2({
@@ -2474,161 +2370,11 @@
             document.getElementById("uploadBtn").onchange = function() {
                 document.getElementById("uploadFile").value = this.value;
             };
-          },
-          cache: true
-        },
-        placeholder: "{{ trans('zipcode::lang.search_zipcode') }}",
-        minimumInputLength: 3,
-      });
-    @endif
-    //End search forr zipcde
-
-    //product Seach
-    $('#searchProduct').on('keyup', function(e) {
-      var showResult = $("#productFounds");
-      var q = $(this).val();
-
-      showResult.html('');
-
-      if (q.length < 0) {
-        showResult.html('<span class="lead indent50">{{ trans('validation.min.string', ['attribute' => trans('app.form.search'), 'min' => '0']) }}</span>');
-        return;
-      }
-
-      showResult.html('<span class="lead indent50">{{ trans('responses.searching') }}</span>');
-
-      $.ajax({
-        data: "q=" + q,
-        url: "{{ route('search.product') }}",
-        // contentType: "application/json; charset=utf-8",
-        success: function(results) {
-          showResult.html(results);
         }
-      });
-    });
-    //End product Seach
-
-    $('#searchProduct').on('focus', function(e) {
-      var showResult = $("#productFounds");
-      var q = $(this).val();
-
-      showResult.html('');
-
-      if (q.length < 0) {
-        showResult.html('<span class="lead indent50">{{ trans('validation.min.string', ['attribute' => trans('app.form.search'), 'min' => '0']) }}</span>');
-        return;
-      }
-
-      showResult.html('<span class="lead indent50">{{ trans('responses.searching') }}</span>');
-
-      $.ajax({
-        data: "q=" + q,
-        url: "{{ route('search.product') }}",
-        // contentType: "application/json; charset=utf-8",
-        success: function(results) {
-          showResult.html(results);
-        }
-      });
-    });
-
-    //Customer Search
-    $('.searchCustomer').select2({
-      ajax: {
-        url: "{{ route('search.customer') }}",
-        dataType: 'json',
-        processResults: function(data) {
-          return {
-            results: data,
-            flag: 'selectprogram',
-          };
-        },
-        cache: true
-      },
-      placeholder: "{{ trans('app.placeholder.search_customer') }}",
-      // minimumInputLength: 3,
-    });
-    //End Customer Seach
-
-    // Merchant Seach
-    $('.searchMerchant').select2({
-      ajax: {
-        url: "{{ route('search.merchant') }}",
-        dataType: 'json',
-        processResults: function(data) {
-          return {
-            results: data
-          };
-        },
-        cache: true
-      },
-      placeholder: "{{ trans('app.placeholder.search_merchant') }}",
-      minimumInputLength: 3,
-    });
-    //End Merchant Search
-
-    // Products Search for Select2
-    $('.searchProductForSelect').select2({
-      ajax: {
-        url: "{{ route('search.findProduct') }}",
-        dataType: 'json',
-        processResults: function(data) {
-          return {
-            results: data
-          };
-        },
-        cache: true
-      },
-      placeholder: "{!! trans('app.placeholder.search_product') !!}",
-      minimumInputLength: 3,
-    });
-    //End Products Search for Select2
-
-    // Inventories Search for Select2
-    $('.searchInventoryForSelect').select2({
-      ajax: {
-        url: "{{ route('search.findInventory') }}",
-        dataType: 'json',
-        processResults: function(data) {
-          return {
-            results: data
-          };
-        },
-        cache: true
-      },
-      placeholder: "{!! trans('app.search_inventory') !!}",
-      minimumInputLength: 3,
-      allowClear: true
-    });
-    //End Products Search for Select2
-
-    // Inventories Search for Select2
-    $('.searchCategoryForSelect').select2({
-      ajax: {
-        url: "{{ route('search.findCategory') }}",
-        dataType: 'json',
-        processResults: function(data) {
-          return {
-            results: data
-          };
-        },
-        cache: true
-      },
-      placeholder: "{!! trans('app.search_category') !!}",
-      minimumInputLength: 3,
-      allowClear: true
-    });
-    //End Products Search for Select2
-
-    /* bootstrap-select */
-    $(".selectpicker").selectpicker();
-
-    //Initialize validator And Prevent multiple submit of forms
-    $('#form, form[data-toggle="validator"]').validator()
-      .on('submit', function(e) {
-        if (e.isDefaultPrevented()) {
-          $(this).find('input[type=submit]').removeAttr('disabled');
-        } else {
-          $(this).find('input[type=submit]').attr('disabled', 'true');
+        if ($('#uploadBtn1').length) {
+            document.getElementById("uploadBtn1").onchange = function() {
+                document.getElementById("uploadFile1").value = this.value;
+            };
         }
 
         //SEARCH OPTIONS
@@ -3181,7 +2927,6 @@
     $('input.requires_shipping, input.downloadable').on('ifChanged', function() {
         var requiresShippingChecked = $('input.requires_shipping').is(':checked');
         var downloadableChecked = $('input.downloadable').is(':checked');
-
         if (requiresShippingChecked && !downloadableChecked) {
             $('#form_shipping_section').show();
         } else {
