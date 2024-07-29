@@ -860,7 +860,7 @@ return [
         'waiting_for_payment' => 'Waiting for payment',
         'packed' => 'Packed',
         'partial' => 'Partial',
-        'partial_fulfilled' => 'Partial Fulfilled',
+        'partial_fulfilled' => 'Fulfilled',
     ],
 
     'priorities' => [
