@@ -532,7 +532,7 @@
                 '</td>' +
                 // '<td class="small" width="15%">'+ isOfferAvailable + ` <i class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="" data-original-title="Offer Date: ${productObj[ID].offerStart} - ${productObj[ID].offerEnd}"></i></td>` +
                 '<td class="nopadding-right" width="15%">' +
-                '<input name="cart[' + numOfRows + '][unit_price]" value="' + price + '" id="price-' + ID + '" type="number" class="form-control itemPrice no-border" placeholder="{{ trans('app.price') }}" required readonly>' +
+                '<input name="cart[' + numOfRows + '][unit_price]" value="' + getFormatedValue(price) + '" id="price-' + ID + '" type="number" class="form-control itemPrice no-border" placeholder="{{ trans('app.price') }}" required readonly>' +
                 '</div>' +
                 '<td>x</td>' +
                 '<td class="nopadding-right text-center" width="10%">' +

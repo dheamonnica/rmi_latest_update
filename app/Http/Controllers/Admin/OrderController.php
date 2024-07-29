@@ -171,6 +171,9 @@ class OrderController extends Controller
         ->editColumn('grand_total_number', function ($order) {
             return view('admin.partials.actions.order.grand_total_number', compact('order'));
         })
+        ->editColumn('grand_total', function ($order) {
+            return get_formated_currency($order->grand_total, 2);
+        })
         ->editColumn('payment_status', function ($order) {
             return view('admin.partials.actions.order.payment_status', compact('order'));
         })
