@@ -18,6 +18,10 @@ Route::get('getTargetsTablesReport', [
     TargetController::class,
     'getTargetsTablesReport'
 ])->name('admin.target.getTargetsTablesReport')->middleware('ajax');
+Route::get('getTargetsTablesExpand', [
+    TargetController::class,
+    'getTargetsTablesExpand'
+])->name('admin.target.getTargetsTablesExpand')->middleware('ajax');
 Route::get('create', [
     TargetController::class,
     'create'

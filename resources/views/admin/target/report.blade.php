@@ -45,9 +45,10 @@
         </div>
 
         <div class="table-responsive">
-            <table class="table table-hover" id="target-tables-report">
+            <table class="table table-hover table-bordered" id="target-tables-report">
                 <thead>
                     <tr>
+                        <th></th>
                         <th>{{ trans('app.form.month') }}</th>
                         <th>{{ trans('app.form.year') }}</th>
                         <th>{{ trans('app.form.warehouse') }}</th>
@@ -63,3 +64,26 @@
         </div>
     </div>
 @endsection
+
+<style>
+    table.dataTable td.dt-control {
+        cursor: pointer;
+    }
+
+    table.dataTable td.dt-control:before {
+        display: inline-block;
+        box-sizing: border-box;
+        content: "";
+        border-top: 5px solid transparent;
+        border-left: 10px solid rgba(0, 0, 0, 0.5);
+        border-bottom: 5px solid transparent;
+        border-right: 0px solid transparent;
+    }
+
+    table.dataTable tr.dt-hasChild td.dt-control:before {
+        border-top: 10px solid rgba(0, 0, 0, 0.5);
+        border-left: 5px solid transparent;
+        border-bottom: 0px solid transparent;
+        border-right: 5px solid transparent;
+    }
+</style>

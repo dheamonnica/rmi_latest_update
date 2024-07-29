@@ -52,24 +52,21 @@ class TargetController extends Controller
             ->orderBy('year', 'desc')
             ->pluck('year');
 
-        $targets = $this->target->all();
 
         $trashes = $this->target->trashOnly();
 
-        if (Auth::user()->isAdmin() || Auth::user()->isMerchant() || Auth::user()->isFromPlatform()) {
-            $getTotalIncomebyShop = Order::selectRaw('SUM(grand_total) as total_grand_total')
-                ->where('shop_id', Auth::user()->shop_id)
-                ->whereNull('deleted_at')
-                ->orWhere('deleted_at', '')
-                ->first();
-        } else {
-            $getTotalIncomebyShop = Order::selectRaw('SUM(grand_total) as total_grand_total')
-                ->whereNull('deleted_at')
-                ->orWhere('deleted_at', '')
-                ->first();
-        }
+        $targets = Target::select('target.*', 'shops.name as shop_name', 'creator.name as creator_name', 'updater.name as updater_name')
+            ->selectRaw('(SELECT SUM(orders.grand_total) FROM orders WHERE orders.shop_id = target.shop_id AND orders.deleted_at IS NULL AND orders.cancel_date IS NULL) as total_grand_total')
+            ->join('shops', 'target.shop_id', '=', 'shops.id')
+            ->leftJoin('users as creator', 'target.created_by', '=', 'creator.id')
+            ->leftJoin('users as updater', 'target.updated_by', '=', 'updater.id')
+            ->when(Auth::user()->role_id === 8 || Auth::user()->role_id === 13, function ($query) {
+                return $query->where('target.shop_id', Auth::user()->shop_id);
+            })
+            ->get();
 
-        return view('admin.target.index', compact('merchants', 'years', 'targets', 'trashes', 'getTotalIncomebyShop'));
+
+        return view('admin.target.index', compact('merchants', 'years', 'targets', 'trashes'));
     }
 
     public function report()
@@ -81,24 +78,19 @@ class TargetController extends Controller
             ->orderBy('year', 'desc')
             ->pluck('year');
 
-        $targets = $this->target->all();
-
         $trashes = $this->target->trashOnly();
 
-        if (Auth::user()->isAdmin() || Auth::user()->isMerchant() || Auth::user()->isFromPlatform()) {
-            $getTotalIncomebyShop = Order::selectRaw('SUM(grand_total) as total_grand_total')
-                ->where('shop_id', Auth::user()->shop_id)
-                ->whereNull('deleted_at')
-                ->orWhere('deleted_at', '')
-                ->first();
-        } else {
-            $getTotalIncomebyShop = Order::selectRaw('SUM(grand_total) as total_grand_total')
-                ->whereNull('deleted_at')
-                ->orWhere('deleted_at', '')
-                ->first();
-        }
+        $targets = Target::select('target.*', 'shops.name as shop_name', 'creator.name as creator_name', 'updater.name as updater_name')
+            ->selectRaw('(SELECT SUM(orders.grand_total) FROM orders WHERE orders.shop_id = target.shop_id AND orders.deleted_at IS NULL AND orders.cancel_date IS NULL) as total_grand_total')
+            ->join('shops', 'target.shop_id', '=', 'shops.id')
+            ->leftJoin('users as creator', 'target.created_by', '=', 'creator.id')
+            ->leftJoin('users as updater', 'target.updated_by', '=', 'updater.id')
+            ->when(Auth::user()->role_id === 8 || Auth::user()->role_id === 13, function ($query) {
+                return $query->where('target.shop_id', Auth::user()->shop_id);
+            })
+            ->get();
 
-        return view('admin.target.report', compact('merchants', 'years', 'targets', 'trashes', 'getTotalIncomebyShop'));
+        return view('admin.target.report', compact('merchants', 'years', 'targets', 'trashes'));
     }
 
     public function getTargetsTables(Request $request)
@@ -124,21 +116,8 @@ class TargetController extends Controller
             ->addColumn('grand_total', function ($target) {
                 return view('admin.target.partials.grand_total', compact('target'));
             })
-            ->addColumn('actual_sales', function ($getTotalIncomebyShop) {
-                if (Auth::user()->isAdmin() || Auth::user()->isMerchant() || Auth::user()->isFromPlatform()) {
-                    $getTotalIncomebyShop = Order::selectRaw('SUM(grand_total) as total_grand_total')
-                        ->where('shop_id', Auth::user()->shop_id)
-                        ->whereNull('deleted_at')
-                        ->orWhere('deleted_at', '')
-                        ->first();
-                } else {
-                    $getTotalIncomebyShop = Order::selectRaw('SUM(grand_total) as total_grand_total')
-                        ->whereNull('deleted_at')
-                        ->orWhere('deleted_at', '')
-                        ->first();
-                }
-
-                return view('admin.target.partials.actual_sales', compact('getTotalIncomebyShop'));
+            ->addColumn('actual_sales', function ($target) {
+                return view('admin.target.partials.actual_sales', compact('target'));
             })
             ->addColumn('warehouse', function ($target) {
                 return view('admin.target.partials.warehouse', compact('target'));
@@ -202,6 +181,21 @@ class TargetController extends Controller
             })
             ->rawColumns(['month', 'year', 'warehouse', 'total_target', 'total_selling', 'rate', 'status'])
             ->make(true);
+    }
+
+    public function getTargetsTablesExpand(Request $request)
+    {
+        $targets = Target::select('target.*', 'shops.name as shop_name', 'creator.name as creator_name', 'updater.name as updater_name')
+            ->selectRaw('(SELECT SUM(orders.grand_total) FROM orders WHERE orders.shop_id = target.shop_id AND orders.deleted_at IS NULL AND orders.cancel_date IS NULL) as total_grand_total')
+            ->join('shops', 'target.shop_id', '=', 'shops.id')
+            ->leftJoin('users as creator', 'target.created_by', '=', 'creator.id')
+            ->leftJoin('users as updater', 'target.updated_by', '=', 'updater.id')
+            ->when(Auth::user()->role_id === 8 || Auth::user()->role_id === 13, function ($query) {
+                return $query->where('target.shop_id', Auth::user()->shop_id);
+            })
+            ->get();
+
+        return response()->json(['data' => $targets]);
     }
 
     /**

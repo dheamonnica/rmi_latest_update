@@ -7,7 +7,7 @@
 @section('content')
     <div class="box border-small p-2">
         <div class="box-header with-border">
-            <h3 class="box-title">TARGET REPORT</h3>
+            <h3 class="box-title">TARGET DATA</h3>
             <div class="pull-right">
                 <select id="monthFilterTarget" class="btn btn-sm btn-default">
                     <option value="" selected>Select Month</option>
@@ -62,7 +62,7 @@
                         <th>{{ trans('app.form.year') }}</th>
                         <th>{{ trans('app.form.client') }}</th>
                         <th>{{ trans('app.form.actual_sales') }}</th>
-                        <th>{{ trans('app.form.grand_total') }}</th>
+                        <th width="100px">{{ trans('app.form.grand_total') }}</th>
                         <th>{{ trans('app.form.warehouse') }}</th>
                         <th>{{ trans('app.form.created_at') }}</th>
                         <th>{{ trans('app.form.created_by') }}</th>
@@ -80,9 +80,7 @@
                         <th></th>
                         <th></th>
                         <th></th>
-                        {{-- <th>TOTAL INCOME</th> --}}
-                        {{-- <th>Rp. {{ number_format($getTotalIncomebyShop->total_grand_total, 0, '.', '.') }}</th> --}}
-                        <th>TOTAL Target</th>
+                        <th>TOTAL TARGET</th>
                         <th id="totalAmountTarget"></th>
                         <th></th>
                         <th></th>

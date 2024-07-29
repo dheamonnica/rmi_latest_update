@@ -878,9 +878,15 @@
 
         // TARGET REPORT
         // Load offering list by Ajax
-        var tableTargets = $('#target-tables-report').DataTable($.extend({}, dataTableOptions, {
+        var tableTargetsReport = $('#target-tables-report').DataTable($.extend({}, dataTableOptions, {
             "ajax": "{{ route('admin.admin.target.getTargetsTablesReport') }}",
             "columns": [{
+                    className: 'dt-control',
+                    orderable: false,
+                    data: null,
+                    defaultContent: ''
+                },
+                {
                     'data': 'month',
                     'name': 'month'
 
@@ -917,27 +923,129 @@
             var selectedMonth = $('#monthFilterTarget').val();
 
             // Apply the month filter to the 'month' column (assume the column name is 'month')
-            tableTargets.column('month:name').search(selectedMonth).draw();
+            tableTargetsReport.column('month:name').search(selectedMonth).draw();
         }
 
         function filterByWarehouseTarget() {
             var selectedMerchant = $('#merchantFilterTarget').val();
 
             // Apply the business area filter to the 'business area' column (assume the column name is 'business area')
-            tableTargets.column('warehouse:name').search(selectedMerchant).draw();
+            tableTargetsReport.column('warehouse:name').search(selectedMerchant).draw();
         }
 
         function filterByYearTarget() {
             var selectedMerchant = $('#yearFilterTarget').val();
 
             // Apply the year filter to the 'year' column (assume the column name is 'year')
-            tableTargets.column('year:name').search(selectedMerchant).draw();
+            tableTargetsReport.column('year:name').search(selectedMerchant).draw();
         }
 
         // Bind the filter and calculation function to the month dropdown change event
         $('#monthFilterTarget').on('change', filterByMonthTarget);
         $('#merchantFilterTarget').on('change', filterByWarehouseTarget);
         $('#yearFilterTarget').on('change', filterByYearTarget);
+
+        // Fetch additional data via AJAX
+        let additionalData = [];
+        $.ajax({
+            url: "{{ route('admin.admin.target.getTargetsTablesExpand') }}",
+            method: 'GET',
+            success: function(data) {
+                additionalData = data.data;
+                // console.log(additionalData, 'additional data'); // Log the additional data
+            },
+            error: function(xhr, status, error) {
+                console.error('Error fetching additional data:', error);
+            }
+        });
+
+        function format(dataItem) {
+            // Filter the additional data for the relevant shop_id
+            let relatedData = additionalData.filter(item => item.shop_id === dataItem.shop_id);
+
+            // Build the table HTML
+            let formattedData = `
+        <div class="table-responsive">
+            <table class="table table-hover table-bordered">
+                <thead>
+                    <tr>
+                        <th>Month</th>
+                        <th>Year</th>
+                        <th>Client</th>
+                        <th>Actual Sales</th>
+                        <th>Grand Total</th>
+                        <th>Created At</th>
+                        <th>Created By</th>
+                        <th>Updated At</th>
+                        <th>Updated By</th>
+                    </tr>
+                </thead>
+                <tbody id="massSelectArea">
+    `;
+
+            // Create our number formatter.
+            const formatter = new Intl.NumberFormat('id-ID', {
+                style: 'currency',
+                currency: 'IDR',
+
+                // These options are needed to round to whole numbers if that's what you want.
+                minimumFractionDigits: 0, // (this suffices for whole numbers, but will print 2500.10 as $2,500.1)
+                maximumFractionDigits: 0, // (causes 2500.99 to be printed as $2,501)
+            });
+
+            relatedData.forEach(function(row) {
+                let date = new Date(row.date);
+                let month = date.toLocaleString('default', {
+                    month: 'long'
+                }); // Full month name
+                let year = date.getFullYear();
+                const options = {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit',
+                };
+                formattedData += `
+                    <tr>
+                        <td>${month}</td>
+                        <td>${year}</td>
+                        <td>${row.hospital_name}</td>
+                        <td>${formatter.format(row.total_grand_total)}</td>
+                        <td>${formatter.format(row.grand_total)}</td>
+                        <td>${new Date(row.created_at).toLocaleDateString('en-US', options)}</td>
+                        <td>${row.creator_name}</td>
+                        <td>${row.updated_at ? new Date(row.updated_at).toLocaleDateString('en-US', options) : ''}</td>
+                        <td>${row.updater_name || ''}</td>
+                    </tr>
+                `;
+            });
+
+            formattedData += `
+                        </tbody>
+                    </table>
+                </div>
+            `;
+
+            return formattedData;
+        }
+
+        // Handle row expansion
+        $('#target-tables-report tbody').on('click', 'td.dt-control', function(e) {
+            let tr = e.target.closest('tr');
+            let row = tableTargetsReport.row(tr);
+
+            if (row.child.isShown()) {
+                // This row is already open - close it
+                row.child.hide();
+                $(tr).removeClass('dt-hasChild');
+            } else {
+                // Open this row and show additional data
+                row.child(format(row.data())).show();
+                $(tr).addClass('dt-hasChild');
+            }
+        });
         // END TARGET REPORT
 
         // BUDGET
