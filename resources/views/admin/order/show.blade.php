@@ -571,7 +571,7 @@
                       {!! Form::open(['route' => ['admin.order.order.saveDueDatePayment', $order], 'method' => 'put', 'class' => 'inline']) !!}
 
                       {!! Form::label('payment_terms', trans('app.form.payment_terms')) !!}
-                      {!! Form::select('payment_terms', $payment_terms, , $order->due_date_payment ?? '', ['class' => 'form-control select2-normal', 'placeholder' => trans('app.placeholder.payment'), 'required']) !!}
+                      {!! Form::select('payment_terms', $payment_terms, $order->due_date_payment ?? '', ['class' => 'form-control select2-normal', 'placeholder' => trans('app.placeholder.payment'), 'required']) !!}
                       <div class="help-block with-errors"></div>
                     </div>
 
@@ -700,14 +700,26 @@
         </div> <!-- /.box-header -->
         <div class="box-body">
           <div class="row">
-            <span>{{ trans('app.carrier') }}: <strong>{{ $order->carrier ? $order->carrier->name : ($order->shippingRate ? optional($order->shippingRate->carrier)->name : '') }}</strong></span><br />	            <div class="col-md-6">
-            <span>{{ trans('app.total_weight') }}: <strong>{{ get_formated_weight($order->shipping_weight) }}</strong></span><br />	              <span>{{ trans('app.tracking_id') }}: {{ $order->tracking_id }}</span><br />
-            @if ($order->carrier && $order->tracking_id)	              <span>{{ trans('app.carrier') }}: <strong>{{ $order->carrier ? $order->carrier->name : ($order->shippingRate ? optional($order->shippingRate->carrier)->name : '') }}</strong></span><br />
-              @php	              <span>{{ trans('app.total_weight') }}: <strong>{{ get_formated_weight($order->shipping_weight) }}</strong></span><br />
-                $tracking_url = getTrackingUrl($order->tracking_id, $order->carrier_id);	              @if ($order->carrier && $order->tracking_id)
-              @endphp	                @php
-              <span><a href="{{ $tracking_url }}">{{ trans('app.tracking_url') }}</a>: {{ $tracking_url }}</span>	                  $tracking_url = getTrackingUrl($order->tracking_id, $order->carrier_id);
-            @endif	                @endphp
+            <span>{{ trans('app.carrier') }}: <strong>{{ $order->carrier ? $order->carrier->name : ($order->shippingRate ? optional($order->shippingRate->carrier)->name : '') }}</strong></span>
+            <br />	            
+            <div class="col-md-6">
+            <span>{{ trans('app.total_weight') }}: <strong>{{ get_formated_weight($order->shipping_weight) }}</strong></span>
+            <br />	              
+            <span>{{ trans('app.tracking_id') }}: {{ $order->tracking_id }}</span>
+            <br />
+            @if ($order->carrier && $order->tracking_id)	              
+              <span>{{ trans('app.carrier') }}: <strong>{{ $order->carrier ? $order->carrier->name : ($order->shippingRate ? optional($order->shippingRate->carrier)->name : '') }}</strong></span>
+              <br />
+              <span>{{ trans('app.total_weight') }}: <strong>{{ get_formated_weight($order->shipping_weight) }}</strong></span><br />
+                @php	              
+                  $tracking_url = getTrackingUrl($order->tracking_id, $order->carrier_id);	              
+                @endphp	                
+                @if ($order->carrier && $order->tracking_id)
+                  <span><a href="{{ $tracking_url }}">{{ trans('app.tracking_url') }}</a>: {{ $tracking_url }}</span>	
+                  @php
+                    $tracking_url = getTrackingUrl($order->tracking_id, $order->carrier_id);
+                  @endphp
+                @endif	                
                   <span><a href="{{ $tracking_url }}">{{ trans('app.tracking_url') }}</a>: {{ $tracking_url }}</span>
                 @endif
               </div>
