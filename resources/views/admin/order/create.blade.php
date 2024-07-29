@@ -536,15 +536,12 @@
                 '</div>' +
                 '<td>x</td>' +
                 '<td class="nopadding-right text-center" width="10%">' +
-                '<input name="cart[' + numOfRows + '][quantity]" value="1" type="number" id="qtt-' + ID + '" class="form-control itemQtt no-border" placeholder="{{ trans('app.quantity') }}" required>' +	                '<span>order qty</span>' +
+                '<span>order qty</span>' +
                 '<input name="cart[' + numOfRows + '][quantity]" value="1" type="number" max="' + productObj[ID].stockQtt + '" id="qtt-' + ID + '" class="form-control itemQtt no-border" placeholder="{{ trans('app.quantity') }}" required>' +
                 '</td>' +
                 '<td class="nopadding-right text-center" width="10%">' +
                 '<span>request qty</span>' +
                 '<input name="cart[' + numOfRows + '][req_quantity]" value="1" type="number" id="req-qtt-' + ID + '" class="form-control itemReqQtt no-border" placeholder="{{ trans('app.req_quantity') }}" required>' +
-                '<td class="nopadding-right" width="10%">' +
-                '<input name="cart[' + numOfRows + '][quantity]" value="1" type="number" id="qtt-' + ID + '" class="form-control itemQtt no-border" placeholder="{{ trans('app.quantity') }}" required>' +
-                '<input name="cart[' + numOfRows + '][quantity]" value="1" max="' + productObj[ID].stockQtt + '" type="number" id="qtt-' + ID + '" class="form-control itemQtt no-border" placeholder="{{ trans('app.quantity') }}" required>' +
                 '</td>' +
                 '<td class="nopadding-right text-center" width="10%">{{ get_formated_currency_symbol() }}' +
                 '<span id="total-' + ID + '"  class="itemTotal">' +
