@@ -184,6 +184,7 @@ return [
     'payment_statuses' => 'Payment statuses',
     'payment_methods' => 'Payment methods',
     'appearance' => 'Appearance',
+    'partial' => 'Partial Status',
     'approved' => 'Approved',
     'pending' => 'Pending',
     'reports' => 'Reports',
@@ -856,6 +857,8 @@ return [
         'waiting'   => 'Waiting',
         'waiting_for_payment' => 'Waiting for payment',
         'packed' => 'Packed',
+        'partial' => 'Partial',
+        'partial_fulfilled' => 'Partial Fulfilled',
     ],
 
     'priorities' => [
@@ -1049,7 +1052,7 @@ return [
         'packaging_name' => 'Packaging name',
         'shipping_carrier_name' => 'Carrier name',
         'shipping_tracking_url' => 'Tracking url',
-        'order_tracking_id' => 'Tracking ID or Receipt of Goods Forms (Surat Jalan)',
+        'order_tracking_id' => 'Tracking ID or Receipt of Goods Forms (Surat Jalan)',186
         'set_as_default_packaging' => 'Set as default packaging',
         'width' => 'Width',
         'height' => 'Height',

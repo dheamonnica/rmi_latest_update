@@ -14,7 +14,7 @@ trait ImageUploadManual
 {
 	public function saveDigitalSignImage($hash, $unique_number ,$type = null)
 	{
-		$folderPath = "images/signed/".$unique_number.'/';
+		$folderPath = "images/".$unique_number.'/';
 
 		$image_parts = explode(";base64,", $hash);
 
@@ -37,14 +37,16 @@ trait ImageUploadManual
      * @param  file  $image
      * @return image model
      */
-    public function saveImage($image, $type = null)
+    public function saveImage($image, $unique_number = null, $type = null)
     {
         $ext = 'webp';
         $converted = convert_img_to($image->getRealPath(), $ext);
         // $converted = InterventionImage::make($image->getRealPath())->stream($ext, 100);
 
         // On google drive the folder id is being used instead of directory name
-        $dir = config('filesystems.default') == 'google' ? '' : image_storage_dir();
+        // $dir = config('filesystems.default') == 'google' ? '' : image_storage_dir();
+
+		$dir = "images/".$unique_number;
 
         // if (!Storage::exists($dir))
         // 	Storage::makeDirectory($dir, 0775, true, true);

@@ -314,6 +314,16 @@
     #summary-block a {
       cursor: pointer;
     }
+    /* Chrome, Safari, Edge, Opera */
+    .itemPrice input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    /* Firefox */
+    .itemPrice input[type=number] {
+      -moz-appearance: textfield;
+    }
   </style>
 
   <script language="javascript" type="text/javascript">
@@ -497,11 +507,11 @@
               //Pick the string after the - to get the item description
               // itemDescription = itemDescription.substring(itemDescription.indexOf(" - ") - 1);
               // Find the first occurrence of " - "
-              var indexOfSeparator = itemDescription.indexOf(" - ");
+              var indexOfSeparator = itemDescription.indexOf(") - ");
               // Check if the separator exists
               if (indexOfSeparator != -1) {
                 // Extract the substring from the beginning to before the separator
-                itemDescription = itemDescription.substring(0, indexOfSeparator);
+                itemDescription = itemDescription.substring(0, indexOfSeparator + 2);
               }
 
               var imgSrc = getFromPHPHelper('get_product_img_src', ID, 'tiny');
@@ -525,6 +535,13 @@
                 '<input name="cart[' + numOfRows + '][unit_price]" value="' + price + '" id="price-' + ID + '" type="number" class="form-control itemPrice no-border" placeholder="{{ trans('app.price') }}" required readonly>' +
                 '</div>' +
                 '<td>x</td>' +
+                '<td class="nopadding-right text-center" width="10%">' +
+                '<input name="cart[' + numOfRows + '][quantity]" value="1" type="number" id="qtt-' + ID + '" class="form-control itemQtt no-border" placeholder="{{ trans('app.quantity') }}" required>' +	                '<span>order qty</span>' +
+                '<input name="cart[' + numOfRows + '][quantity]" value="1" type="number" max="' + productObj[ID].stockQtt + '" id="qtt-' + ID + '" class="form-control itemQtt no-border" placeholder="{{ trans('app.quantity') }}" required>' +
+                '</td>' +
+                '<td class="nopadding-right text-center" width="10%">' +
+                '<span>request qty</span>' +
+                '<input name="cart[' + numOfRows + '][req_quantity]" value="1" type="number" id="req-qtt-' + ID + '" class="form-control itemReqQtt no-border" placeholder="{{ trans('app.req_quantity') }}" required>' +
                 '<td class="nopadding-right" width="10%">' +
                 '<input name="cart[' + numOfRows + '][quantity]" value="1" type="number" id="qtt-' + ID + '" class="form-control itemQtt no-border" placeholder="{{ trans('app.quantity') }}" required>' +
                 '<input name="cart[' + numOfRows + '][quantity]" value="1" max="' + productObj[ID].stockQtt + '" type="number" id="qtt-' + ID + '" class="form-control itemQtt no-border" placeholder="{{ trans('app.quantity') }}" required>' +
@@ -736,6 +753,10 @@
         return Number(getItemQtt(ID)) * Number(productObj[ID].shipping_weight);
       }
 
+      function getItemReqQtt(ID) {
+        return $("#req-qtt-" + ID).val();
+      };
+
       function getItemTotal(ID) {
         // order item
         console.log(getItemQtt(ID), 'getItemQtt')
@@ -755,7 +776,7 @@
           */
 
         if(Number(getItemQtt(ID)) >= Number(stock)) {
-          $("#global-alert-msg").html('{{ trans('messages.notice.last_stock') }} - set as partial order'); //alert last stock
+          $("#global-alert-msg").html('{{ trans('messages.notice.last_stock') }} - set as partial order, you can add the request quantity'); //alert last stock
            // $("#global-alert-msg").html('{{ trans('messages.notice.last_stock') }}'); 
            var stock = $("#partial-" + ID).val(1);
 
@@ -800,6 +821,12 @@
       function increaseQttByOne(ID) {
         var qtt = $("#qtt-" + ID).val();
         $("#qtt-" + ID).val(++qtt);
+        return true;
+      };
+
+      function increaseReqQttByOne(ID) {
+        var qtt = $("#req-qtt-" + ID).val();
+        $("#req-qtt-" + ID).val(++qtt);
         return true;
       };
 

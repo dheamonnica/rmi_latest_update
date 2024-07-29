@@ -174,6 +174,9 @@ class OrderController extends Controller
         ->editColumn('payment_status', function ($order) {
             return view('admin.partials.actions.order.payment_status', compact('order'));
         })
+        ->editColumn('partial_status', function ($order) {
+            return view('admin.partials.actions.order.order_partial', compact('order'));
+        })
         ->editColumn('order_status', function ($order) {
             $order_statuses = \App\Helpers\ListHelper::order_statuses();
             return view('admin.partials.actions.order.order_status', compact('order','order_statuses'));
@@ -181,7 +184,7 @@ class OrderController extends Controller
         ->editColumn('option', function ($order) {
             return view('admin.partials.actions.order.option', compact('order'));
         })
-        ->rawColumns(['checkbox', 'order', 'po_number_ref', 'order_date', 'created_by', 'packed_date', 'shipped_by', 'shipping_date', 'delivery_by', 'delivery_date', 'due_date_payment', 'due_days_payment', 'cancel_by', 'cancel_date', 'paid_by', 'paid_date', 'shop', 'customer_name', 'order_product_qty', 'grand_total','payment_status','option'])
+        ->rawColumns(['checkbox', 'order', 'po_number_ref', 'order_date', 'created_by', 'packed_date', 'shipped_by', 'shipping_date', 'delivery_by', 'delivery_date', 'due_date_payment', 'due_days_payment', 'cancel_by', 'cancel_date', 'paid_by', 'paid_date', 'shop', 'customer_name', 'order_product_qty', 'grand_total','payment_status', 'partial_status','option'])
         ->make(true);
     }
 
@@ -494,6 +497,15 @@ class OrderController extends Controller
         $this->order->updateOrderStatus($request, $order);
 
         event(new OrderUpdated($order, $request->filled('notify_customer')));
+
+        return back()->with('success', trans('messages.updated', ['model' => $this->model_name]));
+    }
+
+    public function saveDueDatePayment(Request $request, $id)
+    {
+        $order = $this->order->find($id);
+
+        $this->order->updateDueDatePayment($request, $order);
 
         return back()->with('success', trans('messages.updated', ['model' => $this->model_name]));
     }

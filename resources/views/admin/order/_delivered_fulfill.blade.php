@@ -3,7 +3,7 @@
 	  {!! Form::model($order, ['method' => 'PUT', 'route' => ['admin.order.order.deliveredConfirmed', $order->id], 'files' => true, 'id' => 'form', 'data-toggle' => 'validator']) !!}
 	  <div class="modal-header">
 		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-		{{ trans('app.fulfill_order') }}
+		{{ trans('app.delivered_order') }}
 	  </div>
 	  <div class="modal-body">
   
@@ -45,19 +45,19 @@
   </div> <!-- / .modal-dialog -->
   <script>
 	var canvas = document.getElementById('signature-pad');
-  var signaturePad = new SignaturePad(canvas, {
-	backgroundColor: 'rgb(255, 255, 245)' // necessary for saving image as JPEG; can be removed is only saving as PNG or SVG
-  });
-  document.getElementById('submit-delivered').addEventListener('click', function () {
-	if (signaturePad.isEmpty()) {
-	  alert("Tanda Tangan Anda Kosong! Silahkan tanda tangan terlebih dahulu.");
-	}else{
-	  var data = signaturePad.toDataURL('image/png');
-	  console.log(data);
-	  $('.sign').html('<textarea id="signature64" name="signed" style="display:none">'+data+'</textarea>');
-	}
-  });
-  document.getElementById('clear').addEventListener('click', function () {
-	signaturePad.clear();
-  });
+	var signaturePad = new SignaturePad(canvas, {
+		backgroundColor: 'rgb(255, 255, 245)' // necessary for saving image as JPEG; can be removed is only saving as PNG or SVG
+	});
+	document.getElementById('submit-delivered').addEventListener('click', function () {
+		if (signaturePad.isEmpty()) {
+		alert("Tanda Tangan Anda Kosong! Silahkan tanda tangan terlebih dahulu.");
+		}else{
+		var data = signaturePad.toDataURL('image/png');
+		console.log(data);
+		$('.sign').html('<textarea id="signature64" name="signed" style="display:none">'+data+'</textarea>');
+		}
+	});
+	document.getElementById('clear').addEventListener('click', function () {
+		signaturePad.clear();
+	});
   </script>
