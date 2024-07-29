@@ -87,6 +87,7 @@
                         <th>{{ trans('app.grand_total') }}</th>
                         <th>{{ trans('app.payment_status') }}</th>
                         <th>{{ trans('app.order_status') }}</th>
+                        <th>{{ trans('app.partial') }}</th>
                         <th>{{ trans('app.options') }}</th>
                         <th>&nbsp;</th>
                     </tr>

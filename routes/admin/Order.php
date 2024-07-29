@@ -15,6 +15,8 @@ Route::get('order/{order}/adminNote', [OrderController::class, 'adminNote'])->na
 
 Route::put('order/{order}/adminNote', [OrderController::class, 'saveAdminNote'])->name('order.saveAdminNote');
 
+Route::put('order/{order}/saveDueDatePayment', [OrderController::class, 'saveDueDatePayment'])->name('order.saveDueDatePayment');
+
 Route::delete('order/{order}/archive', [OrderController::class, 'archive'])->name('order.archive'); // order move to trash
 
 Route::get('/{order}/details', [OrderController::class, 'show'])->name('details'); // order Details
@@ -47,7 +49,11 @@ Route::get('order/searchCustomer', [OrderController::class, 'searchCustomer'])->
 
 Route::get('order/{order}/fulfill', [OrderController::class, 'fulfillment'])->name('order.fulfillment');
 
+Route::get('order/{order}/deliveredConfirmation', [OrderController::class, 'deliveredConfirmation'])->name('order.deliveredConfirmation');
+
 Route::put('order/{order}/fulfill', [OrderController::class, 'fulfill'])->name('order.fulfill');
+
+Route::put('order/{order}/deliveredConfirmed', [OrderController::class, 'deliveredConfirmed'])->name('order.deliveredConfirmed');
 
 Route::put('order/{order}/updateOrderStatus', [OrderController::class, 'updateOrderStatus'])->name('order.updateOrderStatus');
 

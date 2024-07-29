@@ -187,12 +187,13 @@ class InventoryController extends Controller
                 ->with('error', trans('messages.cant_add_more_inventory'));
         }
 
-        $inStock = $this->inventory->checkInventoryExist($id);
+        // $inStock = $this->inventory->checkInventoryExist($id);
 
-        if ($inStock) {
-            return redirect()->route('admin.stock.inventory.edit', $inStock->id)
-                ->with('warning', trans('messages.inventory_exist'));
-        }
+         // if ($inStock) {
+         //     //change into if exist the produst will create new but different expired date
+         //     return redirect()->route('admin.stock.inventory.edit', $inStock->id)
+         //         ->with('warning', trans('messages.inventory_exist'));
+         // }
 
         $product = Product::with('categories.attrsList.attributeValues')->findOrFail($id);
 

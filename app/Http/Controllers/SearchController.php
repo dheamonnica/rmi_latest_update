@@ -8,6 +8,7 @@ use App\Models\Product;
 use App\Models\Category;
 use App\Models\Customer;
 use App\Models\Inventory;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -26,11 +27,17 @@ class SearchController extends Controller
 
         $results = [];
 
-        if (strlen($term) < 3) {
-            return Response::json($results);
-        }
+        // if (strlen($term) < 3) {
+         //     return Response::json($results);
+         // }
 
-        $query = Product::search($term)->where('active', 1);
+         // $query = Product::search($term)->where('active', 1);
+         $query = Product::where('name', 'LIKE', '%'.$term.'%')
+             ->orWhere('licence_number', 'LIKE', '%'.$term.'%')
+             ->orWhere('manufacture_skuid', 'LIKE', '%'.$term.'%')
+             ->orWhere('selling_skuid', 'LIKE', '%'.$term.'%')
+             ->orWhere('client_skuid', 'LIKE', '%'.$term.'%')
+             ->where('active', 1);
 
         // When vendor can use own catalog only
         if (Auth::user()->isFromMerchant() && config('system_settings.can_use_own_catalog_only')) {
@@ -65,11 +72,23 @@ class SearchController extends Controller
 
         $results = [];
 
-        if (strlen($term) < 3) {
-            return Response::json($results);
-        }
+        // if (strlen($term) < 3) {
+        //     return Response::json($results);
+        // }
 
-        $customers = Customer::search($term)->where('active', 1)->take(5)->get();
+        // $customers = Customer::search($term)->where('active', 1)->take(5)->get();
+        //find user warehouses service & Unit And Aksesoris
+        $warehouse = User::
+            where('warehouse_name', 'LIKE', '%SERVICE%')
+            ->orWhere('warehouse_name', 'LIKE', '%service%')
+            ->orWhere('warehouse_name', 'LIKE', '%Unit%')
+            ->orWhere('warehouse_name', 'LIKE', '%Unit And Aksesoris%')
+            ->orWhere('warehouse_name', 'LIKE', '%Unit And Accessories%')
+            ->get()->pluck('id')->toArray();
+
+        array_push($warehouse, Auth::user()->id);
+
+        $customers = Customer::where('name', 'LIKE', '%'.$term.'%')->whereIn('merchant_id', $warehouse)->where('active', 1)->take(5)->get();
 
         foreach ($customers as $customer) {
             $results[] = ['text' => get_formated_cutomer_str($customer), 'id' => $customer->id];

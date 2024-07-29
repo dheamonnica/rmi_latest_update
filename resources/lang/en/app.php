@@ -184,6 +184,7 @@ return [
     'payment_statuses' => 'Payment statuses',
     'payment_methods' => 'Payment methods',
     'appearance' => 'Appearance',
+    'partial' => 'Partial Status',
     'approved' => 'Approved',
     'pending' => 'Pending',
     'reports' => 'Reports',
@@ -796,6 +797,8 @@ return [
     'update_app_license' => 'Update license',
     'uninstall_app_license' => 'Uninstall license',
     'take_a_backup' => 'Take a backup',
+    'update_payment_terms' => 'Update Payment Term',
+    'delivered_order' => 'Order Delivered',
 
     'payment_method_type' => [
         'paypal' => [
@@ -856,6 +859,8 @@ return [
         'waiting'   => 'Waiting',
         'waiting_for_payment' => 'Waiting for payment',
         'packed' => 'Packed',
+        'partial' => 'Partial',
+        'partial_fulfilled' => 'Partial Fulfilled',
     ],
 
     'priorities' => [
@@ -1049,7 +1054,7 @@ return [
         'packaging_name' => 'Packaging name',
         'shipping_carrier_name' => 'Carrier name',
         'shipping_tracking_url' => 'Tracking url',
-        'order_tracking_id' => 'Tracking ID',
+        'order_tracking_id' => 'Tracking ID or Receipt of Goods Forms (Surat Jalan)',
         'set_as_default_packaging' => 'Set as default packaging',
         'width' => 'Width',
         'height' => 'Height',
@@ -1228,7 +1233,10 @@ return [
         'cancel_by' => 'Cancel By',
         'product_qty' => 'Product Qty',
         'due_date_payment' => 'Due Date Payment',
-
+        'payment_terms' => 'Payment Terms',
+        'image_uploads' => 'Upload Images',
+        'receiver_name' => 'Receiver Name',
+        'digital_sign' => 'Digital Signature',
         // manufacture
         'manufacture_pic_name' => 'Manufacture PIC Name',
         'manufacture_pic_email' => 'Manufacture PIC Email',

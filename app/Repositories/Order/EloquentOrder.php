@@ -10,9 +10,14 @@ use App\Repositories\BaseRepository;
 use App\Repositories\EloquentRepository;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use App\Common\ImageUploadManual;
 
 class EloquentOrder extends EloquentRepository implements BaseRepository, OrderRepository
 {
+
+    use ImageUploadManual;
+
     protected $model;
 
     public function __construct(Order $order)
@@ -105,6 +110,13 @@ class EloquentOrder extends EloquentRepository implements BaseRepository, OrderR
             $order = $this->model->find($order);
         }
 
+        if ($request->hasFile('images')) {
+           //add path /images/po_number_ref/abcd.png
+           $file = $this->saveImage($request->images, str_replace('/','-',$order->po_number_ref));
+
+            $order->confirmed_shipping_image = $file['path'];
+        }
+
         $order->shipping_date = date('Y-m-d');
         $order->shipped_by = Auth::user()->id;
         $order->update($request->all());
@@ -116,6 +128,33 @@ class EloquentOrder extends EloquentRepository implements BaseRepository, OrderR
         return $order;
     }
 
+    public function confimedDelivered(Request $request, $order)
+    {
+        if (!$order instanceof Order) {
+            $order = $this->model->find($order);
+        }
+
+        if ($request->hasFile('images')) {
+            //add path /images/po_number_ref/abcd.png
+            $file = $this->saveImage($request->images, str_replace('/','-',$order->po_number_ref));
+
+            $order->confirmed_delivered_image = $file['path'];
+        }
+
+        if ($request->signed) {
+            //add path /images/po_number_ref/abcd.png
+            $signed = $this->saveDigitalSignImage($request->signed, str_replace('/','-',$order->po_number_ref));
+
+            $order->hash_sign = $request->signed;
+            $order->digital_sign_image = $signed;
+        }
+
+        //update receiver name 
+        $order->receiver_name = $request->receiver_name;
+
+        return $order;
+    }
+
     public function updateOrderStatus(Request $request, $order)
     {
         if (!$order instanceof Order) {
@@ -123,6 +162,18 @@ class EloquentOrder extends EloquentRepository implements BaseRepository, OrderR
         }
 
         $order->order_status_id = $request->input('order_status_id');
+
+        return $order->save();
+    }
+
+
+    public function updateDueDatePayment(Request $request, $order)
+    {
+        if (!$order instanceof Order) {
+            $order = $this->model->find($order);
+        }
+
+        $order->due_date_payment = $request->input('payment_terms');
 
         return $order->save();
     }
@@ -200,11 +251,26 @@ class EloquentOrder extends EloquentRepository implements BaseRepository, OrderR
             if ($order->inventories->contains($id)) {
                 $old = $order->inventories()->where('inventory_id', $id)->first();
                 $old_qtt = $old->pivot->quantity;
+                
+                 /**
+                  * Qty (dari Case di atas ini hanya bisa di input 5 Sesuai Stock) tapi Jika Order 10 Di stocknya kosong kita ttp bisa bikin Po meskipun stocknya kurang - Di stock inventory akan minus 
+                  * simulasi
+                  * $old_qtt = 5
+                  * $item->quantity = 10
+                  * if (5 > 10) //false
+                  * else if (5 < 10 ) //true
+                  *  -> 10 - 5 = 5 => change into 5 - 10 = -5 (differential)
+                  *  -> update order_items -> is_partial = true
+                  *  -> update orders -> partial_status_id = true
+                  */
 
                 if ($old_qtt > $item->quantity) {
                     Inventory::find($id)->increment('stock_quantity', $old_qtt - $item->quantity);
                 } elseif ($old_qtt < $item->quantity) {
+                    // Inventory::find($id)->decrement('stock_quantity', $item->quantity - $old_qtt);
                     Inventory::find($id)->decrement('stock_quantity', $item->quantity - $old_qtt);
+
+                    $order->update('partial_status_id', 1);
                 }
             } else {
                 Inventory::find($id)->decrement('stock_quantity', $item->quantity);
