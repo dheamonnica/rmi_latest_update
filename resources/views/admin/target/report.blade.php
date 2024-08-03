@@ -33,14 +33,12 @@
                     @endforeach
 
                 </select>
-                @if (Auth::user()->isAdmin())
-                    <select id="merchantFilterTarget" class="btn btn-sm btn-default">
-                        <option value="" selected>Select Business Unit</option>
-                        @foreach ($merchants as $merchant)
-                            <option value="{{ $merchant }}">{{ $merchant }}</option>
-                        @endforeach
-                    </select>
-                @endif
+                <select id="merchantFilterTarget" class="btn btn-sm btn-default">
+                    <option value="" selected>Select Business Unit</option>
+                    @foreach ($merchants as $merchant)
+                        <option value="{{ $merchant }}">{{ $merchant }}</option>
+                    @endforeach
+                </select>
             </div>
         </div>
 

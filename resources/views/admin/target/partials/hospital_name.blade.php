@@ -1,3 +1,3 @@
 <td>
-    {{ $target->hospital_name }}
+    {{ $target->getHospitalName->name }}
 </td>

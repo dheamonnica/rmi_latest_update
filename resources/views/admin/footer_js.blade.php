@@ -765,11 +765,6 @@
                     'printable': false
                 },
                 {
-                    'data': 'date',
-                    'name': 'date'
-
-                },
-                {
                     'data': 'month',
                     'name': 'month'
 
@@ -916,8 +911,18 @@
                     'data': 'status',
                     'name': 'status'
                 },
+                {
+                    'data': 'shop_id',
+                    'name': 'shop_id',
+                    visible: false
+                },
             ]
         }));
+
+        // filter by warehouse, marketing, and leader
+        @if (Auth::user()->role_id === 3 || Auth::user()->role_id === 8 || Auth::user()->role_id === 13)
+            tableTargetsReport.column('shop_id:name').search('{{ Auth::user()->shop_id }}').draw();
+        @endif
 
         function filterByMonthTarget() {
             var selectedMonth = $('#monthFilterTarget').val();
@@ -952,7 +957,6 @@
             method: 'GET',
             success: function(data) {
                 additionalData = data.data;
-                // console.log(additionalData, 'additional data'); // Log the additional data
             },
             error: function(xhr, status, error) {
                 console.error('Error fetching additional data:', error);
@@ -961,7 +965,10 @@
 
         function format(dataItem) {
             // Filter the additional data for the relevant shop_id
-            let relatedData = additionalData.filter(item => item.shop_id === dataItem.shop_id);
+            // console.log(dataItem, 'dataItem')
+            // console.log(additionalData, 'additionalData')
+            let relatedData = additionalData.filter(item => item.shop_id == dataItem.shop_id &&
+                item.month == dataItem.month && item.year == dataItem.year);
 
             // Build the table HTML
             let formattedData = `
@@ -971,13 +978,12 @@
                     <tr>
                         <th>Month</th>
                         <th>Year</th>
+                        <th>Warehouse</th>
                         <th>Client</th>
-                        <th>Actual Sales</th>
-                        <th>Grand Total</th>
-                        <th>Created At</th>
-                        <th>Created By</th>
-                        <th>Updated At</th>
-                        <th>Updated By</th>
+                        <th>Total Target</th>
+                        <th>Total Selling</th>
+                        <th>Rate</th>
+                        <th>Status</th>
                     </tr>
                 </thead>
                 <tbody id="massSelectArea">
@@ -999,6 +1005,10 @@
                     month: 'long'
                 }); // Full month name
                 let year = date.getFullYear();
+
+                let achieve = row.actual_sales <= 0 || row.total_target <= 0 ? 0 : (row.actual_sales / row
+                    .total_target) * 100;
+
                 const options = {
                     year: 'numeric',
                     month: 'long',
@@ -1009,15 +1019,14 @@
                 };
                 formattedData += `
                     <tr>
-                        <td>${month}</td>
-                        <td>${year}</td>
-                        <td>${row.hospital_name}</td>
-                        <td>${formatter.format(row.total_grand_total)}</td>
-                        <td>${formatter.format(row.grand_total)}</td>
-                        <td>${new Date(row.created_at).toLocaleDateString('en-US', options)}</td>
-                        <td>${row.creator_name}</td>
-                        <td>${row.updated_at ? new Date(row.updated_at).toLocaleDateString('en-US', options) : ''}</td>
-                        <td>${row.updater_name || ''}</td>
+                        <td>${row.month}</td>
+                        <td>${row.year}</td>
+                        <td>${row.warehouse_name}</td>
+                        <td>${row.client_name}</td>
+                        <td>${formatter.format(row.total_target)}</td>
+                        <td>${formatter.format(row.actual_sales)}</td>
+                        <td>${(achieve).toFixed(2)}%</td>
+                        <td>${achieve >= 100 ? '<span class="label label-primary">ACHIEVE</span>' : '<span class="label label-danger">FAIL</span>'}</td>
                     </tr>
                 `;
             });

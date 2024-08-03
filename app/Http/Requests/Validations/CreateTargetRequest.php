@@ -24,7 +24,6 @@ class CreateTargetRequest extends Request
     public function rules()
     {
         return [
-            'date' => 'required',
             'grand_total' => 'required',
         ];
     }

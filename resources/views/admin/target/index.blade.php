@@ -39,8 +39,8 @@
                         @endforeach
                     </select>
                 @endif
-
-                @if (!Auth::user()->isAdmin() || !Auth::user()->isMerchant())
+                {{-- leader --}}
+                @if (Auth::user()->role_id === 13)
                     <a href="javascript:void(0)" data-link="{{ route('admin.target.create') }}"
                         class="ajax-modal-btn btn btn-new btn-flat ml-5">{{ trans('app.form.create_target') }}</a>
                 @endif
@@ -57,7 +57,6 @@
                                     title="{{ trans('app.select_all') }}"></i>
                             </button>
                         </th>
-                        <th>{{ trans('app.form.date') }}</th>
                         <th>{{ trans('app.form.month') }}</th>
                         <th>{{ trans('app.form.year') }}</th>
                         <th>{{ trans('app.form.client') }}</th>
