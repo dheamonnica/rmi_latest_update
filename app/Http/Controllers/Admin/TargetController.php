@@ -45,60 +45,58 @@ class TargetController extends Controller
      */
     public function index()
     {
-        $merchants = Merchant::get()->pluck('warehouse_name', 'id')->toArray();
+        $merchants = Merchant::whereNotNull('warehouse_name')
+            ->get()
+            ->pluck('warehouse_name', 'id')
+            ->toArray();
 
         $years = Target::selectRaw('YEAR(created_at) as year')
             ->distinct()
             ->orderBy('year', 'desc')
             ->pluck('year');
 
-        $targets = $this->target->all();
 
         $trashes = $this->target->trashOnly();
 
-        if (Auth::user()->isAdmin() || Auth::user()->isMerchant() || Auth::user()->isFromPlatform()) {
-            $getTotalIncomebyShop = Order::selectRaw('SUM(grand_total) as total_grand_total')
-                ->where('shop_id', Auth::user()->shop_id)
-                ->whereNull('deleted_at')
-                ->orWhere('deleted_at', '')
-                ->first();
-        } else {
-            $getTotalIncomebyShop = Order::selectRaw('SUM(grand_total) as total_grand_total')
-                ->whereNull('deleted_at')
-                ->orWhere('deleted_at', '')
-                ->first();
-        }
+        $targets = Target::select('target.*', 'shops.name as shop_name', 'creator.name as creator_name', 'updater.name as updater_name')
+            ->selectRaw('(SELECT SUM(orders.grand_total) FROM orders WHERE orders.shop_id = target.shop_id AND orders.deleted_at IS NULL AND orders.cancel_date IS NULL) as total_grand_total')
+            ->join('shops', 'target.shop_id', '=', 'shops.id')
+            ->leftJoin('users as creator', 'target.created_by', '=', 'creator.id')
+            ->leftJoin('users as updater', 'target.updated_by', '=', 'updater.id')
+            ->when(Auth::user()->role_id === 8 || Auth::user()->role_id === 13, function ($query) {
+                return $query->where('target.shop_id', Auth::user()->shop_id);
+            })
+            ->get();
 
-        return view('admin.target.index', compact('merchants', 'years', 'targets', 'trashes', 'getTotalIncomebyShop'));
+
+        return view('admin.target.index', compact('merchants', 'years', 'targets', 'trashes'));
     }
 
     public function report()
     {
-        $merchants = Merchant::get()->pluck('warehouse_name', 'id')->toArray();
+        $merchants = Merchant::whereNotNull('warehouse_name')
+            ->get()
+            ->pluck('warehouse_name', 'id')
+            ->toArray();
 
         $years = Target::selectRaw('YEAR(created_at) as year')
             ->distinct()
             ->orderBy('year', 'desc')
             ->pluck('year');
 
-        $targets = $this->target->all();
-
         $trashes = $this->target->trashOnly();
 
-        if (Auth::user()->isAdmin() || Auth::user()->isMerchant() || Auth::user()->isFromPlatform()) {
-            $getTotalIncomebyShop = Order::selectRaw('SUM(grand_total) as total_grand_total')
-                ->where('shop_id', Auth::user()->shop_id)
-                ->whereNull('deleted_at')
-                ->orWhere('deleted_at', '')
-                ->first();
-        } else {
-            $getTotalIncomebyShop = Order::selectRaw('SUM(grand_total) as total_grand_total')
-                ->whereNull('deleted_at')
-                ->orWhere('deleted_at', '')
-                ->first();
-        }
+        $targets = Target::select('target.*', 'shops.name as shop_name', 'creator.name as creator_name', 'updater.name as updater_name')
+            ->selectRaw('(SELECT SUM(orders.grand_total) FROM orders WHERE orders.shop_id = target.shop_id AND orders.deleted_at IS NULL AND orders.cancel_date IS NULL) as total_grand_total')
+            ->join('shops', 'target.shop_id', '=', 'shops.id')
+            ->leftJoin('users as creator', 'target.created_by', '=', 'creator.id')
+            ->leftJoin('users as updater', 'target.updated_by', '=', 'updater.id')
+            ->when(Auth::user()->role_id === 8 || Auth::user()->role_id === 13, function ($query) {
+                return $query->where('target.shop_id', Auth::user()->shop_id);
+            })
+            ->get();
 
-        return view('admin.target.report', compact('merchants', 'years', 'targets', 'trashes', 'getTotalIncomebyShop'));
+        return view('admin.target.report', compact('merchants', 'years', 'targets', 'trashes'));
     }
 
     public function getTargetsTables(Request $request)
@@ -108,9 +106,6 @@ class TargetController extends Controller
         return Datatables::of($targets)
             ->addColumn('checkbox', function ($target) {
                 return view('admin.target.partials.checkbox', compact('target'));
-            })
-            ->addColumn('date', function ($target) {
-                return view('admin.target.partials.date', compact('target'));
             })
             ->addColumn('month', function ($target) {
                 return view('admin.target.partials.month', compact('target'));
@@ -124,21 +119,8 @@ class TargetController extends Controller
             ->addColumn('grand_total', function ($target) {
                 return view('admin.target.partials.grand_total', compact('target'));
             })
-            ->addColumn('actual_sales', function ($getTotalIncomebyShop) {
-                if (Auth::user()->isAdmin() || Auth::user()->isMerchant() || Auth::user()->isFromPlatform()) {
-                    $getTotalIncomebyShop = Order::selectRaw('SUM(grand_total) as total_grand_total')
-                        ->where('shop_id', Auth::user()->shop_id)
-                        ->whereNull('deleted_at')
-                        ->orWhere('deleted_at', '')
-                        ->first();
-                } else {
-                    $getTotalIncomebyShop = Order::selectRaw('SUM(grand_total) as total_grand_total')
-                        ->whereNull('deleted_at')
-                        ->orWhere('deleted_at', '')
-                        ->first();
-                }
-
-                return view('admin.target.partials.actual_sales', compact('getTotalIncomebyShop'));
+            ->addColumn('actual_sales', function ($target) {
+                return view('admin.target.partials.actual_sales', compact('target'));
             })
             ->addColumn('warehouse', function ($target) {
                 return view('admin.target.partials.warehouse', compact('target'));
@@ -159,51 +141,48 @@ class TargetController extends Controller
                 return view('admin.target.partials.options', compact('target'));
             })
 
-            ->rawColumns(['checkbox', 'date', 'month', 'year', 'hospital_name', 'grand_total', 'actual_sales', 'warehouse', 'created_by', 'created_at', 'updated_at', 'updated_by', 'option'])
+            ->rawColumns(['checkbox', 'month', 'year', 'hospital_name', 'grand_total', 'actual_sales', 'warehouse', 'created_by', 'created_at', 'updated_at', 'updated_by', 'option'])
             ->make(true);
     }
 
     public function getTargetsTablesReport(Request $request)
     {
-        $targets = Inventory::select('inventories.shop_id', 'shops.name as shop_name')
-            ->selectRaw('SUM(orders.grand_total) as total_selling')
-            ->selectRaw('SUM(target.grand_total) as total_target')
-            ->join('shops', 'inventories.shop_id', '=', 'shops.id')
-            ->join('products', 'inventories.product_id', '=', 'products.id')
-            ->join('target', 'inventories.shop_id', '=', 'target.shop_id')
-            ->leftJoin('orders', 'inventories.shop_id', '=', 'orders.shop_id')
-            ->when(Auth::user()->role_id === 8 || Auth::user()->role_id === 13, function ($query) {
-                return $query->where('inventories.shop_id', Auth::user()->shop_id); // assuming the shop_id is available on the user
-            })
-            ->groupBy('inventories.shop_id', 'shops.name')
-            ->get();
+        $targets = Target::getReportHeaderData();
 
         return Datatables::of($targets)
             ->addColumn('month', function ($target) {
-                return view('admin.target.partials.month', compact('target'));
+                return $target->month;
             })
             ->addColumn('year', function ($target) {
-                return view('admin.target.partials.year', compact('target'));
+                return $target->year;
             })
             ->addColumn('warehouse', function ($target) {
-                return $target->shop_name;
+                return $target->name;
             })
             ->addColumn('total_target', function ($target) {
-                return 'Rp. ' . number_format($target->total_target, 2, '.', '.');
+                return 'Rp. ' . number_format($target->total_target, 0, '.', '.');
             })
             ->addColumn('total_selling', function ($target) {
-                return 'Rp. ' . number_format($target->total_selling, 2, '.', '.');
+                return 'Rp. ' . number_format($target->actual_sales, 0, '.', '.');
             })
             ->addColumn('rate', function ($target) {
-                return ($target->total_selling / $target->total_target) . ' %';
+                $total_selling = $target->actual_sales <= 0 || $target->total_target <= 0 ? 0 : ($target->actual_sales / $target->total_target) * 100;
+                return number_format($total_selling, 2, '.', '.') . '%';
             })
             ->addColumn('status', function ($target) {
-                $achieve = ($target->total_selling / $target->total_target) * 100;
+                $achieve = $target->actual_sales <= 0 || $target->total_target <= 0 ? '0 %' : ($target->actual_sales / $target->total_target) * 100;
                 $status = $achieve >= 100 ? '<span class="label label-primary">ACHIEVE</span>' : '<span class="label label-danger">FAIL</span>';
                 return $status;
             })
             ->rawColumns(['month', 'year', 'warehouse', 'total_target', 'total_selling', 'rate', 'status'])
             ->make(true);
+    }
+
+    public function getTargetsTablesExpand(Request $request)
+    {
+        $results = Target::getReportData();
+
+        return response()->json(['data' => $results]);
     }
 
     /**
@@ -213,7 +192,7 @@ class TargetController extends Controller
      */
     public function create()
     {
-        $hospital_name = Customer::get()->pluck('name', 'name')->toArray();
+        $hospital_name = Customer::get()->pluck('name', 'id')->toArray();
 
         return view('admin.target._create', compact('hospital_name'));
     }
@@ -228,6 +207,9 @@ class TargetController extends Controller
     {
         date_default_timezone_set('Asia/Jakarta');
         $request['created_at'] = date('Y-m-d G:i:s');
+        // Extract the month and year from month
+        $request['month'] = date('F', strtotime($request['month']));
+        $request['year'] = date('Y', strtotime($request['month']));
         $this->target->store($request);
         return back()->with('success', trans('messages.created', ['model' => $this->model_name]));
     }
@@ -241,7 +223,7 @@ class TargetController extends Controller
     public function edit($id)
     {
         $target = $this->target->find($id);
-        $hospital_name = Customer::get()->pluck('name', 'name')->toArray();
+        $hospital_name = Customer::get()->pluck('name', 'id')->toArray();
 
         return view('admin.target._edit', compact('target', 'hospital_name'));
     }

@@ -80,6 +80,7 @@
                             </button>
                         </th>
                         <th>{{ trans('app.form.po_number_ref') }}</th>
+                        <th>{{ trans('app.warehouse') }}</th>
                         <th>{{ trans('app.customer') }}</th>
                         <th>{{ trans('app.form.product_qty') }}</th>
                         <th>{{ trans('app.grand_total') }}</th>

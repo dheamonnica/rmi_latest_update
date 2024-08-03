@@ -7,9 +7,11 @@
 @section('content')
     <div class="box border-small p-2">
         <div class="box-header with-border">
+            <h3 class="box-title">BUDGET REPORT</h3>
+
             <div class="box-tools pull-right p-2">
             </div>
-            <div class="pull-left">
+            <div class="pull-right">
                 <select id="monthFilter" class="btn btn-sm btn-default">
                     <option value="" selected>Select Month</option>
                     <option value="January">January</option>

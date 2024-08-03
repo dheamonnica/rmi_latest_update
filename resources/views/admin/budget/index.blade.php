@@ -7,13 +7,10 @@
 @section('content')
     <div class="box border-small p-2">
         <div class="box-header with-border">
+            <h3 class="box-title">BUDGET DATA</h3>
             <div class="box-tools pull-right p-2">
-                @if (!Auth::user()->isAdmin() || !Auth::user()->isMerchant())
-                    <a href="javascript:void(0)" data-link="{{ route('admin.budget.create') }}"
-                        class="ajax-modal-btn btn btn-new btn-flat">{{ trans('app.form.create_budget') }}</a>
-                @endif
             </div>
-            <div class="pull-left">
+            <div class="pull-right">
                 <select id="monthFilter" class="btn btn-sm btn-default">
                     <option value="" selected>Select Month</option>
                     <option value="January">January</option>
@@ -43,6 +40,11 @@
                             <option value="{{ $merchant }}">{{ $merchant }}</option>
                         @endforeach
                     </select>
+                @endif
+
+                @if (!Auth::user()->isAdmin() || !Auth::user()->isMerchant())
+                    <a href="javascript:void(0)" data-link="{{ route('admin.budget.create') }}"
+                        class="ajax-modal-btn btn btn-new btn-flat ml-5">{{ trans('app.form.create_budget') }}</a>
                 @endif
             </div>
         </div>
