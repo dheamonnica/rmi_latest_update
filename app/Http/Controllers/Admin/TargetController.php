@@ -99,6 +99,23 @@ class TargetController extends Controller
         return view('admin.target.report', compact('merchants', 'years', 'targets', 'trashes'));
     }
 
+    public function reportAdministrator()
+    {
+        $merchants = Merchant::whereNotNull('warehouse_name')
+            ->get()
+            ->pluck('warehouse_name', 'id')
+            ->toArray();
+
+        $years = Target::selectRaw('YEAR(created_at) as year')
+            ->distinct()
+            ->orderBy('year', 'desc')
+            ->pluck('year');
+
+        $trashes = $this->target->trashOnly();
+
+        return view('admin.target.report-administrator', compact('merchants', 'years', 'trashes'));
+    }
+
     public function getTargetsTables(Request $request)
     {
         $targets = $this->target->all();
@@ -181,6 +198,52 @@ class TargetController extends Controller
     public function getTargetsTablesExpand(Request $request)
     {
         $results = Target::getReportData();
+
+        return response()->json(['data' => $results]);
+    }
+
+    public function getTargetsTablesExpandAdministrator(Request $request)
+    {
+        $results = Target::getReportDataExpandAdministrator();
+
+        return response()->json(['data' => $results]);
+    }
+
+    public function getTargetsTablesExpandClientAdministrator(Request $request)
+    {
+        $results = Target::getReportDataExpandClientAdministrator();
+
+        return response()->json(['data' => $results]);
+    }
+
+    public function getTargetsTablesReportAdministrator(Request $request)
+    {
+        $targets = Target::getReportDataHeaderAdministrator();
+
+        return Datatables::of($targets)
+            ->addColumn('month', function ($target) {
+                return $target->month;
+            })
+            ->addColumn('year', function ($target) {
+                return $target->year;
+            })
+            ->addColumn('total_target', function ($target) {
+                return 'Rp. ' . number_format($target->total_target, 0, '.', '.');
+            })
+            ->addColumn('total_selling', function ($target) {
+                return 'Rp. ' . number_format($target->actual_sales, 0, '.', '.');
+            })
+            ->addColumn('rate', function ($target) {
+                $total_selling = $target->actual_sales <= 0 || $target->total_target <= 0 ? 0 : ($target->actual_sales / $target->total_target) * 100;
+                return number_format($total_selling, 2, '.', '.') . '%';
+            })
+            ->addColumn('status', function ($target) {
+                $achieve = $target->actual_sales <= 0 || $target->total_target <= 0 ? '0 %' : ($target->actual_sales / $target->total_target) * 100;
+                $status = $achieve >= 100 ? '<span class="label label-primary">ACHIEVE</span>' : '<span class="label label-danger">FAIL</span>';
+                return $status;
+            })
+            ->rawColumns(['month', 'year', 'total_target', 'total_selling', 'rate', 'status'])
+            ->make(true);
 
         return response()->json(['data' => $results]);
     }

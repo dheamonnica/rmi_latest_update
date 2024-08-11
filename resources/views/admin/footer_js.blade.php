@@ -1062,6 +1062,287 @@
         });
         // END TARGET REPORT
 
+        // TARGET REPORT ADMINISTRATOR
+        // Initialize the main DataTable
+        var tableTargetsReportAdministrator = $('#target-tables-report-administrator').DataTable($.extend({},
+            dataTableOptions, {
+                "ajax": "{{ route('admin.admin.target.getTargetsTablesReportAdministrator') }}",
+                "columns": [{
+                        className: 'dt-control',
+                        orderable: false,
+                        data: null,
+                        defaultContent: ''
+                    },
+                    {
+                        'data': 'month',
+                        'name': 'month'
+                    },
+                    {
+                        'data': 'year',
+                        'name': 'year'
+                    },
+                    {
+                        'data': 'total_target',
+                        'name': 'total_target'
+                    },
+                    {
+                        'data': 'total_selling',
+                        'name': 'total_selling'
+                    },
+                    {
+                        'data': 'rate',
+                        'name': 'rate'
+                    },
+                    {
+                        'data': 'status',
+                        'name': 'status'
+                    },
+                ]
+            }
+        ));
+
+        // Filter functions
+        function filterByMonthTarget() {
+            var selectedMonth = $('#monthFilterTarget').val();
+            tableTargetsReportAdministrator.column('month:name').search(selectedMonth).draw();
+        }
+
+        function filterByWarehouseTarget() {
+            var selectedMerchant = $('#merchantFilterTarget').val();
+            tableTargetsReportAdministrator.column('warehouse:name').search(selectedMerchant).draw();
+        }
+
+        function filterByYearTarget() {
+            var selectedMerchant = $('#yearFilterTarget').val();
+            tableTargetsReportAdministrator.column('year:name').search(selectedMerchant).draw();
+        }
+
+        // Bind filter functions to the change event of filter dropdowns
+        $('#monthFilterTarget').on('change', filterByMonthTarget);
+        $('#merchantFilterTarget').on('change', filterByWarehouseTarget);
+        $('#yearFilterTarget').on('change', filterByYearTarget);
+
+        // Fetch additional data for both levels via AJAX
+        let additionalDataAdministrator = [];
+        $.ajax({
+            url: "{{ route('admin.admin.target.getTargetsTablesExpandAdministrator') }}",
+            method: 'GET',
+            success: function(data) {
+                additionalDataAdministrator = data.data;
+            },
+            error: function(xhr, status, error) {
+                console.error('Error fetching additional data:', error);
+            }
+        });
+
+        let additionalDataAdministratorSecond = [];
+        $.ajax({
+            url: "{{ route('admin.admin.target.getTargetsTablesExpand') }}",
+            method: 'GET',
+            success: function(data) {
+                additionalDataAdministratorSecond = data.data;
+            },
+            error: function(xhr, status, error) {
+                console.error('Error fetching additional data:', error);
+            }
+        });
+
+        // First-level row formatting function
+        function formatFirstLevel(dataItem) {
+            let relatedDataAdministrator = additionalDataAdministrator.filter(item =>
+                item.month == dataItem.month && item.year == dataItem.year);
+
+            // console.log(additionalDataAdministrator, 'additionalDataAdministrator first')
+            // console.log(dataItem, 'dataItem first')
+
+            let formattedDataAdministrator = `
+        <div class="table-responsive" >
+            <table class="table table-hover table-bordered">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Month</th>
+                        <th>Year</th>
+                        <th>Warehouse</th>
+                        <th>Total Target</th>
+                        <th>Total Selling</th>
+                        <th>Rate</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+    `;
+
+            const formatter = new Intl.NumberFormat('id-ID', {
+                style: 'currency',
+                currency: 'IDR',
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0,
+            });
+
+            relatedDataAdministrator.forEach(function(row, index) {
+                let achieve = row.actual_sales <= 0 || row.total_target <= 0 ? 0 : (row.actual_sales / row
+                    .total_target) * 100;
+
+                formattedDataAdministrator += `
+            <tr class="expanded-second-table" data-parent-id="${dataItem.month}-${dataItem.year}-${row.warehouse_name}" id="expanded-second-table-${index}">
+                <td class="dt-control-second"></td>
+                <td>${row.month}</td>
+                <td>${row.year}</td>
+                <td>${row.warehouse_name}</td>
+                <td>${formatter.format(row.total_target)}</td>
+                <td>${formatter.format(row.actual_sales)}</td>
+                <td>${(achieve).toFixed(2)}%</td>
+                <td>${achieve >= 100 ? '<span class="label label-primary">ACHIEVE</span>' : '<span class="label label-danger">FAIL</span>'}</td>
+            </tr>
+        `;
+            });
+
+            formattedDataAdministrator += `
+                </tbody>
+            </table>
+        </div>
+    `;
+
+            return formattedDataAdministrator;
+        }
+
+        let additionalDataAdministratorWarehouseClient = [];
+        $.ajax({
+            url: "{{ route('admin.admin.target.getTargetsTablesExpandClientAdministrator') }}",
+            method: 'GET',
+            success: function(data) {
+                additionalDataAdministratorWarehouseClient = data.data;
+            },
+            error: function(xhr, status, error) {
+                console.error('Error fetching additional data:', error);
+            }
+        });
+
+        // Second-level row formatting function
+        function formatSecondLevel(dataItem) {
+            let relatedDataAdministratorSecond = additionalDataAdministratorSecond
+                .filter(item =>
+                    item.month == dataItem.month && item.year == dataItem.year && item.warehouse_name == dataItem
+                    .warehouse_name);
+
+            console.log(additionalDataAdministratorSecond, 'additionalDataAdministratorSecond kedua')
+            console.log(dataItem, 'dataItem kedua')
+
+            // Create our number formatter.
+            const formatter = new Intl.NumberFormat('id-ID', {
+                style: 'currency',
+                currency: 'IDR',
+
+                // These options are needed to round to whole numbers if that's what you want.
+                minimumFractionDigits: 0, // (this suffices for whole numbers, but will print 2500.10 as $2,500.1)
+                maximumFractionDigits: 0, // (causes 2500.99 to be printed as $2,501)
+            });
+
+
+
+            let formattedDataAdministratorSecond = `
+        <div class="table-responsive">
+            <table class="table table-hover table-bordered">
+                <thead>
+                    <tr>
+                        <th>Month</th>
+                        <th>Year</th>
+                        <th>Warehouse</th>
+                        <th>Client</th>
+                        <th>Total Target</th>
+                        <th>Total Selling</th>
+                        <th>Rate</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+    `;
+
+            relatedDataAdministratorSecond.forEach(function(row) {
+                let achieve = row.actual_sales <= 0 || row.total_target <= 0 ? 0 : (row.actual_sales / row
+                    .total_target) * 100;
+                formattedDataAdministratorSecond += `
+            <tr>
+                <td>${row.month}</td>
+                <td>${row.year}</td>
+                <td>${row.warehouse_name}</td>
+                <td>${row.client_name}</td>
+                <td>${formatter.format(row.total_target)}</td>
+                <td>${formatter.format(row.actual_sales)}</td>
+                <td>${(achieve).toFixed(2)}%</td>
+                <td>${achieve >= 100 ? '<span class="label label-primary">ACHIEVE</span>' : '<span class="label label-danger">FAIL</span>'}</td>
+            </tr>
+        `;
+            });
+
+            formattedDataAdministratorSecond += `
+                </tbody>
+            </table>
+        </div>
+    `;
+
+            return formattedDataAdministratorSecond;
+        }
+
+        // Handle first-level row expansion
+        $('#target-tables-report-administrator tbody').on('click', 'td.dt-control', function(e) {
+            let tr = e.target.closest('tr');
+            let row = tableTargetsReportAdministrator.row(tr);
+
+            if (row.child.isShown()) {
+                row.child.hide();
+                $(tr).removeClass('dt-hasChild');
+            } else {
+                row.child(formatFirstLevel(row.data())).show();
+                $(tr).addClass('dt-hasChild');
+            }
+        });
+
+        // Handle second-level row expansion
+        $('#target-tables-report-administrator tbody').on('click', 'td.dt-control-second', function(e) {
+            e.stopPropagation(); // Prevent the first-level expansion from being triggered
+
+            // Locate the clicked second-level row
+            let secondLevelTr = $(this).closest('tr.expanded-second-table');
+
+            // Retrieve the data-parent-id attribute to identify the parent row
+            let parentId = secondLevelTr.data('parent-id');
+
+            // Use the parentId to find the first-level parent data
+            let [month, year, warehouseName] = parentId.split('-');
+
+            let parentData = additionalDataAdministrator.find(item =>
+                item.month === month && item.year === year && item.warehouse_name === warehouseName);
+
+            // Debugging: Log the relevant elements and data
+            console.log(secondLevelTr, 'Second-level clicked row');
+            console.log(parentId, 'Parent ID');
+            console.log(parentData, 'Parent data for second-level expansion');
+
+            if (!parentData) {
+                console.error('Parent data is undefined. Ensure correct row selection.');
+                return;
+            }
+
+            // Proceed with showing or hiding the child row as needed
+            let childRow = secondLevelTr.next('tr.child');
+            if (childRow.length && childRow.is(':visible')) {
+                childRow.hide();
+                secondLevelTr.removeClass('shown');
+            } else {
+                if (!childRow.length) {
+                    let childRowContent = formatSecondLevel(parentData);
+                    secondLevelTr.after('<tr class="child"><td colspan="8">' + childRowContent + '</td></tr>');
+                    childRow = secondLevelTr.next('tr.child');
+                }
+                childRow.show();
+                secondLevelTr.addClass('shown');
+            }
+        });
+        // END TARGET REPORT ADMINISTRATOR
+
+
         // BUDGET
         // Load offering list by Ajax
         var tableBudgets = $('#budget-tables').DataTable($.extend({}, dataTableOptions, {
