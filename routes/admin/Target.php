@@ -10,6 +10,10 @@ Route::get('target/report', [
     TargetController::class,
     'report'
 ])->name('target.report');
+Route::get('target/report-administrator', [
+    TargetController::class,
+    'reportAdministrator'
+])->name('target.reportAdministrator');
 Route::get('getTargetsTables', [
     TargetController::class,
     'getTargetsTables'
@@ -22,6 +26,19 @@ Route::get('getTargetsTablesExpand', [
     TargetController::class,
     'getTargetsTablesExpand'
 ])->name('admin.target.getTargetsTablesExpand')->middleware('ajax');
+Route::get('getTargetsTablesReportAdministrator', [
+    TargetController::class,
+    'getTargetsTablesReportAdministrator'
+])->name('admin.target.getTargetsTablesReportAdministrator')->middleware('ajax');
+Route::get('getTargetsTablesExpandClientAdministrator', [
+    TargetController::class,
+    'getTargetsTablesExpandClientAdministrator'
+])->name('admin.target.getTargetsTablesExpandClientAdministrator')->middleware('ajax');
+// getTargetsTablesExpandAdministrator
+Route::get('getTargetsTablesExpandAdministrator', [
+    TargetController::class,
+    'getTargetsTablesExpandAdministrator'
+])->name('admin.target.getTargetsTablesExpandAdministrator')->middleware('ajax');
 Route::get('create', [
     TargetController::class,
     'create'
