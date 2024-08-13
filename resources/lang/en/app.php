@@ -1284,6 +1284,8 @@ return [
         'fee_management' => 'Fee Management',
         'marketing' => 'Marketing',
         'operational' => 'Operational',
+        'approved_at' => 'Approved At',
+        'approved_by' => 'Approved By',
 
         // target
         'actual_sales' => 'Actual Sales',

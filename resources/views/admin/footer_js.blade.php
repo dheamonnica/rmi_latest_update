@@ -1399,6 +1399,10 @@
                     'name': 'warehouse'
                 },
                 {
+                    'data': 'status',
+                    'name': 'status'
+                },
+                {
                     'data': 'created_at',
                     'name': 'created_at',
                 },
@@ -1413,6 +1417,14 @@
                 {
                     'data': 'updated_by',
                     'name': 'updated_by',
+                },
+                {
+                    'data': 'approved_at',
+                    'name': 'approved_at',
+                },
+                {
+                    'data': 'approved_by',
+                    'name': 'approved_by',
                 },
                 {
                     'data': 'option',
@@ -1680,20 +1692,21 @@
         // Load offering list by Ajax
         var tableCRMs = $('#crm-tables').DataTable($.extend({}, dataTableOptions, {
             "ajax": "{{ route('admin.admin.crm.getCRMsTables') }}",
-            "columns": [{
-                    className: 'dt-control',
-                    orderable: false,
-                    data: null,
-                    defaultContent: ''
-                },
-                {
-                    'data': 'checkbox',
-                    'name': 'checkbox',
-                    'orderable': false,
-                    'searchable': false,
-                    'exportable': false,
-                    'printable': false
-                },
+            "columns": [
+                // {
+                //     className: 'dt-control',
+                //     orderable: false,
+                //     data: null,
+                //     defaultContent: ''
+                // },
+                // {
+                //     'data': 'checkbox',
+                //     'name': 'checkbox',
+                //     'orderable': false,
+                //     'searchable': false,
+                //     'exportable': false,
+                //     'printable': false
+                // },
                 {
                     'data': 'month',
                     'name': 'month'

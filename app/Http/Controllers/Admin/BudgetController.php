@@ -112,6 +112,12 @@ class BudgetController extends Controller
             ->addColumn('picture', function ($budget) {
                 return view('admin.budget.partials.picture', compact('budget'));
             })
+            ->addColumn('warehouse', function ($budget) {
+                return view('admin.budget.partials.warehouse', compact('budget'));
+            })
+            ->addColumn('status', function ($budget) {
+                return view('admin.budget.partials.status', compact('budget'));
+            })
             ->addColumn('created_by', function ($budget) {
                 return view('admin.budget.partials.created_by', compact('budget'));
             })
@@ -124,11 +130,17 @@ class BudgetController extends Controller
             ->addColumn('updated_by', function ($budget) {
                 return view('admin.budget.partials.updated_by', compact('budget'));
             })
+            ->addColumn('approved_at', function ($budget) {
+                return view('admin.budget.partials.approved_at', compact('budget'));
+            })
+            ->addColumn('approved_by', function ($budget) {
+                return view('admin.budget.partials.approved_by', compact('budget'));
+            })
             ->addColumn('option', function ($budget) {
                 return view('admin.budget.partials.options', compact('budget'));
             })
 
-            ->rawColumns(['checkbox', 'date', 'month', 'year', 'requirement', 'qty', 'total', 'grand_total', 'picture', 'created_by', 'created_at', 'updated_by', 'updated_by', 'option'])
+            ->rawColumns(['checkbox', 'date', 'year', 'month', 'requirement', 'category', 'qty', 'total', 'grand_total', 'warehouse', 'picture', 'status', 'created_by', 'created_at', 'updated_at', 'updated_by', 'approved_at', 'approved_by', 'option'])
             ->make(true);
     }
 
@@ -240,6 +252,16 @@ class BudgetController extends Controller
     {
         $budget = $this->budget->find($id);
         return view('admin.budget._edit', compact('budget'));
+    }
+
+    public function setApprove(Request $request, $id)
+    {
+
+        $budget = $this->budget->find($id);
+
+        $this->budget->updateStatusApprove($request, $budget);
+
+        return back()->with('success', trans('messages.updated', ['model' => $this->model_name]));
     }
 
     /**

@@ -42,7 +42,8 @@
                     </select>
                 @endif
 
-                @if (!Auth::user()->isAdmin() || !Auth::user()->isMerchant())
+                {{-- Leader and Warehouse Area Leader --}}
+                @if (Auth::user()->role_id === 13 || Auth::user()->role_id === 3 || Auth::user()->role_id === 1)
                     <a href="javascript:void(0)" data-link="{{ route('admin.budget.create') }}"
                         class="ajax-modal-btn btn btn-new btn-flat ml-5">{{ trans('app.form.create_budget') }}</a>
                 @endif
@@ -69,10 +70,13 @@
                         <th>{{ trans('app.form.grand_total') }}</th>
                         <th>{{ trans('app.form.picture') }}</th>
                         <th>{{ trans('app.form.warehouse') }}</th>
+                        <th>{{ trans('app.form.status') }}</th>
                         <th>{{ trans('app.form.created_at') }}</th>
                         <th>{{ trans('app.form.created_by') }}</th>
                         <th>{{ trans('app.form.updated_at') }}</th>
                         <th>{{ trans('app.form.updated_by') }}</th>
+                        <th>{{ trans('app.form.approved_at') }}</th>
+                        <th>{{ trans('app.form.approved_by') }}</th>
                         <th>{{ trans('app.form.option') }}</th>
                     </tr>
                 </thead>

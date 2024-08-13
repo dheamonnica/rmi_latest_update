@@ -31,10 +31,15 @@ class Budget extends BaseModel
         'total',
         'grand_total',
         'category',
+        'status',
         'created_at',
         'created_by',
         'updated_at',
         'updated_by',
+        'approved_at',
+        'approved_by',
+        'deleted_at',
+        'deleted_by',
     ];
 
     public function getCreatedBudgetByName() {
@@ -43,5 +48,13 @@ class Budget extends BaseModel
 
     public function getUpdatedBudgetByName() {
         return $this->belongsTo(User::class, 'updated_by');
+    }
+
+    public function getWarehouseByName() {
+        return $this->belongsTo(Shop::class, 'shop_id');
+    }
+
+    public function getApprovedBudget() {
+        return $this->belongsTo(User::class, 'approved_by');
     }
 }

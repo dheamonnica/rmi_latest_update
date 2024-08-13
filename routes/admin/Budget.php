@@ -35,4 +35,7 @@ Route::get('edit/{budget}', [BudgetController::class, 'edit'])->name('admin.budg
 Route::delete('budget/{budget}/trash', [BudgetController::class, 'trash'])
     ->name('admin.budget.trash');
 
+
+Route::put('budget/{budget}/setApprove', [BudgetController::class, 'setApprove'])->name('budget.setApprove');
+
 Route::resource('budget', BudgetController::class);

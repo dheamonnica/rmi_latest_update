@@ -1,0 +1,1 @@
+<td>{{ $budget->getApprovedBudget->name }}</td>
