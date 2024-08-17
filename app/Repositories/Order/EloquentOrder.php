@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use App\Common\ImageUploadManual;
+use Illuminate\Support\Facades\Log;
 
 class EloquentOrder extends EloquentRepository implements BaseRepository, OrderRepository
 {
@@ -237,6 +238,7 @@ class EloquentOrder extends EloquentRepository implements BaseRepository, OrderR
         $temp = [];
 
         foreach ($items as $item) {
+            Log::info('Cart Item:', ['item' => $item]);
             $item = (object) $item;
             $id = $item->inventory_id;
 
@@ -245,6 +247,7 @@ class EloquentOrder extends EloquentRepository implements BaseRepository, OrderR
                 'item_description' => $item->item_description,
                 'quantity' => $item->quantity,
                 'unit_price' => $item->unit_price,
+                'product_id' => $item->product_id,
             ];
 
             // adjust stock qtt based on tth order
