@@ -280,6 +280,8 @@ return [
         App\Providers\RepositoryServiceProvider::class,
         App\Providers\GoogleDriveServiceProvider::class,
         App\Providers\MysqlScoutServiceProvider::class,
+        Riskihajar\Terbilang\TerbilangServiceProvider::class,
+        Milon\Barcode\BarcodeServiceProvider::class,
 
     ], $packages),
 
@@ -346,6 +348,9 @@ return [
         // 'Debugbar' => Barryvdh\Debugbar\Facade::class,
         'Paypalpayment'   => Anouar\Paypalpayment\Facades\PaypalPayment::class,
         'Chat'   => Musonza\Chat\Chat::class,
+        'Terbilang' => Riskihajar\Terbilang\Facades\Terbilang::class,
+        'DNS1D' => Milon\Barcode\Facades\DNS1DFacade::class,
+        'DNS2D' => Milon\Barcode\Facades\DNS2DFacade::class,
     ],
 
 ];

@@ -614,6 +614,21 @@ if (!function_exists('image_cache_path')) {
     }
 }
 
+if (!function_exists('raw_file_url')) {
+    function raw_file_url($path = null, $size = '')
+    {
+        if (!$path) {
+            return get_placeholder_img($size);
+        }
+
+        if ($size == null) {
+            return url("{$path}");
+        }
+
+        return url("{$path}?p={$size}");
+    }
+}
+
 if (!function_exists('get_storage_file_url')) {
     function get_storage_file_url($path = null, $size = '')
     {
@@ -749,6 +764,15 @@ if (!function_exists('get_logo_url')) {
         }
 
         return get_placeholder_img($size);
+    }
+}
+
+if (!function_exists('get_logo_path')) {
+    function get_logo_path()
+    {
+        $system = System::orderBy('id', 'asc')->first();
+
+        return  get_storage_file_url(optional($system->logoImage)->path, null) ?? null;
     }
 }
 
@@ -2812,6 +2836,94 @@ if (!function_exists('is_social_login_configured')) {
         return is_incevio_package_loaded('facebook-login') ||
             is_incevio_package_loaded('google-login') ||
             is_incevio_package_loaded('apple-login');
+    }
+}
+
+if(!function_exists('formatAddress'))
+{
+    function formatAddress($address) {
+        // Define patterns and their replacements with newline characters
+        $patterns = [
+            '/(Jl\.[^,]+,)/i',                // Street (Jl. ...)
+            '/(Kec\.[^,]+,)/i',               // Sub-district (Kec. ...)
+            '/(Kabupaten[^,]+,)/i',           // Regency (Kabupaten ...)
+            '/([A-Za-z ]+\d{5},)/i',          // Postal code
+            '/(BOGOR,)/i',                    // City (BOGOR)
+            '/(West Java \d{5},)/i',          // Province with postal code
+            '/(Indonesia,?)/i',               // Country
+            '/(Phone: [\d ]+)/i'              // Phone number
+        ];
+        
+        // Apply patterns to the address to insert newlines
+        $formattedAddress = preg_replace($patterns, "$1\n", $address);
+    
+        // Split the formatted address into lines
+        $addressLines = explode("\n", $formattedAddress);
+    
+        // Ensure only 2 lines have line breaks and the rest are joined
+        if (count($addressLines) > 2) {
+            $formattedAddress = implode("\n", array_slice($addressLines, 0, 2)) . "\n" . implode(', ', array_slice($addressLines, 2));
+        }
+    
+        // Clean up any redundant commas or spaces
+        $formattedAddress = preg_replace('/, , /', ', ', $formattedAddress);
+        $formattedAddress = preg_replace('/ , /', ', ', $formattedAddress);
+        $formattedAddress = trim($formattedAddress, ', ');
+
+        return nl2br(trim($formattedAddress)); // Convert newlines to HTML <br> and trim any leading/trailing whitespace
+    }    
+}
+
+if(!function_exists('addressToArray'))
+{
+    function addressToArray($formattedAddress) {
+        // Convert <br> tags to newline characters
+        $addressWithNewlines = str_replace(['<br />', '<br>'], "\n", $formattedAddress);
+        
+        // Split the address into lines based on newline characters
+        $lines = explode("\n", $addressWithNewlines);
+        
+        // Trim each line to remove any leading or trailing spaces
+        $lines = array_map('trim', $lines);
+        
+        // Filter out any empty lines
+        $lines = array_filter($lines, function($line) {
+            return !empty($line);
+        });
+
+            // Reformat the array to ensure it aligns with the desired structure
+    // You might need to manually adjust the indices if they are not in the expected order
+    // Manually arrange the lines if needed
+    // For example, you can join lines that might have been split incorrectly
+        $formattedArray = [];
+        foreach ($lines as $line) {
+            $formattedArray[] = $line;
+        }
+
+        return $formattedArray;
+    }
+}
+
+if(!function_exists('formatIndexedArrayAddress'))
+{
+    function formatIndexedArrayAddress($addressArray) {
+        // Join the array elements into a single string separated by commas
+        $address = implode(', ', $addressArray);
+
+        // Define patterns and their replacements with newline characters
+        $patterns = [
+            '/(, )(?=[^,]+, )/',  // Split address at comma followed by non-comma sequence and another comma
+        ];
+        
+        // Apply patterns to the address to insert newlines
+        $formattedAddress = preg_replace($patterns, ",\n", $address, 3);
+
+        // Clean up any redundant commas or spaces
+        $formattedAddress = preg_replace('/, , /', ', ', $formattedAddress);
+        $formattedAddress = preg_replace('/ , /', ', ', $formattedAddress);
+        $formattedAddress = trim($formattedAddress, ', ');
+
+        return nl2br(trim($formattedAddress)); // Convert newlines to HTML <br> and trim any leading/trailing whitespace
     }
 }
 
