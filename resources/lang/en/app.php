@@ -64,7 +64,8 @@ return [
         'budget' => 'Budget',
         'target' => 'Target',
         'crm' => 'CRM',
-        'visit' => 'Visit'
+        'visit' => 'Visit',
+        'segment' => 'Segment',
     ],
 
     // Application Levels
@@ -1269,6 +1270,7 @@ return [
 
         // budget
         'create_budget' => 'Create Budget',
+        'create_config' => 'Create Config',
         'date' => 'Date',
         'year' => 'Year',
         'month' => 'Month',
@@ -1286,6 +1288,7 @@ return [
         'operational' => 'Operational',
         'approved_at' => 'Approved At',
         'approved_by' => 'Approved By',
+        'value' => 'Value',
 
         // target
         'actual_sales' => 'Actual Sales',

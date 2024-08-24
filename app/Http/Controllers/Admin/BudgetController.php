@@ -44,7 +44,10 @@ class BudgetController extends Controller
      */
     public function index()
     {
-        $merchants = Merchant::get()->pluck('warehouse_name', 'id')->toArray();
+        $merchants = Merchant::whereNotNull('warehouse_name')
+            ->get()
+            ->pluck('warehouse_name', 'id')
+            ->toArray();
 
         $years = Budget::selectRaw('YEAR(created_at) as year')
             ->distinct()
@@ -60,7 +63,10 @@ class BudgetController extends Controller
 
     public function report()
     {
-        $merchants = Merchant::get()->pluck('warehouse_name', 'id')->toArray();
+        $merchants = Merchant::whereNotNull('warehouse_name')
+            ->get()
+            ->pluck('warehouse_name', 'id')
+            ->toArray();
 
         $years = Budget::selectRaw('YEAR(created_at) as year')
             ->distinct()

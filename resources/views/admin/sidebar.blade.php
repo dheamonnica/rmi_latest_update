@@ -870,6 +870,12 @@
                                             Budget Data
                                         </a>
                                     </li>
+
+                                    <li class="{{ Request::is('admin/segment*') ? 'active' : '' }}">
+                                        <a href="{{ route('admin.segment.index') }}">
+                                            Budget Config
+                                        </a>
+                                    </li>
                                 </ul>
                             </li>
 

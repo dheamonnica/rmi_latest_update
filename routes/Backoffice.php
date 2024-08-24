@@ -34,11 +34,13 @@ Route::middleware('auth')->name('admin.')->prefix('admin')->group(function () {
         });
 
         Route::get('switchToCustomer', [
-            MerchantSwitchToCustomer::class, 'switchToCustomer'
+            MerchantSwitchToCustomer::class,
+            'switchToCustomer'
         ])->name('merchant.switchToCustomer');
 
         Route::get('createCustomer', [
-            MerchantSwitchToCustomer::class, 'createCustomer'
+            MerchantSwitchToCustomer::class,
+            'createCustomer'
         ])->name('merchant.createCustomer');
     });
 
@@ -49,23 +51,28 @@ Route::middleware('auth')->name('admin.')->prefix('admin')->group(function () {
     });
 
     Route::get('secretLogout', [
-        Admin\DashboardController::class, 'secretLogout'
+        Admin\DashboardController::class,
+        'secretLogout'
     ])->name('secretLogout');
 
     Route::middleware(['subscribed', 'checkBillingInfo'])->group(function () {
         // Dashboard
         Route::put('dashboard/config/{node}/toggle', [
-            Admin\DashboardController::class, 'toggleConfig'
+            Admin\DashboardController::class,
+            'toggleConfig'
         ])->name('dashboard.config.toggle')->middleware('ajax');
 
         Route::get('dashboard', [
-            Admin\DashboardController::class, 'index'
+            Admin\DashboardController::class,
+            'index'
         ])->name('admin.dashboard')->middleware('dashboard');
 
         // vendor offering
         include 'admin/Offering.php';
         // Budget
         include 'admin/Budget.php';
+        // Budget Config
+        include 'admin/Segment.php';
         // Target
         include 'admin/Target.php';
         // CRM
@@ -74,7 +81,8 @@ Route::middleware('auth')->name('admin.')->prefix('admin')->group(function () {
         include 'admin/Visit.php';
 
         Route::get('secretLogin/{user}', [
-            Admin\DashboardController::class, 'secretLogin'
+            Admin\DashboardController::class,
+            'secretLogin'
         ])->name('user.secretLogin');
 
         include 'admin/Notification.php';
@@ -181,11 +189,13 @@ Route::middleware('auth')->name('admin.')->prefix('admin')->group(function () {
         // AJAX routes
         Route::middleware('ajax')->group(function () {
             Route::get('catalog/ajax/getParrentAttributeType', [
-                Admin\AttributeController::class, 'ajaxGetParrentAttributeType'
+                Admin\AttributeController::class,
+                'ajaxGetParrentAttributeType'
             ])->name('ajax.getParrentAttributeType');
 
             Route::get('order/ajax/filterShippingOptions', [
-                Admin\AjaxController::class, 'filterShippingOptions'
+                Admin\AjaxController::class,
+                'filterShippingOptions'
             ])->name('ajax.filterShippingOptions');
         });
     });
