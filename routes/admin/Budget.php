@@ -38,4 +38,30 @@ Route::delete('budget/{budget}/trash', [BudgetController::class, 'trash'])
 
 Route::put('budget/{budget}/setApprove', [BudgetController::class, 'setApprove'])->name('budget.setApprove');
 
+// administrator
+Route::get('budget/report-administrator', [
+    BudgetController::class,
+    'reportAdministrator'
+])->name('budget.reportAdministrator');
+
+Route::get('getBudgetsTablesReportAdministrator', [
+    BudgetController::class,
+    'getBudgetsTablesReportAdministrator'
+])->name('admin.budget.getBudgetsTablesReportAdministrator')->middleware('ajax');
+
+Route::get('getBudgetsTablesExpandClientAdministrator', [
+    BudgetController::class,
+    'getBudgetsTablesExpandClientAdministrator'
+])->name('admin.budget.getBudgetsTablesExpandClientAdministrator')->middleware('ajax');
+
+Route::get('getBudgetsTablesExpandAdministrator', [
+    BudgetController::class,
+    'getBudgetsTablesExpandAdministrator'
+])->name('admin.budget.getBudgetsTablesExpandAdministrator')->middleware('ajax');
+
+Route::get('getBudgetTablesExpandAdministrator', [
+    BudgetController::class,
+    'getBudgetTablesExpandAdministrator'
+])->name('admin.budget.getBudgetTablesExpandAdministrator')->middleware('ajax');
+
 Route::resource('budget', BudgetController::class);

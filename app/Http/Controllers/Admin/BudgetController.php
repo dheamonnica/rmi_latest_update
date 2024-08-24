@@ -150,6 +150,63 @@ class BudgetController extends Controller
             ->make(true);
     }
 
+    public function reportAdministrator()
+    {
+        $merchants = Merchant::whereNotNull('warehouse_name')
+            ->get()
+            ->pluck('warehouse_name', 'id')
+            ->toArray();
+
+        $years = Budget::selectRaw('YEAR(created_at) as year')
+            ->distinct()
+            ->orderBy('year', 'desc')
+            ->pluck('year');
+
+        $trashes = $this->budget->trashOnly();
+
+        return view('admin.budget.report-administrator', compact('merchants', 'years', 'trashes'));
+    }
+
+    public function getBudgetsTablesReportAdministrator(Request $request)
+    {
+        $budgets = Budget::getReportDataHeaderAdministrator();
+
+        return Datatables::of($budgets)
+            ->addColumn('month', function ($budget) {
+                return $budget->month;
+            })
+            ->addColumn('year', function ($budget) {
+                return $budget->year;
+            })
+            ->addColumn('total_budget', function ($budget) {
+                return 'Rp. ' . number_format($budget->total_budget, 0, '.', '.');
+            })
+            ->addColumn('total_selling', function ($budget) {
+                return 'Rp. ' . number_format($budget->total_selling, 0, '.', '.');
+            })
+            ->addColumn('rate_cost', function ($budget) {
+                return number_format($budget->rate_cost, 2, '.', '.') . '%';
+            })
+            ->rawColumns(['month', 'year', 'total_budget', 'total_selling', 'rate_cost'])
+            ->make(true);
+
+        return response()->json(['data' => $results]);
+    }
+
+    public function getBudgetTablesExpandAdministrator(Request $request)
+    {
+        $results = Budget::getReportDataExpandAdministrator();
+
+        return response()->json(['data' => $results]);
+    }
+
+    public function getBudgetsTablesExpandClientAdministrator(Request $request)
+    {
+        $results = Budget::getReportDataExpandClientAdministrator();
+
+        return response()->json(['data' => $results]);
+    }
+
     public function getBudgetsReport(Request $request)
     {
         $budgets = Inventory::select('inventories.shop_id', 'shops.name as shop_name')

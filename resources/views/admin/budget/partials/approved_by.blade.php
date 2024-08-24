@@ -1,1 +1,3 @@
-<td>{{ $budget->getApprovedBudget->name }}</td>
+@if ($budget->approved_by)
+    <td>{{ $budget->getApprovedBudget->name }}</td>
+@endif

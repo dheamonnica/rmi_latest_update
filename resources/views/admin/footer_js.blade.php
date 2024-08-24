@@ -1654,6 +1654,276 @@
         });
         // END BUGDET REPORT
 
+        // BUDGET REPORT ADMINISTRATOR
+        // Initialize the main Dataable
+        var tableBudgetsReportAdministrator = $('#budget-tables-report-administrator').DataTable($.extend({},
+            dataTableOptions, {
+                "ajax": "{{ route('admin.admin.budget.getBudgetsTablesReportAdministrator') }}",
+                "columns": [{
+                        className: 'dt-control',
+                        orderable: false,
+                        data: null,
+                        defaultContent: ''
+                    },
+                    {
+                        'data': 'month',
+                        'name': 'month'
+                    },
+                    {
+                        'data': 'year',
+                        'name': 'year'
+                    },
+                    {
+                        'data': 'total_budget',
+                        'name': 'total_budget'
+                    },
+                    {
+                        'data': 'total_selling',
+                        'name': 'total_selling'
+                    },
+                    {
+                        'data': 'rate_cost',
+                        'name': 'rate_cost'
+                    },
+                ]
+            }
+        ));
+
+        // Filter functions
+        function filterByMonthBudget() {
+            var selectedMonth = $('#monthFilterBudget').val();
+            tableBudgetsReportAdministrator.column('month:name').search(selectedMonth).draw();
+        }
+
+        function filterByWarehouseBudget() {
+            var selectedMerchant = $('#merchantFilterBudget').val();
+            tableBudgetsReportAdministrator.column('warehouse:name').search(selectedMerchant).draw();
+        }
+
+        function filterByYearBudget() {
+            var selectedMerchant = $('#yearFilterBudget').val();
+            tableBudgetsReportAdministrator.column('year:name').search(selectedMerchant).draw();
+        }
+
+        // Bind filter functions to the change event of filter dropdowns
+        $('#monthFilterBudget').on('change', filterByMonthBudget);
+        $('#merchantFilterBudget').on('change', filterByWarehouseBudget);
+        $('#yearFilterBudget').on('change', filterByYearBudget);
+
+        // Fetch additional data for both levels via AJAX
+        let additionalDataAdministratorBudget = [];
+        $.ajax({
+            url: "{{ route('admin.admin.budget.getBudgetTablesExpandAdministrator') }}",
+            method: 'GET',
+            success: function(data) {
+                additionalDataAdministratorBudget = data.data;
+            },
+            error: function(xhr, status, error) {
+                console.error('Error fetching additional data budget:', error);
+            }
+        });
+
+        let additionalDataAdministratorSecondBudget = [];
+        $.ajax({
+            url: "{{ route('admin.admin.budget.getBudgetsTablesExpandClientAdministrator') }}",
+            method: 'GET',
+            success: function(data) {
+                additionalDataAdministratorSecondBudget = data.data;
+            },
+            error: function(xhr, status, error) {
+                console.error('Error fetching additional data:', error);
+            }
+        });
+
+        // First-level row formatting function
+        function formatFirstLevel(dataItem) {
+            let relatedDataAdministrator = additionalDataAdministratorBudget.filter(item =>
+                item.month == dataItem.month && item.year == dataItem.year);
+
+            // console.log(additionalDataAdministrator, 'additionalDataAdministrator first')
+            // console.log(dataItem, 'dataItem first')
+
+            let formattedDataAdministrator = `
+        <div class="table-responsive" >
+            <table class="table table-hover table-bordered">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Month</th>
+                        <th>Year</th>
+                        <th>Business Unit</th>
+                        <th>Total Budget</th>
+                        <th>Total Selling</th>
+                        <th>Rate Cost</th>
+                    </tr>
+                </thead>
+                <tbody>
+    `;
+
+            const formatter = new Intl.NumberFormat('id-ID', {
+                style: 'currency',
+                currency: 'IDR',
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0,
+            });
+
+            relatedDataAdministrator.forEach(function(row, index) {
+                formattedDataAdministrator += `
+            <tr class="expanded-second-table" data-parent-id="${dataItem.month}-${dataItem.year}-${row.warehouse_area}" id="expanded-second-table-${index}">
+                <td class="dt-control-second"></td>
+                <td>${row.month}</td>
+                <td>${row.year}</td>
+                <td>${row.warehouse_area}</td>
+                <td>${formatter.format(row.total_budget)}</td>
+                <td>${formatter.format(row.total_selling)}</td>
+                <td>${row.rate_cost === null ? "" : row.rate_cost.toFixed(2)}%</td>
+            </tr>
+        `;
+            });
+
+            formattedDataAdministrator += `
+                </tbody>
+            </table>
+        </div>
+    `;
+
+            return formattedDataAdministrator;
+        }
+
+        let additionalDataAdministratorWarehouseClientBudget = [];
+        $.ajax({
+            url: "{{ route('admin.admin.budget.getBudgetsTablesExpandClientAdministrator') }}",
+            method: 'GET',
+            success: function(data) {
+                additionalDataAdministratorWarehouseClientBudget = data.data;
+            },
+            error: function(xhr, status, error) {
+                console.error('Error fetching additional data:', error);
+            }
+        });
+
+        // Second-level row formatting function
+        function formatSecondLevel(dataItem) {
+            let relatedDataAdministratorSecond = additionalDataAdministratorSecondBudget
+                .filter(item =>
+                    item.month == dataItem.month && item.year == dataItem.year && item.warehouse_name == dataItem
+                    .warehouse_name);
+
+            // console.log(additionalDataAdministratorSecondBudget, 'additionalDataAdministratorSecondBudget kedua')
+            // console.log(dataItem, 'dataItem kedua')
+
+            // Create our number formatter.
+            const formatter = new Intl.NumberFormat('id-ID', {
+                style: 'currency',
+                currency: 'IDR',
+
+                // These options are needed to round to whole numbers if that's what you want.
+                minimumFractionDigits: 0, // (this suffices for whole numbers, but will print 2500.10 as $2,500.1)
+                maximumFractionDigits: 0, // (causes 2500.99 to be printed as $2,501)
+            });
+
+
+
+            let formattedDataAdministratorSecond = `
+        <div class="table-responsive">
+            <table class="table table-hover table-bordered">
+                <thead>
+                    <tr>
+                        <th>Month</th>
+                        <th>Year</th>
+                        <th>Business Unit</th>
+                        <th>Segment Name</th>
+                        <th>Segment Rate</th>
+                        <th>Total Selling</th>
+                        <th>Total Budget</th>
+                        <th>Rate Cost</th>
+                    </tr>
+                </thead>
+                <tbody>
+    `;
+
+            relatedDataAdministratorSecond.forEach(function(row) {
+                formattedDataAdministratorSecond += `
+            <tr>
+                <td>${row.month}</td>
+                <td>${row.year}</td>
+                <td>${row.warehouse_area}</td>
+                <td>${row.segment_name}</td>
+                <td>${row.segment_rate}%</td>
+                <td>${formatter.format(row.total_selling)}</td>
+                <td>${formatter.format(row.total_budget)}</td>
+                <td>${row.rate_cost !== null ? row.rate_cost.toFixed(2) : ""}%</td>
+            </tr>
+        `;
+            });
+
+            formattedDataAdministratorSecond += `
+                </tbody>
+            </table>
+        </div>
+    `;
+
+            return formattedDataAdministratorSecond;
+        }
+
+        // Handle first-level row expansion
+        $('#budget-tables-report-administrator tbody').on('click', 'td.dt-control', function(e) {
+            let tr = e.target.closest('tr');
+            let row = tableBudgetsReportAdministrator.row(tr);
+
+            if (row.child.isShown()) {
+                row.child.hide();
+                $(tr).removeClass('dt-hasChild');
+            } else {
+                row.child(formatFirstLevel(row.data())).show();
+                $(tr).addClass('dt-hasChild');
+            }
+        });
+
+        // Handle second-level row expansion
+        $('#budget-tables-report-administrator tbody').on('click', 'td.dt-control-second', function(e) {
+            e.stopPropagation(); // Prevent the first-level expansion from being triggered
+
+            // Locate the clicked second-level row
+            let secondLevelTr = $(this).closest('tr.expanded-second-table');
+
+            // Retrieve the data-parent-id attribute to identify the parent row
+            let parentId = secondLevelTr.data('parent-id');
+
+            // Use the parentId to find the first-level parent data
+            let [month, year, warehouseName] = parentId.split('-');
+
+            let parentData = additionalDataAdministratorBudget
+            .find(item =>
+                item.month == month && item.year == year && item.warehouse_area == warehouseName);
+
+            // Debugging: Log the relevant elements and data
+            console.log(secondLevelTr, 'Second-level clicked row');
+            console.log(parentId, 'Parent ID');
+            console.log(parentData, 'Parent data for second-level expansion');
+
+            if (!parentData) {
+                console.error('Parent data is undefined. Ensure correct row selection.');
+                return;
+            }
+
+            // Proceed with showing or hiding the child row as needed
+            let childRow = secondLevelTr.next('tr.child');
+            if (childRow.length && childRow.is(':visible')) {
+                childRow.hide();
+                secondLevelTr.removeClass('shown');
+            } else {
+                if (!childRow.length) {
+                    let childRowContent = formatSecondLevel(parentData);
+                    secondLevelTr.after('<tr class="child"><td colspan="8">' + childRowContent + '</td></tr>');
+                    childRow = secondLevelTr.next('tr.child');
+                }
+                childRow.show();
+                secondLevelTr.addClass('shown');
+            }
+        });
+        // END BUDGET REPORT ADMINISTRATOR
+
         // CRM DATA
         // Load offering list by Ajax
         var tableCRMsData = $('#crm-data-tables').DataTable($.extend({}, dataTableOptions, {
@@ -2419,7 +2689,9 @@
             var q = $(this).val();
             showResult.html('');
             if (q.length < 0) {
-                showResult.html('<span class="lead indent50">{{ trans('validation.min.string', ['attribute' => trans('app.form.search'), 'min' => '0']) }}</span>');
+                showResult.html(
+                    '<span class="lead indent50">{{ trans('validation.min.string', ['attribute' => trans('app.form.search'), 'min' => '0']) }}</span>'
+                    );
                 return;
             }
             showResult.html('<span class="lead indent50">{{ trans('responses.searching') }}</span>');
@@ -2428,7 +2700,7 @@
                 url: "{{ route('search.product') }}",
                 // contentType: "application/json; charset=utf-8",
                 success: function(results) {
-                showResult.html(results);
+                    showResult.html(results);
                 }
             });
         });
