@@ -522,11 +522,13 @@
               // var isOfferAvailable = dateOfferAvailable ? 'Offer Available' : 'Offer Unavailable';
               var price = productObj[ID].offerPrice > 0 ? productObj[ID].offerPrice : productObj[ID].salePrice;
               //cart item added
+              console.log(productObj[ID])
               var node = '<tr id="' + ID + '">' +
                 '<td><img src="' + imgSrc + '" class="img-circle img-md" alt="{{ trans('app.image') }}"></td>' +
                 '<td class="nopadding-right" width="55%">' + itemDescription +
                 '<input type="hidden" name="cart[' + numOfRows + '][inventory_id]" value="' + ID + '"></input>' +
                 '<input type="hidden" name="cart[' + numOfRows + '][item_description]" value="' + itemDescription + '"></input>' +
+                '<input type="hidden" name="cart[' + numOfRows + '][product_id]" value="' + productObj[ID].product_id + '"></input>' +
                 '<input type="hidden" name="cart[' + numOfRows + '][shipping_weight]" value="' + productObj[ID].shipping_weight + '" id="weight-' + ID + '" class="itemWeight"></input>' +
                 '<input type="hidden" name="cart[' + numOfRows + '][stock_quantity]" value="' + productObj[ID].stockQtt + '" id="stock-' + ID + '" class="itemStock"></input>' +
                 '</td>' +

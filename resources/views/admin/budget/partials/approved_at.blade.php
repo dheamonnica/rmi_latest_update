@@ -1,0 +1,1 @@
+<td>{{ $budget->approved_at }}</td>

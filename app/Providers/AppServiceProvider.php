@@ -16,6 +16,8 @@ use App\Repositories\Target\TargetRepository;
 use App\Repositories\Target\EloquentTarget;
 use App\Repositories\Budget\BudgetRepository;
 use App\Repositories\Budget\EloquentBudget;
+use App\Repositories\Segment\SegmentRepository;
+use App\Repositories\Segment\EloquentSegment;
 use App\Repositories\Offering\OfferingRepository;
 use App\Repositories\Offering\EloquentOffering;
 use App\Contracts\PaymentServiceContract;
@@ -92,6 +94,7 @@ class AppServiceProvider extends ServiceProvider
 
         $this->app->bind(OfferingRepository::class, EloquentOffering::class);
         $this->app->bind(BudgetRepository::class, EloquentBudget::class);
+        $this->app->bind(SegmentRepository::class, EloquentSegment::class);
         $this->app->bind(TargetRepository::class, EloquentTarget::class);
         $this->app->bind(CRMRepository::class, EloquentCRM::class);
         $this->app->bind(VisitRepository::class, EloquentVisit::class);

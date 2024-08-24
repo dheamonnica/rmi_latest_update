@@ -1,3 +1,3 @@
 @if ($budget->updated_by)
-    <td>{{ $budget->getUpdatedBudgetByName->pic_name }}</td>
+    <td>{{ $budget->getUpdatedBudgetByName->name }}</td>
 @endif

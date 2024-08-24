@@ -37,4 +37,19 @@ class EloquentBudget extends EloquentRepository implements BaseRepository, Budge
 
         return $budget;
     }
+
+    public function updateStatusApprove(Request $request, $budget)
+    {
+        if (!$budget instanceof Budget) {
+            $budget = $this->model->find($budget);
+        }
+
+        $budget->approved_at = date("Y-m-d G:i:s");
+        $budget->approved_by = Auth::user()->id;
+        $budget->updated_at = date("Y-m-d G:i:s");
+        $budget->updated_by = Auth::user()->id;
+        $budget->status = 1;
+
+        return $budget->save();
+    }
 }

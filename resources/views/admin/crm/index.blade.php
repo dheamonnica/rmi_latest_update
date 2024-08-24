@@ -48,13 +48,13 @@
             <table class="table table-hover" id="crm-tables">
                 <thead>
                     <tr>
-                        <th></th>
+                        {{-- <th></th>
                         <th class="massActionWrapper">
                             <button type="button" class="btn btn-xs btn-default checkbox-toggle">
                                 <i class="fa fa-square-o" data-toggle="tooltip" data-placement="top"
                                     title="{{ trans('app.select_all') }}"></i>
                             </button>
-                        </th>
+                        </th> --}}
                         <th>{{ trans('app.form.month') }}</th>
                         <th>{{ trans('app.form.year') }}</th>
                         <th>{{ trans('app.form.warehouse') }}</th>

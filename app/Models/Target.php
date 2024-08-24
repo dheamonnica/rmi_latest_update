@@ -69,7 +69,7 @@ class Target extends BaseModel
             where deleted_at + cancel_by IS NULL)report
             LEFT join shops s on report.shop_id=s.id
             LEFT join customers c on report.hospital_id=c.id
-            group by month, shop_id, report.hospital_id, c.id
+            group by month, shop_id, report.hospital_id, c.id, year
             ORDER BY CASE month
             WHEN 'January' THEN 1
             WHEN 'February' THEN 2
