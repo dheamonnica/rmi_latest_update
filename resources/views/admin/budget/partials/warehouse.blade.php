@@ -1,3 +1,3 @@
 @if ($budget->created_by)
-    <td>{{ $budget->getWarehouseByName->name }}</td>
+    <td>{{ $budget->getWarehouseByName }}</td>
 @endif
