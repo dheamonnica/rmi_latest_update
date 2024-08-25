@@ -860,6 +860,12 @@
                                 </a>
                                 <ul class="treeview-menu">
                                     <li class="{{ Request::is('admin/budget*') ? 'active' : '' }}">
+                                        <a href="{{ route('admin.budget.reportAdministrator') }}">
+                                            Budget Report Administrator
+                                        </a>
+                                    </li>
+
+                                    <li class="{{ Request::is('admin/budget*') ? 'active' : '' }}">
                                         <a href="{{ route('admin.budget.report') }}">
                                             Budget Report
                                         </a>
