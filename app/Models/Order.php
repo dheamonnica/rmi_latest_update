@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use App\Common\Loggable;
 use App\Common\Attachable;
 use App\Services\PdfInvoice;
+use App\Services\NewPdfInvoice;
 use Illuminate\Http\Request;
 use App\Events\Order\OrderPaid;
 use App\Events\Order\OrderUpdated;
@@ -23,6 +24,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Events\Order\OrderCancellationRequestApproved;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Common\Imageable;
+use Riskihajar\Terbilang\Facades\Terbilang;
+use Milon\Barcode\DNS1D;
+use Milon\Barcode\DNS2D;
 
 class Order extends BaseModel
 {
@@ -749,38 +753,50 @@ class Order extends BaseModel
         // Temporary solution
         $local = App::getLocale(); // Get current local
         App::setLocale('en'); // Set local to en
-
         $invoiceTo = multi_tag_explode([',', '<br/>'], strip_tags($this->billing_address, '<br>'));
         $invoiceTo = array_filter(array_map('trim', $invoiceTo));
-
+        
         array_unshift($invoiceTo, $this->customer->name);
 
         $vendorAddress = $this->shop->primaryAddress ?? $this->shop->address;
-
+        
         $invoiceFrom = $vendorAddress ? $vendorAddress->toArray() : [];
-
         // Replace the address type with vendor shop name
         $invoiceFrom['address_type'] = $this->shop->legal_name;
 
         // Reset the array keys
         $invoiceFrom = array_values($invoiceFrom);
+        
+        $invoiceFrom = addressToArray(formatIndexedArrayAddress($invoiceFrom));
+        $invoiceTo = addressToArray(formatIndexedArrayAddress($invoiceTo));
 
         $title = (bool) config('invoice.title') ?
             config('invoice.title') :
             trans('invoice.invoice');
 
-        $invoice = new PdfInvoice();
+        $invoice = new NewPdfInvoice();
+        $invoice->setDocumentOrientation('L');
         // $invoice->AddFont('NotoMono', '', '/fonts/NotoMono/NotoMono-Regular.ttf', true);
         // $invoice->SetFont('NotoMono', '', 14);
         $invoice->setColor(config('invoice.color', '#007fff'));      // pdf color scheme
-        $invoice->setDocumentSize(config('invoice.size', 'A4'));      // set document size
+        // $invoice->setDocumentSize(config('invoice.size', 'A4'));      // set document size
+        $invoice->setDocumentSize('A4');      // set document size
         $invoice->setType($title);    // Invoice Type
 
         // Set logo image if exist
-        $logo_path = optional($this->shop->logoImage)->path;
-        if (App::environment('production') && Storage::exists($logo_path)) {
-            $invoice->setLogo(get_storage_file_url($logo_path, null));
-        }
+        //$logo_path = optional($this->system->logoImage)->path;
+        // if (App::environment('production') && Storage::exists($logo_path)) {
+        //     // $invoice->setLogo(get_storage_file_url($logo_path, null));
+        // }
+        // if(Storage::exists(get_logo_path())){
+        //     $invoice->setLogo(get_logo_url('system', 'logo'), 15, 15);
+        // }
+        //dump($this->system);
+        //http://backend_rmi.test/image/images/66bb71a1606ae.webp?p=logo
+        //http://backend_rmi.test/image/images/66af7419ed6f3.webp
+        //echo '<img src="'.get_logo_url('system', 'logo').'" width="30">';
+        //dd(get_logo_url('system', 'logo'));
+        $invoice->setLogo(get_logo_url('system', 'logo'), 50, 50);
 
         $invoice->setReference($this->order_number);   // Reference
         $invoice->setDate($this->created_at->format('M d, Y'));   //Billing Date
@@ -788,6 +804,21 @@ class Order extends BaseModel
         // $invoice->setDue(date('M dS ,Y',strtotime('+3 months')));    // Due Date
         $invoice->setFrom($invoiceFrom);
         $invoice->setTo($invoiceTo);
+
+        $invoice->setOrderStatus($this->orderStatus(true));
+        $invoice->setPoNumberReference($this->po_number_ref);
+        $invoice->setPaymentStatus($this->paymentStatusName(true));
+        $invoice->setPaymentTerms($this->due_date_payment);
+        $invoice->setNetAmount($this->grand_total);
+        $invoice->setNetAmountWord(Terbilang::make($this->grand_total));
+        $invoice->setReceiverName($this->receiver_name);
+
+        $invoice->setBarcode(DNS1D::getBarcodePNGPath($this->order_number, 'C128', 3, 50, array(1,1,1) ,true));
+
+        if(Storage::exists($this->digital_sign_image)){
+            $invoice->setSignature(url($this->digital_sign_image), 100, 100, 150, 150);
+        }
+        //public/images/signed/#INV-BGR-519879/image_669be2ac3342e.png
 
         foreach ($this->inventories as $item) {
             $item_description = $item->pivot->item_description;
@@ -801,6 +832,8 @@ class Order extends BaseModel
         }
 
         $invoice->addSummary(trans('invoice.total'), $this->total);
+
+        $discount_percent = ($this->discount / $this->total) * 100;
 
         if ($this->taxes) {
             $invoice->addSummary(trans('invoice.taxes') . ' ' . get_formated_decimal($this->taxrate, true, 2) . '%', $this->taxes);
@@ -819,12 +852,13 @@ class Order extends BaseModel
         }
 
         if ($this->discount) {
-            $invoice->addSummary(trans('invoice.discount'), $this->discount);
+            $invoice->addSummary(trans('invoice.discount')  . ' ' . get_formated_decimal($discount_percent, true, 2) . '%', $this->discount);
         }
 
         $invoice->addSummary(trans('invoice.grand_total'), $this->grand_total, true);
 
-        $invoice->addBadge($this->paymentStatusName(true));
+        // $invoice->addBadge($this->paymentStatusName(true), 'danger');
+        $invoice->addBadge($this->paymentStatusName(true), $this->paymentStatusName(true) == 'UNPAID' ? 'danger' : null);
 
         if (config('invoice.company_info_position') == 'right') {
             $invoice->flipflop();
@@ -834,6 +868,14 @@ class Order extends BaseModel
             $invoice->addTitle(trans('invoice.message'));
             $invoice->addParagraph($this->message_to_customer);
         }
+
+        // if ($this->message_to_customer) {
+            // $invoice->addTitle('Description :');
+            $invoice->addParagraph('Description : ');
+            $invoice->addParagraph('Pembayaran melalui transfer :');
+            $invoice->addParagraph($this->shop->bank_account_type.' '.$this->shop->bank_account.' ('.$this->shop->bank_account_name.')');
+            $invoice->addParagraph('Bukti TRF Mohon Dikirimkan Melalui Email : '. $this->shop->email);
+        // }
 
         $invoice->setFooternote(get_platform_title() . ' | ' . url('/') . ' | ' . trans('invoice.footer_note'));
 

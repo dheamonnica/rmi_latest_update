@@ -1315,6 +1315,10 @@ return [
         'note' => 'Note',
         'next_visit_date' => 'Next Visit Date',
         'create_site_visit' => 'Create Site Visit',
+
+        'bank_account' => 'Bank Account',
+        'bank_account_type' => 'Bank Type',
+        'bank_account_name' => 'Bank Account Name',
     ],
 
     'placeholder' => [
@@ -1552,6 +1556,10 @@ return [
         'category_featured_image' => 'Category Featured Image',
         'text_position' => 'Text position',
         'download_limit' => 'Download Limit',
+
+        'bank_account_type' => 'Bank Type',
+        'bank_account_name' => 'Bank Account Name',
+        'bank_account' => 'Bank Account',
     ],
 
     // Version 1.3.0
