@@ -873,7 +873,7 @@ class Order extends BaseModel
             // $invoice->addTitle('Description :');
             $invoice->addParagraph('Description : ');
             $invoice->addParagraph('Pembayaran melalui transfer :');
-            $invoice->addParagraph('Bank Mandiri 1330027044486 ('.$this->shop->card_holder_name.')');
+            $invoice->addParagraph($this->shop->bank_account_type.' '.$this->shop->bank_account.' ('.$this->shop->bank_account_name.')');
             $invoice->addParagraph('Bukti TRF Mohon Dikirimkan Melalui Email : '. $this->shop->email);
         // }
 

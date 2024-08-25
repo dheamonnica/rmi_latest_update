@@ -88,6 +88,57 @@
             </div> <!-- /.row -->
           </div>
 
+          <div class="form-group">
+            <div class="row">
+              <div class="col-sm-4 text-right">
+                {!! Form::label('bank_type', '*' . trans('app.form.bank_account_type') . ':', ['class' => 'with-help control-label']) !!}
+                <i class="fa fa-question-circle" data-toggle="tooltip" data-placement="left" title="{{ trans('help.bank_account_type') }}"></i>
+              </div>
+              <div class="col-sm-8 nopadding-left">
+                @if ($can_update)
+                  {!! Form::select('bank_account_type', $bank_type, $shop->bank_account_type, ['class' => 'form-control select2', 'placeholder' => trans('app.placeholder.bank_account_type'), 'required']) !!}
+                  <div class="help-block with-errors"></div>
+                @else
+                  <span>{{ $shop->bank_account_type }}</span>
+                @endif
+              </div>
+            </div> <!-- /.row -->
+          </div>
+
+          <div class="form-group">
+            <div class="row">
+              <div class="col-sm-4 text-right">
+                {!! Form::label('bank_account_name', '*' . trans('app.form.bank_account_name') . ':', ['class' => 'with-help control-label']) !!}
+                <i class="fa fa-question-circle" data-toggle="tooltip" data-placement="left" title="{{ trans('help.bank_account_name') }}"></i>
+              </div>
+              <div class="col-sm-8 nopadding-left">
+                @if ($can_update)
+                  {!! Form::text('bank_account_name', $shop->bank_account_name, ['class' => 'form-control', 'placeholder' => trans('app.placeholder.bank_account_name'), 'required']) !!}
+                  <div class="help-block with-errors"></div>
+                @else
+                  <span>{{ $shop->bank_account_name }}</span>
+                @endif
+              </div>
+            </div> <!-- /.row -->
+          </div>
+
+          <div class="form-group">
+            <div class="row">
+              <div class="col-sm-4 text-right">
+                {!! Form::label('bank_account', '*' . trans('app.form.bank_account') . ':', ['class' => 'with-help control-label']) !!}
+                <i class="fa fa-question-circle" data-toggle="tooltip" data-placement="left" title="{{ trans('help.bank_account') }}"></i>
+              </div>
+              <div class="col-sm-8 nopadding-left">
+                @if ($can_update)
+                  {!! Form::text('bank_account', $shop->bank_account, ['class' => 'form-control', 'placeholder' => trans('app.placeholder.bank_account'), 'required']) !!}
+                  <div class="help-block with-errors"></div>
+                @else
+                  <span>{{ $shop->bank_account }}</span>
+                @endif
+              </div>
+            </div> <!-- /.row -->
+          </div>
+
           @if (is_incevio_package_loaded('livechat'))
             @include('liveChat::facebook.fb_chat_config_form')
           @endif

@@ -102,7 +102,10 @@ class Shop extends ShopWallet
         'total_item_sold',
         'pay_to',
         'fb_page_id',
-        'pic_name'
+        'pic_name',
+        'bank_account',
+        'bank_account_name',
+        'bank_account_type',
     ];
 
     /**

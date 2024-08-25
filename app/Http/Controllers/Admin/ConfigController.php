@@ -43,6 +43,68 @@ class ConfigController extends Controller
         // $files = \Illuminate\Support\Facades\Storage::disk('google')->allFiles();
         $shop = Shop::findOrFail(Auth::user()->merchantId());
 
+        $bank_type = [
+            'Bank Mandiri' => 'Bank Mandiri',
+            'Bank Rakyat Indonesia (BRI)' => 'Bank Rakyat Indonesia (BRI)',
+            'Bank Central Asia (BCA)' => 'Bank Central Asia (BCA)',
+            'Bank Negara Indonesia (BNI)' => 'Bank Negara Indonesia (BNI)',
+            'Bank Tabungan Negara (BTN)' => 'Bank Tabungan Negara (BTN)',
+            'Bank CIMB Niaga' => 'Bank CIMB Niaga',
+            'Bank Danamon' => 'Bank Danamon',
+            'Bank Permata' => 'Bank Permata',
+            'Bank Syariah Indonesia (BSI)' => 'Bank Syariah Indonesia (BSI)',
+            'Bank Mega' => 'Bank Mega',
+            'Bank Sinarmas' => 'Bank Sinarmas',
+            'Bank Muamalat' => 'Bank Muamalat',
+            'Bank Bukopin' => 'Bank Bukopin',
+            'Bank Maybank Indonesia' => 'Bank Maybank Indonesia',
+            'Bank OCBC NISP' => 'Bank OCBC NISP',
+            'Bank Panin' => 'Bank Panin',
+            'Bank UOB Indonesia' => 'Bank UOB Indonesia',
+            'Bank HSBC Indonesia' => 'Bank HSBC Indonesia',
+            'Bank JTrust' => 'Bank JTrust',
+            'Bank QNB Indonesia' => 'Bank QNB Indonesia',
+            'Bank Commonwealth' => 'Bank Commonwealth',
+            'Bank Woori Saudara' => 'Bank Woori Saudara',
+            'Bank DBS Indonesia' => 'Bank DBS Indonesia',
+            'Bank Mayapada' => 'Bank Mayapada',
+            'Bank Artha Graha Internasional' => 'Bank Artha Graha Internasional',
+            'Bank BTPN' => 'Bank BTPN',
+            'Bank Shinhan Indonesia' => 'Bank Shinhan Indonesia',
+            'Bank Maspion' => 'Bank Maspion',
+            'Bank Ganesha' => 'Bank Ganesha',
+            'Bank Mestika' => 'Bank Mestika',
+            'Bank Index Selindo' => 'Bank Index Selindo',
+            'Bank KEB Hana' => 'Bank KEB Hana',
+            'Bank Victoria International' => 'Bank Victoria International',
+            'Bank Jago' => 'Bank Jago',
+            'Bank MNC Internasional' => 'Bank MNC Internasional',
+            'Bank BJB' => 'Bank BJB',
+            'Bank DKI' => 'Bank DKI',
+            'Bank Jateng' => 'Bank Jateng',
+            'Bank Jatim' => 'Bank Jatim',
+            'Bank Aceh Syariah' => 'Bank Aceh Syariah',
+            'Bank Sumut' => 'Bank Sumut',
+            'Bank Nagari' => 'Bank Nagari',
+            'Bank Riau Kepri' => 'Bank Riau Kepri',
+            'Bank Sumsel Babel' => 'Bank Sumsel Babel',
+            'Bank Lampung' => 'Bank Lampung',
+            'Bank Kalsel' => 'Bank Kalsel',
+            'Bank Kalbar' => 'Bank Kalbar',
+            'Bank Kaltimtara' => 'Bank Kaltimtara',
+            'Bank Kalteng' => 'Bank Kalteng',
+            'Bank Sulselbar' => 'Bank Sulselbar',
+            'Bank SulutGo' => 'Bank SulutGo',
+            'Bank NTB Syariah' => 'Bank NTB Syariah',
+            'Bank NTT' => 'Bank NTT',
+            'Bank Maluku Malut' => 'Bank Maluku Malut',
+            'Bank Papua' => 'Bank Papua',
+            'Bank Bengkulu' => 'Bank Bengkulu',
+            'Bank Sulteng' => 'Bank Sulteng',
+            'Bank Sultra' => 'Bank Sultra',
+        ];
+        
+
         $shop_config = Config::find(Auth::user()->merchantId(), [
             'ac_holder_name',
             'ac_number',
@@ -53,7 +115,7 @@ class ConfigController extends Controller
             'ac_bank_address',
         ]);
 
-        return view('admin.config.general', compact('shop', 'shop_config'));
+        return view('admin.config.general', compact('shop', 'shop_config', 'bank_type'));
     }
 
     /**
