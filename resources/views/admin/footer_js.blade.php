@@ -1806,8 +1806,8 @@
         function formatSecondLevel(dataItem) {
             let relatedDataAdministratorSecond = additionalDataAdministratorSecondBudget
                 .filter(item =>
-                    item.month == dataItem.month && item.year == dataItem.year && item.warehouse_name == dataItem
-                    .warehouse_name);
+                    item.month == dataItem.month && item.year == dataItem.year && item.warehouse_area == dataItem
+                    .warehouse_area);
 
             // console.log(additionalDataAdministratorSecondBudget, 'additionalDataAdministratorSecondBudget kedua')
             // console.log(dataItem, 'dataItem kedua')
@@ -1834,7 +1834,6 @@
                         <th>Business Unit</th>
                         <th>Segment Name</th>
                         <th>Segment Rate</th>
-                        <th>Total Selling</th>
                         <th>Total Budget</th>
                         <th>Rate Cost</th>
                     </tr>
@@ -1850,7 +1849,6 @@
                 <td>${row.warehouse_area}</td>
                 <td>${row.segment_name}</td>
                 <td>${row.segment_rate}%</td>
-                <td>${formatter.format(row.total_selling)}</td>
                 <td>${formatter.format(row.total_budget)}</td>
                 <td>${row.rate_cost !== null ? row.rate_cost.toFixed(2) : ""}%</td>
             </tr>
