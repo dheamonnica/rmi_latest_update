@@ -9,6 +9,7 @@ return array(
     'PayPal' => array($vendorDir . '/paypal/rest-api-sdk-php/lib'),
     'Parsedown' => array($vendorDir . '/erusev/parsedown'),
     'OpenCloud' => array($vendorDir . '/rackspace/php-opencloud/lib'),
+    'Milon\\Barcode' => array($vendorDir . '/milon/barcode/src'),
     'Laracasts\\Flash' => array($vendorDir . '/laracasts/flash/src'),
     'Guzzle\\Tests' => array($vendorDir . '/guzzle/guzzle/tests'),
     'Guzzle' => array($vendorDir . '/guzzle/guzzle/src'),
