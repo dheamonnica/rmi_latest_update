@@ -458,8 +458,8 @@ class NewPdfInvoice extends FPDF
                 $this->logo,
                 $this->margins['l'],
                 $this->margins['t'],
-                $this->dimensions[0],
-                $this->dimensions[1]
+                $this->dimensions[0] / 2,
+                $this->dimensions[1] / 2
             );
             $this->Ln(1);
         }
@@ -505,6 +505,7 @@ class NewPdfInvoice extends FPDF
             $this->Ln(4);
             $this->Cell($width_reference, $lineheight, 'INVOICE DATE : ', 0, 0, 'R');
             $this->Cell($width_value, $lineheight, $this->date .' '.$this->time , 0, 0, 'R');
+            $this->Ln(-4);
         }
 
         //Due date
@@ -519,7 +520,7 @@ class NewPdfInvoice extends FPDF
         }
 
         // First page
-        if ($this->PageNo() == 1) {
+        // if ($this->PageNo() == 1) {
             // \Log::info('1111');
             $ymargin = $this->GetY();
 
@@ -557,7 +558,6 @@ class NewPdfInvoice extends FPDF
                 }
 
                 //Information
-                $this->Ln(4);
                 $this->SetTextColor(50, 50, 50);
                 $this->SetFont($this->font, 'B', 10);
                 $this->Cell(0, $lineheight, $this->from[0] ?? '', 0, 0, 'L');
@@ -653,11 +653,14 @@ class NewPdfInvoice extends FPDF
                     $this->Ln();
                 }
                 $this->Ln(-6);
-                $this->Ln(5);
+                // $this->Ln(5);
             } else {
                 $this->Ln(-10);
             }
-        }
+            
+            $this->Ln(2);
+
+        // }
         //Table header
         if (!isset($this->productsEnded)) {
             $width_other = (($this->document['w'] - $this->margins['l'] - $this->margins['r'] - $this->firstColumnWidth - ($this->columns * $this->columnSpacing)) / ($this->columns - 1) + 28);
@@ -712,9 +715,9 @@ class NewPdfInvoice extends FPDF
             $this->SetLineWidth(0.3);
             $this->SetDrawColor($this->color[0], $this->color[1], $this->color[2]);
             // $this->Line($this->margins['l'], $this->GetY(), $this->margins['r'], $this->GetY());
-            $this->Ln(2);
+            $this->Ln(-2);
         } else {
-            $this->Ln(5);
+            $this->Ln(1);
         }
     }
 
@@ -876,7 +879,7 @@ class NewPdfInvoice extends FPDF
             }
         }
         $this->productsEnded = true;
-        // $this->Ln();
+        $this->Ln();
         $this->Ln(1);
 
         //Badge
@@ -901,19 +904,7 @@ class NewPdfInvoice extends FPDF
             }
         }
 
-        //#BarcodeO
-        if (isset($this->barcode) and !empty($this->barcode)) {
-            $this->Image(
-                $this->barcode,
-                $this->margins['t'],
-                $this->document['w'] - 25, // set X position
-                // $this->getY() - $this->margins['t'], //set Y position
-                35,
-                10
-            );
-        }
-
-        // $this->Ln(7);
+        $this->Ln(7);
         //payment information
         $this->SetFont($this->font, 'b', 9);
         $this->SetTextColor(50, 50, 50);
@@ -978,9 +969,26 @@ class NewPdfInvoice extends FPDF
                 $this->Ln(1);
             }
         }
+        $this->Ln(10);
 
+        $barcodeX = $this->getX();
+        $barcodeY = $this->getY();
 
+        //#BarcodeO
+        if (isset($this->barcode) and !empty($this->barcode)) {
+            $this->Image(
+                $this->barcode,
+                // $this->margins['t'],
+                $barcodeX,
+                $barcodeY,
+                // $this->document['w'] - 25, // set X position
+                // $this->getY() - $this->margins['t'], //set Y position
+                35,
+                10
+            );
+        }
 
+        $this->Ln(10);
     }
 
     public function Footer()

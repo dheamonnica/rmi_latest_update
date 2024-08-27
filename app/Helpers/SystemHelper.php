@@ -169,7 +169,7 @@ if (!function_exists('setAdditionalCartInfo')) {
             'total' => $total,
             'handling' => $handling,
             'grand_total' => $grand_total,
-            'order_status_id' => $request->payment_method_id == Order::PAYMENT_STATUS_PAID ? Order::PAYMENT_STATUS_PAID : Order::STATUS_WAITING_FOR_PAYMENT,
+            'order_status_id' => $request->payment_method_id == Order::PAYMENT_STATUS_PAID ? Order::PAYMENT_STATUS_PAID : Order::STATUS_CONFIRMED,
             'billing_address' => $request->input('same_as_shipping_address') ?
                 $request->input('shipping_address') : $request->input('billing_address'),
             'approved' => 1,
