@@ -1123,24 +1123,24 @@
         $('#yearFilterTarget').on('change', filterByYearTarget);
 
         // Fetch additional data for both levels via AJAX
-        let additionalDataAdministrator = [];
+        let additionalDataAdministratorTarget = [];
         $.ajax({
             url: "{{ route('admin.admin.target.getTargetsTablesExpandAdministrator') }}",
             method: 'GET',
             success: function(data) {
-                additionalDataAdministrator = data.data;
+                additionalDataAdministratorTarget = data.data;
             },
             error: function(xhr, status, error) {
                 console.error('Error fetching additional data:', error);
             }
         });
 
-        let additionalDataAdministratorSecond = [];
+        let additionalDataAdministratorSecondTarget = [];
         $.ajax({
             url: "{{ route('admin.admin.target.getTargetsTablesExpand') }}",
             method: 'GET',
             success: function(data) {
-                additionalDataAdministratorSecond = data.data;
+                additionalDataAdministratorSecondTarget = data.data;
             },
             error: function(xhr, status, error) {
                 console.error('Error fetching additional data:', error);
@@ -1148,8 +1148,8 @@
         });
 
         // First-level row formatting function
-        function formatFirstLevel(dataItem) {
-            let relatedDataAdministrator = additionalDataAdministrator.filter(item =>
+        function formatFirstLevelTarget(dataItem) {
+            let relatedDataAdministrator = additionalDataAdministratorTarget.filter(item =>
                 item.month == dataItem.month && item.year == dataItem.year);
 
             // console.log(additionalDataAdministrator, 'additionalDataAdministrator first')
@@ -1207,12 +1207,12 @@
             return formattedDataAdministrator;
         }
 
-        let additionalDataAdministratorWarehouseClient = [];
+        let additionalDataAdministratorWarehouseClientTarget = [];
         $.ajax({
             url: "{{ route('admin.admin.target.getTargetsTablesExpandClientAdministrator') }}",
             method: 'GET',
             success: function(data) {
-                additionalDataAdministratorWarehouseClient = data.data;
+                additionalDataAdministratorWarehouseClientTarget = data.data;
             },
             error: function(xhr, status, error) {
                 console.error('Error fetching additional data:', error);
@@ -1220,13 +1220,13 @@
         });
 
         // Second-level row formatting function
-        function formatSecondLevel(dataItem) {
-            let relatedDataAdministratorSecond = additionalDataAdministratorSecond
+        function formatSecondLevelTarget(dataItem) {
+            let relatedDataAdministratorSecond = additionalDataAdministratorSecondTarget
                 .filter(item =>
                     item.month == dataItem.month && item.year == dataItem.year && item.warehouse_name == dataItem
                     .warehouse_name);
 
-            console.log(additionalDataAdministratorSecond, 'additionalDataAdministratorSecond kedua')
+            console.log(additionalDataAdministratorSecondTarget, 'additionalDataAdministratorSecondTarget kedua')
             console.log(dataItem, 'dataItem kedua')
 
             // Create our number formatter.
@@ -1294,7 +1294,7 @@
                 row.child.hide();
                 $(tr).removeClass('dt-hasChild');
             } else {
-                row.child(formatFirstLevel(row.data())).show();
+                row.child(formatFirstLevelTarget(row.data())).show();
                 $(tr).addClass('dt-hasChild');
             }
         });
@@ -1312,7 +1312,9 @@
             // Use the parentId to find the first-level parent data
             let [month, year, warehouseName] = parentId.split('-');
 
-            let parentData = additionalDataAdministrator.find(item =>
+            console.log(additionalDataAdministratorTarget, 'additionalDataAdministratorTarget')
+
+            let parentData = additionalDataAdministratorTarget.find(item =>
                 item.month === month && item.year === year && item.warehouse_name === warehouseName);
 
             // Debugging: Log the relevant elements and data
@@ -1332,7 +1334,7 @@
                 secondLevelTr.removeClass('shown');
             } else {
                 if (!childRow.length) {
-                    let childRowContent = formatSecondLevel(parentData);
+                    let childRowContent = formatSecondLevelTarget(parentData);
                     secondLevelTr.after('<tr class="child"><td colspan="8">' + childRowContent + '</td></tr>');
                     childRow = secondLevelTr.next('tr.child');
                 }
