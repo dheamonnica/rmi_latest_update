@@ -73,6 +73,8 @@ Route::middleware('auth')->name('admin.')->prefix('admin')->group(function () {
         include 'admin/Budget.php';
         // Budget Config
         include 'admin/Segment.php';
+        // Budget Category
+        include 'admin/Requirement.php';
         // Target
         include 'admin/Target.php';
         // CRM

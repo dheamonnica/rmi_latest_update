@@ -66,6 +66,7 @@ return [
         'crm' => 'CRM',
         'visit' => 'Visit',
         'segment' => 'Segment',
+        'requirement' => 'Requirement',
     ],
 
     // Application Levels
@@ -1271,6 +1272,7 @@ return [
         // budget
         'create_budget' => 'Create Budget',
         'create_config' => 'Create Config',
+        'create_category' => 'Create Category',
         'date' => 'Date',
         'year' => 'Year',
         'month' => 'Month',

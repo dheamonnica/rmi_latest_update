@@ -7,13 +7,13 @@
 @section('content')
     <div class="box border-small p-2">
         <div class="box-header with-border">
-            <h3 class="box-title">BUDGET CONFIG</h3>
+            <h3 class="box-title">BUDGET CATEGORIES</h3>
             <div class="box-tools pull-right p-2">
             </div>
             <div class="pull-right">
                 {{-- Leader and Warehouse Area Leader --}}
                 @if (Auth::user()->isAdmin())
-                    <select id="merchantConfigFilter" class="btn btn-sm btn-default">
+                    <select id="merchantCategoryFilter" class="btn btn-sm btn-default">
                         <option value="" selected>Select Business Unit</option>
                         @foreach ($merchants as $merchant)
                             <option value="{{ $merchant }}">{{ $merchant }}</option>
@@ -21,14 +21,14 @@
                     </select>
                 @endif
                 @if (Auth::user()->role_id === 13 || Auth::user()->role_id === 3)
-                    <a href="javascript:void(0)" data-link="{{ route('admin.segment.create') }}"
-                        class="ajax-modal-btn btn btn-new btn-flat ml-5">{{ trans('app.form.create_config') }}</a>
+                    <a href="javascript:void(0)" data-link="{{ route('admin.requirement.create') }}"
+                        class="ajax-modal-btn btn btn-new btn-flat ml-5">{{ trans('app.form.create_category') }}</a>
                 @endif
             </div>
         </div>
 
         <div class="table-responsive">
-            <table class="table table-hover" id="segment-tables">
+            <table class="table table-hover" id="budget-categories-tables">
                 <thead>
                     <tr>
                         <th class="massActionWrapper">

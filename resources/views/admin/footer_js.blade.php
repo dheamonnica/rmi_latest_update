@@ -1493,6 +1493,76 @@
         });
         // END BUGDET
 
+        // BUDGET CATEGORIES
+        // Load offering list by Ajax
+        var tableBudgetsCategories = $('#budget-categories-tables').DataTable($.extend({}, dataTableOptions, {
+            "ajax": "{{ route('admin.admin.requirement.getRequirements') }}",
+            "columns": [{
+                    'data': 'checkbox',
+                    'name': 'checkbox',
+                    'orderable': false,
+                    'searchable': false,
+                    'exportable': false,
+                    'printable': false
+                },
+                {
+                    'data': 'name',
+                    'name': 'name'
+
+                },
+                {
+                    'data': 'value',
+                    'name': 'value'
+
+                },
+                {
+                    'data': 'warehouse',
+                    'name': 'warehouse'
+                },
+                {
+                    'data': 'created_by',
+                    'name': 'created_by'
+                },
+                {
+                    'data': 'created_at',
+                    'name': 'created_at'
+                },
+                {
+                    'data': 'updated_by',
+                    'name': 'updated_by'
+                },
+                {
+                    'data': 'updated_at',
+                    'name': 'updated_at'
+                },
+                {
+                    'data': 'action',
+                    'name': 'action',
+                    'orderable': false,
+                    'searchable': false,
+                    'exportable': false,
+                    'printable': false
+                }
+            ]
+        }));
+
+        // Filter the 'created_by' column with the name of the authenticated user
+        @if (!Auth::user()->isAdmin())
+            tableBudgetsCategories.column('warehouse:name').search('{{ Auth::user()->warehouse_name }}').draw();
+        @endif
+
+
+        function filterByWarehouse() {
+            var selectedMerchant = $('#merchantCategoryFilter').val();
+
+            // Apply the business area filter to the 'business area' column (assume the column name is 'business area')
+            tableBudgetsCategories.column('warehouse:name').search(selectedMerchant).draw();
+        }
+
+        // Bind the filter and calculation function to the month dropdown change event
+        $('#merchantCategoryFilter').on('change', filterByWarehouse);
+        // END BUGDET CATEGORIES
+
         // BUDGET SEGMENT
         // Load offering list by Ajax
         var tableBudgets = $('#segment-tables').DataTable($.extend({}, dataTableOptions, {
@@ -1561,7 +1631,7 @@
 
         // Bind the filter and calculation function to the month dropdown change event
         $('#merchantConfigFilter').on('change', filterByWarehouse);
-        // END BUGDET CONFIG
+        // END BUGDET SEGMENT
 
         // BUDGET REPORT
         // Load offering list by Ajax
