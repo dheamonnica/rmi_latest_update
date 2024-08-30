@@ -876,6 +876,12 @@
                                             Budget Config
                                         </a>
                                     </li>
+
+                                    <li class="{{ Request::is('admin/requirement*') ? 'active' : '' }}">
+                                        <a href="{{ route('admin.requirement.index') }}">
+                                            Budget Categories
+                                        </a>
+                                    </li>
                                 </ul>
                             </li>
 
