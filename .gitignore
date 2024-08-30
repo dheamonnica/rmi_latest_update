@@ -8,7 +8,7 @@
 # /storage/*.key
 # /storage/*_token
 # /storage/installed
-# /storage/logs/**
+/storage/logs/**
 # /storage/app/analytics-api.json
 # /storage/ebay_refresh_token
 # /vendor/**
@@ -29,3 +29,9 @@
 .env
 # /.htaccess
 # /composer1.phar
+# /public/barcode
+/vendor/composer/*
+public/storage
+storage/installed
+storage/inventories.index
+vendor/composer/installed.php
