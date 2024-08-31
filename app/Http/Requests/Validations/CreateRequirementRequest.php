@@ -25,7 +25,7 @@ class CreateRequirementRequest extends Request
     {
         return [
             'name' => 'required',
-            'value' => 'required',
+            // 'value' => 'required',
         ];
     }
 }

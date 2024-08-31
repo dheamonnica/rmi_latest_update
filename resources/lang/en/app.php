@@ -1292,6 +1292,7 @@ return [
         'approved_by' => 'Approved By',
         'value' => 'Value',
         'rate_cost' => 'Rate Cost',
+        'type' => 'Type',
 
         // target
         'actual_sales' => 'Actual Sales',

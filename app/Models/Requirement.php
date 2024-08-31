@@ -27,7 +27,7 @@ class Requirement extends BaseModel
     protected $fillable = [
         'name',
         'value',
-        'warehouse_id',
+        'type',
         'created_at',
         'created_by',
         'updated_at',

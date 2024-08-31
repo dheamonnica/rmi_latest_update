@@ -15,11 +15,11 @@ Route::get('getRequirements', [
     'getRequirements'
 ])->name('admin.requirement.getRequirements')->middleware('ajax');
 
-Route::put('update/{segment}', [RequirementController::class, 'update'])->name('admin.requirement.update');
+Route::put('update/{requirement}', [RequirementController::class, 'update'])->name('admin.requirement.update');
 
-Route::get('edit/{segment}', [RequirementController::class, 'edit'])->name('admin.requirement.edit');
+Route::get('edit/{requirement}', [RequirementController::class, 'edit'])->name('admin.requirement.edit');
 
-Route::delete('segment/{segment}/trash', [RequirementController::class, 'trash'])
+Route::delete('requirement/{requirement}/trash', [RequirementController::class, 'trash'])
     ->name('admin.requirement.trash');
 
 Route::resource('requirement', RequirementController::class);

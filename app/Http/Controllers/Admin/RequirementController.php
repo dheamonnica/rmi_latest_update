@@ -86,10 +86,10 @@ class RequirementController extends Controller
                 return $requirement->name;
             })
             ->addColumn('value', function ($requirement) {
-                return $requirement->value . '%';
+                return $requirement->value;
             })
-            ->addColumn('warehouse', function ($requirement) {
-                return $requirement->getWarehouse->name;
+            ->addColumn('type', function ($requirement) {
+                return $requirement->type;
             })
             ->addColumn('created_by', function ($requirement) {
                 return $requirement->getCreatedUsername->name;
@@ -108,7 +108,7 @@ class RequirementController extends Controller
             ->addColumn('action', function ($requirement) {
                 return view('admin.budget.partials.options_requirement', compact('requirement'));
             })
-            ->rawColumns(['checkbox', 'name', 'value', 'warehouse', 'created_by', 'created_at', 'updated_by', 'updated_at', 'action'])
+            ->rawColumns(['checkbox', 'name', 'value', 'created_by', 'created_at', 'updated_by', 'updated_at', 'action'])
             ->make(true);
     }
 

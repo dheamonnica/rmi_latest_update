@@ -876,12 +876,14 @@
                                             Budget Config
                                         </a>
                                     </li>
-
-                                    <li class="{{ Request::is('admin/requirement*') ? 'active' : '' }}">
-                                        <a href="{{ route('admin.requirement.index') }}">
-                                            Budget Categories
-                                        </a>
-                                    </li>
+                                    {{-- SUPERADMIN ONLY --}}
+                                    @if (Auth::user()->id === 1)
+                                        <li class="{{ Request::is('admin/requirement*') ? 'active' : '' }}">
+                                            <a href="{{ route('admin.requirement.index') }}">
+                                                Budget Categories
+                                            </a>
+                                        </li>
+                                    @endif
                                 </ul>
                             </li>
 

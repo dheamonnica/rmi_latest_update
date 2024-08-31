@@ -1513,11 +1513,10 @@
                 {
                     'data': 'value',
                     'name': 'value'
-
                 },
                 {
-                    'data': 'warehouse',
-                    'name': 'warehouse'
+                    'data': 'type',
+                    'name': 'type'
                 },
                 {
                     'data': 'created_by',
@@ -1547,20 +1546,19 @@
         }));
 
         // Filter the 'created_by' column with the name of the authenticated user
-        @if (!Auth::user()->isAdmin())
-            tableBudgetsCategories.column('warehouse:name').search('{{ Auth::user()->warehouse_name }}').draw();
-        @endif
+        // @if (!Auth::user()->isAdmin())
+        //     tableBudgetsCategories.column('warehouse:name').search('{{ Auth::user()->warehouse_name }}').draw();
+        // @endif
 
+        // function filterByWarehouse() {
+        //     var selectedMerchant = $('#merchantCategoryFilter').val();
 
-        function filterByWarehouse() {
-            var selectedMerchant = $('#merchantCategoryFilter').val();
-
-            // Apply the business area filter to the 'business area' column (assume the column name is 'business area')
-            tableBudgetsCategories.column('warehouse:name').search(selectedMerchant).draw();
-        }
+        //     // Apply the business area filter to the 'business area' column (assume the column name is 'business area')
+        //     tableBudgetsCategories.column('warehouse:name').search(selectedMerchant).draw();
+        // }
 
         // Bind the filter and calculation function to the month dropdown change event
-        $('#merchantCategoryFilter').on('change', filterByWarehouse);
+        // $('#merchantCategoryFilter').on('change', filterByWarehouse);
         // END BUGDET CATEGORIES
 
         // BUDGET SEGMENT
