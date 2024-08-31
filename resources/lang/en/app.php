@@ -1441,6 +1441,9 @@ return [
         'search_warehouse' => 'Search Warehouse',
         'transfer_stock' => 'Transfer Stock',
         'transfer_type' => 'Transfer Type',
+        
+
+        'backdate' => 'Back Date',
     ],
 
     'placeholder' => [
@@ -2097,6 +2100,7 @@ return [
     'month_end' => 'Month End',
     'year_start' => 'Year Start',
     'year_end' => 'Year End',
+    'backdate' => 'Back Date (Optional)',
 ];
 
 
