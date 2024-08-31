@@ -1,7 +1,3 @@
 <td>
-    @if ($budget->category === 1)
-        Sallary
-    @else
-        Additional
-    @endif
+    {{ $budget->getCategoryBudget->name }}
 </td>

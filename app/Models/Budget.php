@@ -30,7 +30,7 @@ class Budget extends BaseModel
         'qty',
         'total',
         'grand_total',
-        'category',
+        'category_id',
         'status',
         'created_at',
         'created_by',
@@ -60,6 +60,17 @@ class Budget extends BaseModel
     public function getApprovedBudget()
     {
         return $this->belongsTo(User::class, 'approved_by');
+    }
+
+    public function getCategoryBudget()
+    {
+        return $this->belongsTo(Requirement::class, 'category_id');
+    }
+
+    public static function getBudgetCategoryValue($id) {
+        $query = "SELECT * FROM `requirements` WHERE id = $id";
+
+        return DB::select(DB::raw($query));
     }
 
     public static function getReportDataHeaderAdministrator()
