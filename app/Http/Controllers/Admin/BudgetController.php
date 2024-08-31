@@ -6,6 +6,7 @@ use App\Common\Authorizable;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Validations\CreateBudgetRequest;
 use App\Http\Requests\Validations\UpdateBudgetRequest;
+use App\Models\Requirement;
 use App\Repositories\Budget\BudgetRepository;
 use Illuminate\Http\Request;
 use Yajra\Datatables\Datatables;
@@ -207,6 +208,22 @@ class BudgetController extends Controller
         return response()->json(['data' => $results]);
     }
 
+    public function getBudgetCategoryValue(Request $request)
+    {
+        $id = $request->query('id');
+        $results = Budget::getBudgetCategoryValue($id);
+
+        return response()->json(['data' => $results]);
+    }
+
+    public function getBudgetData(Request $request)
+    {
+        $id = $request->query('id');
+        $results = Budget::getBudgetData($id);
+
+        return response()->json(['data' => $results]);
+    }
+
     public function getBudgetsReport(Request $request)
     {
         $budgets = Inventory::select('inventories.shop_id', 'shops.name as shop_name')
@@ -276,7 +293,11 @@ class BudgetController extends Controller
      */
     public function create()
     {
-        return view('admin.budget._create');
+        $budgetCategories = Requirement::whereNull('deleted_at')
+            ->get()
+            ->pluck('name', 'id')
+            ->toArray();
+        return view('admin.budget._create', compact('budgetCategories'));
     }
 
     /**
@@ -287,7 +308,7 @@ class BudgetController extends Controller
      */
     public function store(CreateBudgetRequest $request)
     {
-        $request['grand_total'] = $request->input('total') * $request->input('qty');
+        // $request['grand_total'] = $request->input('total') * $request->input('qty');
         date_default_timezone_set('Asia/Jakarta');
         $request['created_at'] = date('Y-m-d G:i:s');
         $this->budget->store($request);
@@ -314,7 +335,12 @@ class BudgetController extends Controller
     public function edit($id)
     {
         $budget = $this->budget->find($id);
-        return view('admin.budget._edit', compact('budget'));
+        $budgetCategories = Requirement::whereNull('deleted_at')
+            ->get()
+            ->pluck('name', 'id')
+            ->toArray();
+
+        return view('admin.budget._edit', compact('budget', 'budgetCategories'));
     }
 
     public function setApprove(Request $request, $id)
@@ -336,7 +362,7 @@ class BudgetController extends Controller
      */
     public function update(UpdateBudgetRequest $request, $id)
     {
-        $request['grand_total'] = $request->input('total') * $request->input('qty');
+        // $request['grand_total'] = $request->input('total') * $request->input('qty');
         date_default_timezone_set('Asia/Jakarta');
         $request['updated_at'] = date('Y-m-d G:i:s');
         $this->budget->update($request, $id);

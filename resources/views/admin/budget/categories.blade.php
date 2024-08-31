@@ -11,16 +11,8 @@
             <div class="box-tools pull-right p-2">
             </div>
             <div class="pull-right">
-                {{-- Leader and Warehouse Area Leader --}}
-                @if (Auth::user()->isAdmin())
-                    <select id="merchantCategoryFilter" class="btn btn-sm btn-default">
-                        <option value="" selected>Select Business Unit</option>
-                        @foreach ($merchants as $merchant)
-                            <option value="{{ $merchant }}">{{ $merchant }}</option>
-                        @endforeach
-                    </select>
-                @endif
-                @if (Auth::user()->role_id === 13 || Auth::user()->role_id === 3)
+               {{-- SUPERADMIN --}}
+                @if (Auth::user()->role_id === 1)
                     <a href="javascript:void(0)" data-link="{{ route('admin.requirement.create') }}"
                         class="ajax-modal-btn btn btn-new btn-flat ml-5">{{ trans('app.form.create_category') }}</a>
                 @endif
@@ -39,7 +31,7 @@
                         </th>
                         <th>{{ trans('app.form.name') }}</th>
                         <th>{{ trans('app.form.value') }}</th>
-                        <th>{{ trans('app.form.warehouse') }}</th>
+                        <th>{{ trans('app.form.type') }}</th>
                         <th>{{ trans('app.form.created_by') }}</th>
                         <th>{{ trans('app.form.created_at') }}</th>
                         <th>{{ trans('app.form.updated_at') }}</th>

@@ -64,4 +64,14 @@ Route::get('getBudgetTablesExpandAdministrator', [
     'getBudgetTablesExpandAdministrator'
 ])->name('admin.budget.getBudgetTablesExpandAdministrator')->middleware('ajax');
 
+Route::get('getBudgetCategoryValue', [
+    BudgetController::class,
+    'getBudgetCategoryValue'
+])->name('admin.budget.getBudgetCategoryValue')->middleware('ajax');
+
+Route::get('getBudgetData', [
+    BudgetController::class,
+    'getBudgetData'
+])->name('admin.budget.getBudgetData')->middleware('ajax');
+
 Route::resource('budget', BudgetController::class);
