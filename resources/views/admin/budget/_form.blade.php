@@ -178,7 +178,10 @@
             });
         }
 
-        fetchBudgetData($('#id-budget').val());
+        console.log($('#id-budget').val(), 'id-budget')
+        if ($('#id-budget').val()) {
+            fetchBudgetData($('#id-budget').val());
+        }
 
         // Add event listener for changes in the category dropdown
         categorySelect.on('change', async function() {
