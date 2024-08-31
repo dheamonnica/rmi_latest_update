@@ -69,4 +69,9 @@ Route::get('getBudgetCategoryValue', [
     'getBudgetCategoryValue'
 ])->name('admin.budget.getBudgetCategoryValue')->middleware('ajax');
 
+Route::get('getBudgetData', [
+    BudgetController::class,
+    'getBudgetData'
+])->name('admin.budget.getBudgetData')->middleware('ajax');
+
 Route::resource('budget', BudgetController::class);

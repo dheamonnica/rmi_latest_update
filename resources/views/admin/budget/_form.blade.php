@@ -1,4 +1,10 @@
 <div class="row">
+    {!! Form::hidden('id', null, [
+        'class' => 'form-control datepicker',
+        'placeholder' => trans('app.form.date'),
+        'required',
+        'id' => 'id-budget',
+    ]) !!}
     <div class="col-md-2 nopadding-right">
         <div class="form-group">
             {!! Form::label('date', trans('app.form.date'), ['class' => 'with-help']) !!}
@@ -111,6 +117,7 @@
                 success: function(response) {
                     // console.log('Response:', response.data[0].value);
                     valueBudget = response.data[0].value;
+                    console.log(valueBudget, 'valueBudget');
                     // Process the response data as needed
 
                     if (valueBudget === '0') {
@@ -142,6 +149,36 @@
             const grandtotal = qty * total;
             grandtotalInput.val(grandtotal); // Set grandtotal with two decimal places
         }
+
+        function fetchBudgetData(id) {
+            $.ajax({
+                url: "{{ route('admin.admin.budget.getBudgetData') }}", // Ensure this route is correct
+                type: 'GET', // Use the appropriate HTTP method (GET, POST, etc.)
+                data: {
+                    id: id
+                }, // Send the ID as query parameter
+                success: function(response) {
+                    valueBudget = response.data[0];
+                    console.log(valueBudget, 'valueBudget');
+                    if (valueBudget.qty) {
+                        quantityField.show(); // Show quantity field
+                    }
+                    if (valueBudget.total) {
+                        totalField.show(); // Show quantity field
+                        totalInput.prop('readonly', false); // Enable quantity input
+                    }
+                    if (valueBudget.grand_total) {
+                        grandtotalField.show(); // Show quantity field
+                        grandtotalInput.prop('readonly', false); // Enable quantity input
+                    }
+                },
+                error: function(xhr) {
+                    console.error('AJAX Error:', xhr.responseText);
+                }
+            });
+        }
+
+        fetchBudgetData($('#id-budget').val());
 
         // Add event listener for changes in the category dropdown
         categorySelect.on('change', async function() {

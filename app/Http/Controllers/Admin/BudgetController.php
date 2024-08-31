@@ -216,6 +216,14 @@ class BudgetController extends Controller
         return response()->json(['data' => $results]);
     }
 
+    public function getBudgetData(Request $request)
+    {
+        $id = $request->query('id');
+        $results = Budget::getBudgetData($id);
+
+        return response()->json(['data' => $results]);
+    }
+
     public function getBudgetsReport(Request $request)
     {
         $budgets = Inventory::select('inventories.shop_id', 'shops.name as shop_name')

@@ -73,6 +73,12 @@ class Budget extends BaseModel
         return DB::select(DB::raw($query));
     }
 
+    public static function getBudgetData($id) {
+        $query = "SELECT * FROM `budget` WHERE id = $id";
+
+        return DB::select(DB::raw($query));
+    }
+
     public static function getReportDataHeaderAdministrator()
     {
         $query = "select year,month,max(total_selling) as total_selling ,sum(total_budget) as total_budget,max(total_budget)/sum(total_selling) * 100 as rate_cost from (SELECT 
