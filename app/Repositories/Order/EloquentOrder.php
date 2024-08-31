@@ -13,6 +13,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use App\Common\ImageUploadManual;
 use Illuminate\Support\Facades\Log;
+use Carbon\Carbon;
+
 
 class EloquentOrder extends EloquentRepository implements BaseRepository, OrderRepository
 {
@@ -88,6 +90,13 @@ class EloquentOrder extends EloquentRepository implements BaseRepository, OrderR
     {
         setAdditionalCartInfo($request); // Set some system information using helper function
 
+        if ($request->input('backdate')) {
+            $backdate = Carbon::createFromFormat('Y-m-d', $request->input('backdate'))->format('Ymd');
+            $request['created_at'] = $request->input('backdate');
+            $request['updated_at']= $request->input('backdate');
+            $request['order_number'] = preg_replace('/\d{8}/', $backdate, $request->order_number);
+        }
+        
         $order = parent::store($request);
 
         $this->syncInventory($order, $request->input('cart'));
@@ -119,6 +128,11 @@ class EloquentOrder extends EloquentRepository implements BaseRepository, OrderR
         }
 
         $order->shipping_date = date('Y-m-d');
+
+        if ($request->input('backdate')) {
+            $order->shipping_date = Carbon::createFromFormat('Y-m-d', $request->input('backdate'))->format('Y-m-d');
+        }
+
         $order->shipped_by = Auth::user()->id;
         $order->update($request->all());
 
@@ -197,6 +211,11 @@ class EloquentOrder extends EloquentRepository implements BaseRepository, OrderR
         }
 
         $order->delivery_date = date("Y-m-d");
+
+        if ($request->input('backdate')) {
+            $order->delivery_date = Carbon::createFromFormat('Y-m-d', $request->input('backdate'))->format('Y-m-d');
+        }
+
         $order->order_status_id = 6;
         $order->delivery_by = Auth::user()->id;
 
@@ -248,6 +267,7 @@ class EloquentOrder extends EloquentRepository implements BaseRepository, OrderR
                 'quantity' => $item->quantity,
                 'unit_price' => $item->unit_price,
                 'product_id' => $item->product_id,
+                'created_at' => $order->created_at,
             ];
 
             // adjust stock qtt based on tth order

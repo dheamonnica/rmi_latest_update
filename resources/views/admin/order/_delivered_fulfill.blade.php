@@ -6,7 +6,16 @@
 		{{ trans('app.delivered_order') }}
 	  </div>
 	  <div class="modal-body">
-  
+		@if ((int) $order->is_backdate)
+			<div class="form-group">
+			{!! Form::label('backdate', trans('app.form.backdate'), ['class' => 'with-help']) !!}
+			<i class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="{{ trans('help.backdate') }}"></i>
+			<div class="input-group">
+				<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+				{!! Form::text('backdate', null, ['class' => 'datepicker form-control', 'placeholder' => trans('app.form.backdate'), '']) !!}
+			</div>
+			</div>
+		@endif
 		<div class="form-group">
 		  {!! Form::label('images', trans('app.form.image_uploads') . '*', ['class' => 'with-help']) !!}
 		  <i class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="{{ trans('help.order_fulfillment_carrier') }}"></i>
