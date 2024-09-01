@@ -120,7 +120,7 @@
                     console.log(valueBudget, 'valueBudget');
                     // Process the response data as needed
 
-                    if (valueBudget === '0') {
+                    if (valueBudget === 0) {
                         quantityField.show(); // Show quantity field
                         qtyInput.prop('readonly', false); // Enable quantity input
                         totalInput.prop('readonly', false); // Enable total input
