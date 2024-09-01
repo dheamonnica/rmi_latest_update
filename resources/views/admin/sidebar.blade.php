@@ -546,6 +546,43 @@
                         </li>
                     </ul>
                 </li>
+
+                <li
+                    class="treeview {{ Request::is('admin/promotions*') || Request::is('admin/flashdeal*') ? 'active' : '' }}">
+                    <a href="javascript:void(0)">
+                        <i class="fa fa-bullhorn"></i>
+                        <span>{{ trans('nav.promotions') }}</span>
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </a>
+                    <ul class="treeview-menu">
+                        @if (Auth::user()->isAdmin())
+                            <li class="{{ Request::is('admin/promotions*') ? 'active' : '' }}">
+                                <a href="{{ url('admin/promotions') }}">
+                                    <i class="fa fa-angle-double-right"></i>
+                                    <span>{{ trans('nav.promotions') }}</span>
+                                </a>
+                            </li>
+                        @endif
+
+                        @if (Auth::user()->isAdmin() && is_incevio_package_loaded('trendingKeywords'))
+                            <li class="{{ Request::is('admin/promotions/trendingKeywords*') ? 'active' : '' }}">
+                                <a href="{{ route('admin.promotion.trendingKeywords') }}">
+                                    <i class="fa fa-angle-double-right"></i>
+                                    {{ trans('trendingKeywords::lang.trending_keywords') }}
+                                    @include('partials._addon_badge')
+                                </a>
+                            </li>
+                        @endif
+
+                        @if ((new \App\Helpers\Authorize(Auth::user(), 'manage_flash_deal'))->check())
+                            <li class="{{ Request::is('admin/flashdeal*') ? 'active' : '' }}">
+                                <a href="{{ route('admin.flashdeal') }}">
+                                    <i class="fa fa-angle-double-right"></i> {{ trans('theme.flash_deal') }}
+                                </a>
+                            </li>
+                        @endif
+                    </ul>
+                </li>
             @endif
 
             {{-- Except vendor --}}
