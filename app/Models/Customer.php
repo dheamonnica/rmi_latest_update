@@ -114,7 +114,7 @@ class Customer extends CustomerWallet
         'hospital_pic_email',
         'hospital_group',
         'title',
-        'merchant_id',
+        'shop_id',
         'hospital_tax_name',
     ];
 
