@@ -88,7 +88,7 @@ class CustomerController extends Controller
         ->get()
         ->pluck('name', 'id')
         ->filter(function ($warehouseName) {
-            return str_contains($warehouseName, 'warehouse');
+            return str_contains($warehouseName, 'Warehouse');
         })
         ->toArray();
 
@@ -165,7 +165,7 @@ class CustomerController extends Controller
             ->get()
             ->pluck('name', 'id')
             ->filter(function ($warehouseName) {
-                return str_contains($warehouseName, 'warehouse');
+                return str_contains($warehouseName, 'Warehouse');
             })
             ->toArray();
 
