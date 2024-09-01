@@ -94,6 +94,7 @@ class EloquentOrder extends EloquentRepository implements BaseRepository, OrderR
             $backdate = Carbon::createFromFormat('Y-m-d', $request->input('backdate'))->format('Ymd');
             $request['created_at'] = $request->input('backdate');
             $request['updated_at']= $request->input('backdate');
+            $request['is_backdate']= 1;
             $request['order_number'] = preg_replace('/\d{8}/', $backdate, $request->order_number);
         }
         
@@ -228,7 +229,12 @@ class EloquentOrder extends EloquentRepository implements BaseRepository, OrderR
             $order = $this->model->find($order);
         }
 
-        $order->packed_date = date("Y-m-d G:i:s");
+        $order->packed_date = date("Y-m-d G:i:s"); //ikut order->created_at
+
+        if((int) $order->is_backdate) {
+            $order->packed_date = $order->created_at;
+        }
+
         $order->order_status_id = 10;
         $order->packed_by = Auth::user()->id;;
 
@@ -267,7 +273,9 @@ class EloquentOrder extends EloquentRepository implements BaseRepository, OrderR
                 'quantity' => $item->quantity,
                 'unit_price' => $item->unit_price,
                 'product_id' => $item->product_id,
-                'created_at' => $order->created_at,
+                'created_at' => $order->created_at, 
+                'is_backdate' => $order->is_backdate, 
+                //is_backdate true
             ];
 
             // adjust stock qtt based on tth order
