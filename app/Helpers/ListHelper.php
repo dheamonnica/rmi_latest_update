@@ -1300,6 +1300,7 @@ class ListHelper
                     // 'product.image:path,imageable_id,imageable_type'
                 ])
                 ->where('parent_id', null)
+                ->where('shop_id', Auth::user()->shop_id)
                 ->inRandomOrder('id');
 
             if ($limit) {
