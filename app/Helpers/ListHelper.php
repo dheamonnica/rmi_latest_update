@@ -1127,8 +1127,11 @@ class ListHelper
                 ->when($shop_id, function ($query, $shop_id) {
                     return $query->where('shop_id', $shop_id);
                 })
-                ->zipcode()->where('parent_id', null)
-                ->latest()->limit($limit)->get();
+                ->zipcode()
+                ->where('parent_id', null)
+                ->where('shop_id', Auth::user()->shop_id)
+                ->latest()->limit($limit)
+                ->get();
         });
     }
 
@@ -1297,6 +1300,7 @@ class ListHelper
                     // 'product.image:path,imageable_id,imageable_type'
                 ])
                 ->where('parent_id', null)
+                ->where('shop_id', Auth::user()->shop_id)
                 ->inRandomOrder('id');
 
             if ($limit) {

@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Yajra\Datatables\Datatables;
 use App\Helpers\ListHelper;
+use App\Models\Shop;
 
 class CustomerController extends Controller
 {
@@ -52,7 +53,7 @@ class CustomerController extends Controller
     public function getCustomers(Request $request)
     {
         $customers = $this->customer->all();
-        
+
         return Datatables::of($customers)
             ->editColumn('checkbox', function ($customer) {
                 return view('admin.partials.actions.customer.checkbox', compact('customer'));
@@ -83,9 +84,15 @@ class CustomerController extends Controller
      */
     public function create()
     {
-        $merchants = ListHelper::merchantsWarehouse();
+        $shops = Shop::whereNotNull('pic_name')
+        ->get()
+        ->pluck('name', 'id')
+        ->filter(function ($warehouseName) {
+            return str_contains($warehouseName, 'Warehouse');
+        })
+        ->toArray();
 
-        return view('admin.customer._create', compact('merchants'));
+        return view('admin.customer._create', compact('shops'));
     }
 
     /**
@@ -154,11 +161,17 @@ class CustomerController extends Controller
      */
     public function edit($id)
     {
-        $merchants = ListHelper::merchantsWarehouse();
+        $shops = Shop::whereNotNull('pic_name')
+            ->get()
+            ->pluck('name', 'id')
+            ->filter(function ($warehouseName) {
+                return str_contains($warehouseName, 'Warehouse');
+            })
+            ->toArray();
 
         $customer = $this->customer->find($id);
 
-        return view('admin.customer._edit', compact('customer', 'merchants'));
+        return view('admin.customer._edit', compact('customer', 'shops'));
     }
 
     /**

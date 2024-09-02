@@ -95,8 +95,8 @@
 
   <div class="col-md-6 nopadding-left">
     <div class="form-group">
-      {!! Form::label('merchant_id', trans('app.form.coverage_area') . '*') !!}
-      {!! Form::select('merchant_id', $merchants, null, ['id' => 'coverage_area', 'class' => 'form-control flat', 'placeholder' => trans('app.form.coverage_area') . '*', 'required']) !!}
+      {!! Form::label('shop_id', trans('app.form.coverage_area') . '*') !!}
+      {!! Form::select('shop_id', $shops, null, ['id' => 'coverage_area', 'class' => 'form-control flat', 'placeholder' => trans('app.form.coverage_area') . '*', 'required']) !!}
       <div class="help-block with-errors"></div>
     </div>
   </div>
