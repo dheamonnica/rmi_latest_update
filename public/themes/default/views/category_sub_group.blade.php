@@ -8,6 +8,7 @@
   @include('theme::headers.category_sub_group_page', ['category' => $categorySubGroup])
 
   <!-- CONTENT SECTION -->
+  products: {{$products}} - {{Auth::guard('customer')->user()->shop_id}}
   @include('theme::contents.category_page', ['category' => $categorySubGroup])
 
   <!-- BROWSING ITEMS -->

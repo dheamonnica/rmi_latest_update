@@ -27,7 +27,7 @@
   </div> --}}
 </div>
 
-<div class="form-group" style="display: none">
+<div class="form-group">
   {!! Form::label('slug', trans('app.form.slug') . '*', ['class' => 'with-help']) !!}
   <i class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="{{ trans('help.slug') }}"></i>
   {!! Form::text('slug', null, ['class' => 'form-control slug', 'placeholder' => trans('app.placeholder.slug'), 'required']) !!}

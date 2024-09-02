@@ -225,8 +225,10 @@ class HomeController extends Controller
         // $all_products = prepareFilteredListings($request, $categorySubGroup);
 
         // Paginate the results
-        $products = $all_products->paginate(config('system.view_listing_per_page', 16))
-            ->appends($request->except('page'));
+        $products = $all_products
+        ->where('shop_id', Auth::guard('customer')->user()->shop_id)
+        ->paginate(config('system.view_listing_per_page', 16))
+        ->appends($request->except('page'));
 
         return view('theme::category_sub_group', compact('categorySubGroup', 'products'));
     }
