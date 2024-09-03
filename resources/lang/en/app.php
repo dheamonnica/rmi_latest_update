@@ -1239,6 +1239,13 @@ return [
         'image_uploads' => 'Upload Images',
         'receiver_name' => 'Receiver Name',
         'digital_sign' => 'Digital Signature',
+        'unit_price' => 'Unit Price',
+        'discount' => 'Discount',
+        'sla_order' => 'SLA Order',
+        'sla_packing' => 'SLA Packing',
+        'sla_delivery' => 'SLA Delivery',
+        'sla_payment' => 'SLA Payment',
+
         // manufacture
         'manufacture_pic_name' => 'Manufacture PIC Name',
         'manufacture_pic_email' => 'Manufacture PIC Email',

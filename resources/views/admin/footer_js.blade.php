@@ -527,53 +527,63 @@
 
         // Load Order list by Ajax
         $('#all-order-table-full').DataTable($.extend({}, dataTableOptions, {
-            "ajax": "{{ route('admin.order.bulkorder_process', ['paymentStatus' => '0', 'orderStatus' => '0']) }}",
+            "ajax": "{{ route('admin.order.getOrderReport') }}",
             "columns": [{
-                    'data': 'checkbox',
-                    'name': 'checkbox',
-                    'orderable': false,
-                    'searchable': false,
-                    'exportable': false,
-                    'printable': false,
-                    'visible': false
+                    'data': 'order_number',
+                    'name': 'order_number'
                 },
                 {
                     'data': 'po_number_ref',
                     'name': 'po_number_ref'
                 },
-                @if (Auth::user()->isFromPlatform())
-                    {
-                        'data': 'shop',
-                        'name': 'shop'
-                    },
-                @endif {
-                    'data': 'customer_name',
-                    'name': 'customer_name',
-                    'searchable': true
+                {
+                    'data': 'warehouse_name',
+                    'name': 'warehouse_name'
                 },
                 {
-                    'data': 'product_qty',
-                    'name': 'product_qty',
-                    'searchable': false
+                    'data': 'client_name',
+                    'name': 'client_name',
                 },
                 {
-                    'data': 'grand_total_number',
-                    'name': 'grand_total_number',
-                    'searchable': false
+                    'data': 'selling_skuid',
+                    'name': 'selling_skuid',
                 },
                 {
-                    'data': 'payment_status',
-                    'name': 'payment_status',
-                    'searchable': false
+                    'data': 'product_name',
+                    'name': 'product_name',
                 },
                 {
-                    'data': 'order_status',
-                    'name': 'order_status',
-                    'searchable': false
+                    'data': 'quantity',
+                    'name': 'quantity',
                 },
                 {
-                    'data': 'order_date',
-                    'name': 'order_date'
+                    'data': 'unit_price',
+                    'name': 'unit_price',
+                },
+                {
+                    'data': 'purchase_price',
+                    'name': 'purchase_price',
+                },
+                {
+                    'data': 'total',
+                    'name': 'total',
+                },
+                {
+                    'data': 'discount',
+                    'name': 'discount',
+                },
+                {
+                    'data': 'taxrate',
+                    'name': 'taxrate',
+                },
+                {
+                    'data': 'Grand_Total',
+                    'name': 'Grand_Total',
+                },
+
+                {
+                    'data': 'created_at',
+                    'name': 'created_at',
                 },
                 {
                     'data': 'created_by',
@@ -600,8 +610,8 @@
                     'name': 'delivery_date',
                 },
                 {
-                    'data': 'delivery_by',
-                    'name': 'delivery_by'
+                    'data': 'delivered_by',
+                    'name': 'delivered_by'
                 },
                 {
                     'data': 'paid_date',
@@ -611,13 +621,31 @@
                     'data': 'paid_by',
                     'name': 'paid_by'
                 },
+
                 {
-                    'data': 'due_date_payment',
-                    'name': 'due_date_payment'
+                    'data': 'SLA_Order',
+                    'name': 'SLA_Order',
                 },
                 {
-                    'data': 'due_days_payment',
-                    'name': 'due_days_payment'
+                    'data': 'SLA_Packing',
+                    'name': 'SLA_Packing',
+                },
+                {
+                    'data': 'SLA_Delivery',
+                    'name': 'SLA_Delivery',
+                },
+                {
+                    'data': 'SLA_Payment',
+                    'name': 'SLA_Payment',
+                },
+
+                {
+                    'data': 'due_date_in_days',
+                    'name': 'due_date_in_days'
+                },
+                {
+                    'data': 'due_date',
+                    'name': 'due_date'
                 },
                 {
                     'data': 'cancel_date',
@@ -626,7 +654,17 @@
                 {
                     'data': 'cancel_by',
                     'name': 'cancel_by'
-                }
+                },
+                {
+                    'data': 'payment_status',
+                    'name': 'payment_status',
+                    'searchable': false
+                },
+                {
+                    'data': 'order_status_id',
+                    'name': 'order_status_id',
+                    'searchable': false
+                },
             ]
         }));
 
@@ -1962,8 +2000,8 @@
             let [month, year, warehouseName] = parentId.split('-');
 
             let parentData = additionalDataAdministratorBudget
-            .find(item =>
-                item.month == month && item.year == year && item.warehouse_area == warehouseName);
+                .find(item =>
+                    item.month == month && item.year == year && item.warehouse_area == warehouseName);
 
             // Debugging: Log the relevant elements and data
             console.log(secondLevelTr, 'Second-level clicked row');
@@ -2759,7 +2797,7 @@
             if (q.length < 0) {
                 showResult.html(
                     '<span class="lead indent50">{{ trans('validation.min.string', ['attribute' => trans('app.form.search'), 'min' => '0']) }}</span>'
-                    );
+                );
                 return;
             }
             showResult.html('<span class="lead indent50">{{ trans('responses.searching') }}</span>');

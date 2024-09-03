@@ -16,7 +16,7 @@
 @section('content')
     @php
         $order_statuses = \App\Helpers\ListHelper::order_statuses();
-        $payment_statuses = \App\Helpers\ListHelper::payment_statuses()
+        $payment_statuses = \App\Helpers\ListHelper::payment_statuses();
     @endphp
     <div class="box">
         <div class="box-header with-border">
@@ -38,7 +38,7 @@
                         <option value={{ $payment_status_number }}>{{ $payment_status }}</option>
                     @endforeach
                 </select>
-            
+
             </div>
             {{-- <div class="pull-right">
               <div class="btn-group">
@@ -73,22 +73,28 @@
             <table class="table table-hover" id="all-order-table-full">
                 <thead>
                     <tr>
-                        <th class="massActionWrapper">
+                        {{-- <th class="massActionWrapper">
                             <button type="button" class="btn btn-xs btn-default checkbox-toggle">
                                 <i class="fa fa-square-o" data-toggle="tooltip" data-placement="top"
                                     title="{{ trans('app.select_all') }}"></i>
                             </button>
-                        </th>
+                        </th> --}}
+                        <th>{{ trans('app.form.order_number') }}</th>
                         <th>{{ trans('app.form.po_number_ref') }}</th>
-                        <th>{{ trans('app.warehouse') }}</th>
-                        <th>{{ trans('app.customer') }}</th>
-                        <th>{{ trans('app.form.product_qty') }}</th>
-                        <th>{{ trans('app.grand_total') }}</th>
-                        <th>{{ trans('app.payment_status') }}</th>
-                        <th>{{ trans('app.order_status') }}</th>
-                        
-                        <th>{{ trans('app.order_date') }}</th>
-                        <th>{{ trans('app.form.create_order_by') }}</th>
+                        <th>{{ trans('app.form.business_unit') }}</th>
+                        <th>{{ trans('app.form.client') }}</th>
+                        <th>{{ trans('app.form.selling_skuid') }}</th>
+                        <th>{{ trans('app.product_name') }}</th>
+                        <th>{{ trans('app.form.quantity') }}</th>
+                        <th>{{ trans('app.form.unit_price') }}</th>
+                        <th>{{ trans('app.form.purchase_price') }}</th>
+                        <th>{{ trans('app.form.total') }}</th>
+                        <th>{{ trans('app.form.discount') }}</th>
+                        <th>{{ trans('app.form.taxrate') }}</th>
+                        <th>{{ trans('app.form.grand_total') }}</th>
+
+                        <th>{{ trans('app.form.created_at') }}</th>
+                        <th>{{ trans('app.form.created_by') }}</th>
                         <th>{{ trans('app.form.packed_date') }}</th>
                         <th>{{ trans('app.form.packed_by') }}</th>
                         <th>{{ trans('app.form.shipped_date') }}</th>
@@ -97,14 +103,18 @@
                         <th>{{ trans('app.form.delivered_by') }}</th>
                         <th>{{ trans('app.form.paid_date') }}</th>
                         <th>{{ trans('app.form.paid_by') }}</th>
+
+                        <th>{{ trans('app.form.sla_order') }}</th>
+                        <th>{{ trans('app.form.sla_packing') }}</th>
+                        <th>{{ trans('app.form.sla_delivery') }}</th>
+                        <th>{{ trans('app.form.sla_payment') }}</th>
+                        
                         <th>{{ trans('app.form.duedate_payment') }}</th>
                         <th>{{ trans('app.form.duedate_days_payment') }}</th>
                         <th>{{ trans('app.form.cancel_date') }}</th>
                         <th>{{ trans('app.form.cancel_by') }}</th>
-                        @if (Auth::user()->isFromPlatform())
-                            <th>{{ trans('app.business_area') }}</th>
-                        @endif
-                        <th>&nbsp;</th>
+                        <th>{{ trans('app.form.payment_status') }}</th>
+                        <th>{{ trans('app.form.order_status') }}</th>
                     </tr>
                 </thead>
                 <tbody id="massSelectArea">
@@ -112,5 +122,5 @@
             </table>
         </div>
     </div><!-- /.box -->
-   
+
 </div @endsection

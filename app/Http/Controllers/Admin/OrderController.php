@@ -56,8 +56,8 @@ class OrderController extends Controller
         $archives = $this->order->trashOnly();
 
         $deliveryBoysUser = ListHelper::deliveryBoyRole();
-        
-        return view('admin.order.index',compact('orders','archives', 'deliveryBoysUser'));
+
+        return view('admin.order.index', compact('orders', 'archives', 'deliveryBoysUser'));
     }
 
     public function exportIndex()
@@ -69,8 +69,8 @@ class OrderController extends Controller
         $archives = $this->order->trashOnly();
 
         $deliveryBoysUser = ListHelper::deliveryBoyRole();
-        
-        return view('admin.order.export_index',compact('orders','archives', 'deliveryBoysUser'));
+
+        return view('admin.order.export_index', compact('orders', 'archives', 'deliveryBoysUser'));
     }
 
     /**
@@ -83,14 +83,14 @@ class OrderController extends Controller
     public function showBulkProcess(Request $request, $paymentStatus = 0, $orderStatus = 0)
     {
         $fulfilment = Route::is('admin.order.pickup') ? Order::FULFILMENT_TYPE_PICKUP : Order::FULFILMENT_TYPE_DELIVER;
-        
+
         $orders = Order::where('fulfilment_type', $fulfilment);
 
         if (Auth::user()->role_id === 9) {
             $orders = Order::where('delivery_boy_id', Auth::user()->id);
         }
-        
-        if(Auth::user()->isFromMerchant()){
+
+        if (Auth::user()->isFromMerchant()) {
             $orders->where('shop_id', Auth::user()->merchantId()); // Merchants must only see their own orders
         }
 
@@ -103,95 +103,95 @@ class OrderController extends Controller
         }
 
         $orders = $orders->orderBy('created_at', 'desc')->get();
-    
+
         return Datatables::of($orders)
-        ->editColumn('checkbox', function ($order) {
-            return view('admin.partials.actions.order.checkbox', compact('order'));
-        })
-        ->addColumn('order', function ($order) {
-            return view('admin.partials.actions.order.order', compact('order'));
-        })
-        ->addColumn('created_by', function ($order) {
-            return view('admin.partials.actions.order.order_created_by', compact('order'));
-        })
-        ->addColumn('po_number_ref', function ($order) {
-            return view('admin.partials.actions.order.order_po_number_ref', compact('order'));
-        })
-        ->addColumn('packed_by', function ($order) {
-            return view('admin.partials.actions.order.order_packed_by', compact('order'));
-        })
-        ->addColumn('packed_date', function ($order) {
-            return view('admin.partials.actions.order.order_packed_date', compact('order'));
-        })
-        ->addColumn('shipped_by', function ($order) {
-            return view('admin.partials.actions.order.order_shipped_by', compact('order'));
-        })
-        ->addColumn('shipping_date', function ($order) {
-            return view('admin.partials.actions.order.order_shipped_date', compact('order'));
-        })
-        ->addColumn('delivery_by', function ($order) {
-            return view('admin.partials.actions.order.order_delivery_by', compact('order'));
-        })
-        ->addColumn('delivery_date', function ($order) {
-            return view('admin.partials.actions.order.order_delivery_date', compact('order'));
-        })
-        ->addColumn('due_date_payment', function ($order) {
-            return view('admin.partials.actions.order.order_due_date_payment', compact('order'));
-        })
-        ->addColumn('due_days_payment', function ($order) {
-            return view('admin.partials.actions.order.order_due_days_payment', compact('order'));
-        })
-        ->addColumn('cancel_date', function ($order) {
-            return view('admin.partials.actions.order.order_cancel_date', compact('order'));
-        })
-        ->addColumn('cancel_by', function ($order) {
-            return view('admin.partials.actions.order.order_cancel_by', compact('order'));
-        })
-        ->addColumn('paid_by', function ($order) {
-            return view('admin.partials.actions.order.order_paid_by', compact('order'));
-        })
-        ->addColumn('paid_date', function ($order) {
-            return view('admin.partials.actions.order.order_paid_date', compact('order'));
-        })
-        ->addColumn('order_date', function ($order) {
-            return view('admin.partials.actions.order.order_date', compact('order'));
-        })
-        ->editColumn('delivery_boy', function ($order) {
-            return view('admin.partials.actions.order.delivery_boy', compact('order'));
-        })
-        ->editColumn('shop', function ($order) {
-            return view('admin.partials.actions.order.shop', compact('order'));
-        })
-        ->editColumn('customer_name', function ($order) {
-            return view('admin.partials.actions.order.customer_name', compact('order'));
-        })
-        ->editColumn('product_qty', function ($order) {
-            return view('admin.partials.actions.order.order_product_qty', compact('order'));
-        })
-        ->editColumn('grand_total', function ($order) {
-            return view('admin.partials.actions.order.grand_total', compact('order'));
-        })
-        ->editColumn('grand_total_number', function ($order) {
-            return view('admin.partials.actions.order.grand_total_number', compact('order'));
-        })
-        ->editColumn('grand_total', function ($order) {
-            return get_formated_currency($order->grand_total, 2);
-        })
-        ->editColumn('payment_status', function ($order) {
-            return view('admin.partials.actions.order.payment_status', compact('order'));
-        })
-        ->editColumn('partial_status', function ($order) {
-            return view('admin.partials.actions.order.order_partial', compact('order'));
-        })
-        ->editColumn('order_status', function ($order) {
-            $order_statuses = \App\Helpers\ListHelper::order_statuses();
-            return view('admin.partials.actions.order.order_status', compact('order','order_statuses'));
-        })
-        ->editColumn('option', function ($order) {
-            return view('admin.partials.actions.order.option', compact('order'));
-        })
-        ->rawColumns(['checkbox', 'order', 'po_number_ref', 'order_date', 'created_by', 'packed_date', 'shipped_by', 'shipping_date', 'delivery_by', 'delivery_date', 'due_date_payment', 'due_days_payment', 'cancel_by', 'cancel_date', 'paid_by', 'paid_date', 'shop', 'customer_name', 'order_product_qty', 'grand_total','payment_status', 'partial_status','option'])
-        ->make(true);
+            ->editColumn('checkbox', function ($order) {
+                return view('admin.partials.actions.order.checkbox', compact('order'));
+            })
+            ->addColumn('order', function ($order) {
+                return view('admin.partials.actions.order.order', compact('order'));
+            })
+            ->addColumn('created_by', function ($order) {
+                return view('admin.partials.actions.order.order_created_by', compact('order'));
+            })
+            ->addColumn('po_number_ref', function ($order) {
+                return view('admin.partials.actions.order.order_po_number_ref', compact('order'));
+            })
+            ->addColumn('packed_by', function ($order) {
+                return view('admin.partials.actions.order.order_packed_by', compact('order'));
+            })
+            ->addColumn('packed_date', function ($order) {
+                return view('admin.partials.actions.order.order_packed_date', compact('order'));
+            })
+            ->addColumn('shipped_by', function ($order) {
+                return view('admin.partials.actions.order.order_shipped_by', compact('order'));
+            })
+            ->addColumn('shipping_date', function ($order) {
+                return view('admin.partials.actions.order.order_shipped_date', compact('order'));
+            })
+            ->addColumn('delivery_by', function ($order) {
+                return view('admin.partials.actions.order.order_delivery_by', compact('order'));
+            })
+            ->addColumn('delivery_date', function ($order) {
+                return view('admin.partials.actions.order.order_delivery_date', compact('order'));
+            })
+            ->addColumn('due_date_payment', function ($order) {
+                return view('admin.partials.actions.order.order_due_date_payment', compact('order'));
+            })
+            ->addColumn('due_days_payment', function ($order) {
+                return view('admin.partials.actions.order.order_due_days_payment', compact('order'));
+            })
+            ->addColumn('cancel_date', function ($order) {
+                return view('admin.partials.actions.order.order_cancel_date', compact('order'));
+            })
+            ->addColumn('cancel_by', function ($order) {
+                return view('admin.partials.actions.order.order_cancel_by', compact('order'));
+            })
+            ->addColumn('paid_by', function ($order) {
+                return view('admin.partials.actions.order.order_paid_by', compact('order'));
+            })
+            ->addColumn('paid_date', function ($order) {
+                return view('admin.partials.actions.order.order_paid_date', compact('order'));
+            })
+            ->addColumn('order_date', function ($order) {
+                return view('admin.partials.actions.order.order_date', compact('order'));
+            })
+            ->editColumn('delivery_boy', function ($order) {
+                return view('admin.partials.actions.order.delivery_boy', compact('order'));
+            })
+            ->editColumn('shop', function ($order) {
+                return view('admin.partials.actions.order.shop', compact('order'));
+            })
+            ->editColumn('customer_name', function ($order) {
+                return view('admin.partials.actions.order.customer_name', compact('order'));
+            })
+            ->editColumn('product_qty', function ($order) {
+                return view('admin.partials.actions.order.order_product_qty', compact('order'));
+            })
+            ->editColumn('grand_total', function ($order) {
+                return view('admin.partials.actions.order.grand_total', compact('order'));
+            })
+            ->editColumn('grand_total_number', function ($order) {
+                return view('admin.partials.actions.order.grand_total_number', compact('order'));
+            })
+            ->editColumn('grand_total', function ($order) {
+                return get_formated_currency($order->grand_total, 2);
+            })
+            ->editColumn('payment_status', function ($order) {
+                return view('admin.partials.actions.order.payment_status', compact('order'));
+            })
+            ->editColumn('partial_status', function ($order) {
+                return view('admin.partials.actions.order.order_partial', compact('order'));
+            })
+            ->editColumn('order_status', function ($order) {
+                $order_statuses = \App\Helpers\ListHelper::order_statuses();
+                return view('admin.partials.actions.order.order_status', compact('order', 'order_statuses'));
+            })
+            ->editColumn('option', function ($order) {
+                return view('admin.partials.actions.order.option', compact('order'));
+            })
+            ->rawColumns(['checkbox', 'order', 'po_number_ref', 'order_date', 'created_by', 'packed_date', 'shipped_by', 'shipping_date', 'delivery_by', 'delivery_date', 'due_date_payment', 'due_days_payment', 'cancel_by', 'cancel_date', 'paid_by', 'paid_date', 'shop', 'customer_name', 'order_product_qty', 'grand_total', 'payment_status', 'partial_status', 'option'])
+            ->make(true);
     }
 
     /**
@@ -218,7 +218,7 @@ class OrderController extends Controller
         if ($request->input('cart_id')) {
             $data['cart'] = $this->order->getCart($request->input('cart_id'));
         }
-        
+
         return view('admin.order.create', $data);
     }
 
@@ -257,10 +257,10 @@ class OrderController extends Controller
         $address = $order->customer->primaryAddress();
 
         $deliveryBoysUser = ListHelper::deliveryBoyRole();
-        
+
         return view('admin.order.show', compact('order', 'address', 'deliveryBoysUser'));
     }
-    
+
     /**
      * Display the specified resource.
      *
@@ -291,9 +291,9 @@ class OrderController extends Controller
             $this->authorize('view', $order); // Check permission
 
             $file_name = get_platform_title() . '_' . $order->order_number . '.pdf';
-            $file_path = public_path('invoice_tmp/'. $folder_name . '/' . $file_name);
-            $folder_path = public_path('invoice_tmp/'. $folder_name);
-            
+            $file_path = public_path('invoice_tmp/' . $folder_name . '/' . $file_name);
+            $folder_path = public_path('invoice_tmp/' . $folder_name);
+
             if (!file_exists($folder_path)) {
                 mkdir($folder_path, 0777, true);
             }
@@ -303,12 +303,12 @@ class OrderController extends Controller
             // Store generated file paths for zipping and deletion
             array_push($filePaths, $file_path);
         }
-        
+
         // Create ZIP archive
         $zip = new ZipArchive();
         $zipFileName = 'Invoices.zip';
-        $zipFilePath = public_path('invoice_tmp/'. $folder_name . '/'. $zipFileName);
-        
+        $zipFilePath = public_path('invoice_tmp/' . $folder_name . '/' . $zipFileName);
+
         // If a file at zipFilePath exists delete the existing file
         if (file_exists($zipFilePath)) {
             unlink($zipFilePath);
@@ -327,9 +327,9 @@ class OrderController extends Controller
         foreach ($filePaths as $filePath) {
             \File::delete($filePath);
         }
-        
-        $zipFilePath = URL::to('/'.'invoice_tmp/'. $folder_name . '/'. $zipFileName);
-        
+
+        $zipFilePath = URL::to('/' . 'invoice_tmp/' . $folder_name . '/' . $zipFileName);
+
         $response = [
             'download' => trans('messages.created', ['model' => $this->model_name]),
             'download_url' => URL::to($zipFilePath),
@@ -340,10 +340,10 @@ class OrderController extends Controller
         if ($request->ajax()) {
             return response()->json($response);
         }
-        
+
         return response()->json(['error' => trans('messages.failed')]);
     }
-    
+
     /**
      * Show the fulfillment form for the specified order.
      *
@@ -367,7 +367,7 @@ class OrderController extends Controller
 
         return view('admin.order._delivered_fulfill', compact('order'));
     }
-    
+
     public function deliveryBoys($id)
     {
         $order = $this->order->find($id);
@@ -376,7 +376,7 @@ class OrderController extends Controller
 
         $deliveryBoysUser = ListHelper::deliveryBoyRole();
 
-        return view('admin.order._assign_delivery_boy', compact('deliveryboys','deliveryBoysUser', 'order'));
+        return view('admin.order._assign_delivery_boy', compact('deliveryboys', 'deliveryBoysUser', 'order'));
     }
 
     public function assignDeliveryBoy(Request $request, $id)
@@ -390,8 +390,8 @@ class OrderController extends Controller
 
         if (!is_null($deliveryBoy_token)) {
             FCMService::send($deliveryBoy_token, [
-              'title' => trans('notifications.order_assigned.subject', ['order' => $order->order_number]),
-              'body' => trans('notifications.order_assigned.message'),
+                'title' => trans('notifications.order_assigned.subject', ['order' => $order->order_number]),
+                'body' => trans('notifications.order_assigned.message'),
             ]);
         }
 
@@ -470,23 +470,23 @@ class OrderController extends Controller
     public function massAssignOrderStatus(Request $request)
     {
         $orders = Order::whereIn('id', $request->ids)->get();
-    
+
         foreach ($orders as $order) {
             $this->authorize('fulfill', $order);
-    
+
             $order->order_status_id = $request->status;
             $order->save();
-    
+
             event(new OrderUpdated($order, $request->filled('notify_customer')));
         }
-    
+
         if ($request->ajax()) {
             return response()->json(['success' => trans('messages.updated', ['model' => $this->model_name])]);
         }
-    
+
         return back()->with('success', trans('messages.updated', ['model' => $this->model_name]));
     }
-        
+
     /**
      * updateOrderStatus the order
      *
@@ -538,7 +538,7 @@ class OrderController extends Controller
 
     public function setAsDelivered(Request $request, $id)
     {
-        
+
         $order = $this->order->find($id);
 
         $this->order->updateStatusDelivered($request, $order);
@@ -548,7 +548,7 @@ class OrderController extends Controller
 
     public function setAsPacked(Request $request, $id)
     {
-        
+
         $order = $this->order->find($id);
 
         $this->order->updateStatusPacked($request, $order);
@@ -684,5 +684,116 @@ class OrderController extends Controller
     private function getUniqueFolderNameForInvoice()
     {
         return Auth::user()->isFromMerchant() ? 'merchant' . Auth::user()->merchantId() . 'shop' . Auth::user()->shop->id : 'admin';
+    }
+
+    public function getOrderReport(Request $request)
+    {
+        $orders = Order::getOrderReport();
+        return Datatables::of($orders)
+            ->addColumn('order_number', function ($order) {
+                return $order->order_number;
+            })
+            ->addColumn('po_number_ref', function ($order) {
+                return $order->po_number_ref;
+            })
+            ->addColumn('warehouse_name', function ($order) {
+                return $order->warehouse_name;
+            })
+            ->addColumn('client_name', function ($order) {
+                return $order->client_name;
+            })
+            ->addColumn('selling_skuid', function ($order) {
+                return $order->selling_skuid;
+            })
+            ->addColumn('product_name', function ($order) {
+                return $order->product_name;
+            })
+            ->addColumn('quantity', function ($order) {
+                return $order->quantity;
+            })
+            ->addColumn('unit_price', function ($order) {
+                return round($order->unit_price);
+            })
+            ->addColumn('purchase_price', function ($order) {
+                return $order->purchase_price;
+            })
+            ->addColumn('total', function ($order) {
+                return round($order->total);
+            })
+            ->addColumn('discount', function ($order) {
+                return $order->discount;
+            })
+            ->addColumn('taxrate', function ($order) {
+                return $order->taxrate;
+            })
+            ->addColumn('Grand_Total', function ($order) {
+                return $order->Grand_Total;
+            })
+
+            ->addColumn('created_at', function ($order) {
+                return $order->created_at;
+            })
+            ->addColumn('created_by', function ($order) {
+                return $order->created_by;
+            })
+            ->addColumn('packed_date', function ($order) {
+                return $order->packed_date;
+            })
+            ->addColumn('packed_by', function ($order) {
+                return $order->packed_by;
+            })
+            ->addColumn('shipping_date', function ($order) {
+                return $order->shipping_date;
+            })
+            ->addColumn('shipped_by', function ($order) {
+                return $order->shipped_by;
+            })
+            ->addColumn('delivery_date', function ($order) {
+                return $order->delivery_date;
+            })
+            ->addColumn('delivered_by', function ($order) {
+                return $order->delivered_by;
+            })
+            ->addColumn('paid_date', function ($order) {
+                return $order->paid_date;
+            })
+            ->addColumn('paid_by', function ($order) {
+                return $order->paid_by;
+            })
+
+            ->addColumn('SLA_Order', function ($order) {
+                return $order->SLA_Order;
+            })
+            ->addColumn('SLA_Packing', function ($order) {
+                return $order->SLA_Packing;
+            })
+            ->addColumn('SLA_Delivery', function ($order) {
+                return $order->SLA_Delivery;
+            })
+            ->addColumn('SLA_Payment', function ($order) {
+                return $order->SLA_Payment;
+            })
+
+            ->addColumn('due_date_in_days', function ($order) {
+                return $order->due_date_in_days;
+            })
+            ->addColumn('due_date', function ($order) {
+                return $order->due_date;
+            })
+            ->addColumn('cancel_date', function ($order) {
+                return $order->cancel_date;
+            })
+            ->addColumn('cancel_by', function ($order) {
+                return $order->cancel_by;
+            })
+            ->addColumn('payment_status', function ($order) {
+                return $order->payment_status;
+            })
+            ->addColumn('order_status_id', function ($order) {
+                return $order->order_status_id;
+            })
+
+            ->rawColumns(['order_number', 'po_number_ref', 'warehouse_name', 'client_name', 'selling_skuid', 'product_name', 'quantity', 'unit_price', 'purchase_price', 'total', 'discount', 'taxrate', 'Grand_Total', 'created_at', 'created_by', 'packed_date', 'packed_by', 'shipping_date', 'shipped_by', 'delivery_date', 'delivered_by', 'paid_date', 'paid_by', 'SLA_Order', 'SLA_Packing', 'SLA_Delivery', 'SLA_Payment'])
+            ->make(true);
     }
 }

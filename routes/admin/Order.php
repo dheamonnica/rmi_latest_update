@@ -24,6 +24,7 @@ Route::get('/{order}/details', [OrderController::class, 'show'])->name('details'
 // Bulk operations
 
 Route::get('/getOrder/{paymentStatus}/{orderStatus}',[OrderController::class, 'showBulkProcess'])->name('bulkorder_process')->middleware('ajax'); // Bulk order process table
+Route::get('/getOrderReport',[OrderController::class, 'getOrderReport'])->name('getOrderReport')->middleware('ajax'); // Bulk order process table
 
 Route::post('order/assignPaymentStatus/{assign}', [OrderController::class, 'massAssignPaymentStatus'])->name('order.assignPaymentStatus');
 

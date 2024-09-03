@@ -1321,4 +1321,47 @@ class Order extends BaseModel
     {
         return DB::table('order_items')->where('order_id', $this->id)->sum('quantity');
     }
+
+    public static function getOrderReport()
+    {
+        $query = "SELECT order_number,po_number_ref,s.name as warehouse_name,c.name as client_name,p.selling_skuid,p.name as product_name,oi.quantity,oi.unit_price,p.purchase_price,oi.quantity*oi.unit_price total, 
+        case when o.discount  is null or o.discount = 0 then 0 else o.discount * oi.quantity*oi.unit_price / o.grand_total end discount,o.taxrate,(oi.quantity*oi.unit_price) - 
+        case when o.discount  is null or o.discount = 0 then 0 else (o.discount * (oi.quantity*oi.unit_price / o.grand_total) ) end +
+        ((oi.quantity * oi.unit_price - 
+        case when o.discount  is null or o.discount = 0 then 0 else (o.discount * (oi.quantity*oi.unit_price / o.grand_total) ) end) * o.taxrate / 100) Grand_Total,
+        o.created_at,u.nice_name as created_by,o.packed_date,u2.nice_name as packed_by,o.shipping_date,u3.nice_name as shipped_by , o.delivery_date,u4.nice_name as delivered_by,o.paid_date,u5.nice_name as paid_by,
+        40-datediff(CURDATE(), o.created_at) as due_date_in_days,
+        cast(CURDATE() + 40-datediff(CURDATE(), o.created_at) as date)as due_date,
+        o.cancel_date,
+        u6.nice_name as cancel_by,
+        o.payment_status,
+        o.order_status_id,
+        IF(
+                o.packed_date = '0000-00-00 00:00:00' OR o.packed_date IS NULL, 
+                '0', TIMESTAMPDIFF(MINUTE, o.created_at, o.packed_date)) as SLA_Order,
+        IF(
+                o.packed_date = '0000-00-00 00:00:00' OR o.packed_date IS NULL, 
+                '0', TIMESTAMPDIFF(MINUTE, o.packed_date, o.shipping_date)) as SLA_Packing,
+        IF(
+                o.shipping_date = '0000-00-00 00:00:00' OR o.shipping_date IS NULL, 
+                '0', TIMESTAMPDIFF(MINUTE, o.shipping_date, o.delivery_date)) as SLA_Delivery,
+        IF(
+                o.delivery_date = '0000-00-00 00:00:00' OR o.delivery_date IS NULL, 
+                '0', TIMESTAMPDIFF(MINUTE, o.delivery_date, o.paid_date)) as SLA_Payment
+        FROM orders as o
+        LEFT join order_items oi on o.id=oi.order_id 
+        left join products p on p.id=oi.product_id
+        left join shops s on s.id = o.shop_id
+        left join customers c on c.id= o.customer_id
+        left join users u on u.id = o.created_by
+        left join users u2 on u2.id = o.packed_by
+        left join users u3  on u3.id = o.shipped_by
+        left join users u4  on u4.id = o.delivery_by
+        left join users u5  on u5.id = o.paid_by
+        left join users u6 on u6.id = o.cancel_by
+        where o.deleted_at is null
+        order by o.created_at,po_number_ref;";
+
+        return DB::select(DB::raw($query));
+    }
 }
