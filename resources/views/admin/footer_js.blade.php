@@ -463,6 +463,7 @@
 
             // Reload the data table with the new url
             $('#all-order-table').DataTable().ajax.url(filteredUrl).load();
+            $('#all-order-table-full').DataTable().ajax.url(filteredUrl).load();
         }
 
         // On changin filter trigger routes with appropriate filter values
@@ -525,8 +526,8 @@
             ]
         }));
 
-        // Load Order list by Ajax
-        $('#all-order-table-full').DataTable($.extend({}, dataTableOptions, {
+        // Load Order Report list by Ajax
+        var tableOrderReport = $('#all-order-table-full').DataTable($.extend({}, dataTableOptions, {
             "ajax": "{{ route('admin.order.getOrderReport') }}",
             fixedColumns: {
                 leftColumns: 2 // Number of columns you want to fix on the left
@@ -665,15 +666,48 @@
                 {
                     'data': 'payment_status',
                     'name': 'payment_status',
-                    'searchable': false
                 },
                 {
                     'data': 'order_status_id',
                     'name': 'order_status_id',
-                    'searchable': false
                 },
             ]
         }));
+
+        function filterByWarehouseOrderReport() {
+            var selectedMerchant = $('#merchantOrderReportFilter').val();
+
+            // Apply the business area filter to the 'business area' column (assume the column name is 'business area')
+            tableOrderReport.column('warehouse_name:name').search(selectedMerchant).draw();
+        }
+
+        function filterByCustomerOrderReport() {
+            var selectedCustomer = $('#customerOrderReportFilter').val();
+
+            // Apply the business area filter to the 'business area' column (assume the column name is 'business area')
+            tableOrderReport.column('client_name:name').search(selectedCustomer).draw();
+        }
+
+        function filterByStatusOrderReport() {
+            var selectedStatus = $('#statusOrderReportFilter').val();
+
+            // Apply the business area filter to the 'business area' column (assume the column name is 'business area')
+            tableOrderReport.column('order_status_id:name').search(selectedStatus).draw();
+        }
+
+        function filterByPaymentStatusOrderReport() {
+            var selectedPaymentStatus = $('#paymentStatusOrderReportFilter').val();
+
+            // Apply the business area filter to the 'business area' column (assume the column name is 'business area')
+            tableOrderReport.column('payment_status:name').search(selectedPaymentStatus).draw();
+        }
+
+        $('#merchantOrderReportFilter').on('change', filterByWarehouseOrderReport);
+        $('#customerOrderReportFilter').on('change', filterByCustomerOrderReport);
+        $('#statusOrderReportFilter').on('change', filterByStatusOrderReport);
+        $('#paymentStatusOrderReportFilter').on('change', filterByPaymentStatusOrderReport);
+
+        // end order table report
 
         // Load customer list by Ajax
         $('#all-customer-table').DataTable($.extend({}, dataTableOptions, {

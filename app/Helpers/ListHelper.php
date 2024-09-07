@@ -94,7 +94,8 @@ class ListHelper
     public static function payment_statuses()
     {
         return  [
-            Order::PAYMENT_STATUS_UNPAID    => trans('app.statuses.unpaid'),
+            // Order::PAYMENT_STATUS_UNPAID    => trans('app.statuses.unpaid'),
+            Order::PAYMENT_STATUS_UNPAID    => trans('app.statuses.awaiting_payment'),
             Order::PAYMENT_STATUS_PENDING   => trans('app.statuses.pending'),
             Order::PAYMENT_STATUS_PAID      => trans('app.statuses.paid'),
         ];

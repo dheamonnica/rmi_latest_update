@@ -2275,6 +2275,7 @@ if (!function_exists('get_payment_status_name')) {
         switch ($status) {
             case Order::PAYMENT_STATUS_UNPAID:
                 return trans('app.statuses.unpaid');
+                // return trans('app.statuses.awaiting_payment');                
             case Order::PAYMENT_STATUS_PENDING:
                 return trans('app.statuses.pending');
             case Order::PAYMENT_STATUS_PAID:

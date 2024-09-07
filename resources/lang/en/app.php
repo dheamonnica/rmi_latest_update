@@ -863,6 +863,7 @@ return [
         'packed' => 'Packed',
         'partial' => 'Partial',
         'partial_fulfilled' => 'Fulfilled',
+        'awaiting_payment' => '	Awaiting payment',
     ],
 
     'priorities' => [
@@ -1245,6 +1246,8 @@ return [
         'sla_packing' => 'SLA Packing',
         'sla_delivery' => 'SLA Delivery',
         'sla_payment' => 'SLA Payment',
+        'sla_gudang' => 'SLA Gudang',
+        'all_payment_status' => 'All Payment Status',
 
         // manufacture
         'manufacture_pic_name' => 'Manufacture PIC Name',

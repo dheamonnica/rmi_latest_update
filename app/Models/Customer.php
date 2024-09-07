@@ -115,6 +115,7 @@ class Customer extends CustomerWallet
         'hospital_group',
         'title',
         'shop_id',
+        'merchant_id',
         'hospital_tax_name',
     ];
 
@@ -338,6 +339,6 @@ class Customer extends CustomerWallet
 
     public function getCoverageArea()
     {
-        return $this->belongsTo(Shop::class, 'shop_id');
+        return $this->belongsTo(Merchant::class, 'merchant_id');
     }
 }
