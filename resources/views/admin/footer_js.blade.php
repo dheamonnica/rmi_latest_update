@@ -701,6 +701,10 @@
                     'name': 'name'
                 },
                 {
+                    'data': 'coverage_area',
+                    'name': 'coverage_area'
+                },
+                {
                     'data': 'email',
                     'name': 'email'
                 },

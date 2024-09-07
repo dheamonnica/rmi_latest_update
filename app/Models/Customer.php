@@ -335,4 +335,9 @@ class Customer extends CustomerWallet
     {
         return DB::table('orders')->where('customer_id', $customer_id)->count();
     }
+
+    public function getCoverageArea()
+    {
+        return $this->belongsTo(Shop::class, 'shop_id');
+    }
 }

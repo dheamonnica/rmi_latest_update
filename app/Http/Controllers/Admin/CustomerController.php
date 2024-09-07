@@ -73,7 +73,10 @@ class CustomerController extends Controller
             ->editColumn('orders_count', function ($customer) {
                 return view('admin.partials.actions.customer.orders_count', compact('customer'));
             })
-            ->rawColumns(['image', 'nice_name', 'name', 'orders_count', 'checkbox', 'option'])
+            ->editColumn('coverage_area', function ($customer) {
+                return view('admin.partials.actions.customer.coverage_area', compact('customer'));
+            })
+            ->rawColumns(['image', 'nice_name', 'name', 'orders_count', 'checkbox', 'option', 'coverage_area'])
             ->make(true);
     }
 

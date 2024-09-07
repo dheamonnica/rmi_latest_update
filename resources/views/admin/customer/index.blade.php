@@ -39,6 +39,7 @@
             <th>{{ trans('app.form.hospital_pic_name') }}</th>
             <th>{{ trans('app.form.hospital_name') }}</th>
             <th>{{ trans('app.form.hospital_email') }}</th>
+            <th>{{ trans('app.form.coverage_area') }}</th>
             <th>{{ trans('app.orders') }}</th>
             <th>{{ trans('app.option') }}</th>
           </tr>
