@@ -14,6 +14,7 @@ use Illuminate\Http\Request;
 use Yajra\Datatables\Datatables;
 use App\Helpers\ListHelper;
 use App\Models\Shop;
+use App\Models\User;
 
 class CustomerController extends Controller
 {
@@ -87,15 +88,17 @@ class CustomerController extends Controller
      */
     public function create()
     {
-        $shops = Shop::whereNotNull('pic_name')
-        ->get()
-        ->pluck('name', 'id')
-        ->filter(function ($warehouseName) {
-            return str_contains($warehouseName, 'Warehouse');
-        })
-        ->toArray();
+        // $shops = Shop::whereNotNull('pic_name')
+        // ->get()
+        // ->pluck('name', 'id')
+        // ->filter(function ($warehouseName) {
+        //     return str_contains($warehouseName, 'Warehouse');
+        // })
+        // ->toArray();
 
-        return view('admin.customer._create', compact('shops'));
+        $merchants = ListHelper::merchantsWarehouse();
+
+        return view('admin.customer._create', compact('merchants'));
     }
 
     /**
@@ -106,6 +109,20 @@ class CustomerController extends Controller
      */
     public function store(CreateCustomerRequest $request)
     {
+        // Step 1: Retrieve the merchant_id from the request
+        $merchantId = $request->merchant_id;
+
+        // Step 2: Find the corresponding user with the matching merchant_id (assuming it's stored in 'shop_id' column)
+        $user = User::where('id', $merchantId)->first();
+        // Step 3: Check if the user exists and set the 'shop_id' on the request
+        if ($user) {
+            $request->merge(['shop_id' => $user->shop_id]); // Add shop_id to the request
+        } else {
+            // Handle the case where no user is found with the given merchant_id
+            return response()->json(['error' => 'User not found'], 404);
+        }
+
+        // Step 4: Pass the updated request to the store method
         $this->customer->store($request);
 
         return back()->with('success', trans('messages.created', ['model' => $this->model]));
@@ -164,17 +181,18 @@ class CustomerController extends Controller
      */
     public function edit($id)
     {
-        $shops = Shop::whereNotNull('pic_name')
-            ->get()
-            ->pluck('name', 'id')
-            ->filter(function ($warehouseName) {
-                return str_contains($warehouseName, 'Warehouse');
-            })
-            ->toArray();
+        // $shops = Shop::whereNotNull('pic_name')
+        //     ->get()
+        //     ->pluck('name', 'id')
+        //     ->filter(function ($warehouseName) {
+        //         return str_contains($warehouseName, 'Warehouse');
+        //     })
+        //     ->toArray();
+        $merchants = ListHelper::merchantsWarehouse();
 
         $customer = $this->customer->find($id);
 
-        return view('admin.customer._edit', compact('customer', 'shops'));
+        return view('admin.customer._edit', compact('customer', 'merchants'));
     }
 
     /**
@@ -189,6 +207,22 @@ class CustomerController extends Controller
         if (config('app.demo') == true && $id <= config('system.demo.customers', 1)) {
             return back()->with('warning', trans('messages.demo_restriction'));
         }
+
+         // Step 1: Retrieve the merchant_id from the request
+         $merchantId = $request->merchant_id;
+
+         // Step 2: Find the corresponding user with the matching merchant_id (assuming it's stored in 'shop_id' column)
+         $user = User::where('id', $merchantId)->first();
+         // Step 3: Check if the user exists and set the 'shop_id' on the request
+         if ($user) {
+             $request->merge(['shop_id' => $user->shop_id]); // Add shop_id to the request
+         } else {
+             // Handle the case where no user is found with the given merchant_id
+             return response()->json(['error' => 'User not found'], 404);
+         }
+ 
+         // Step 4: Pass the updated request to the store method
+        //  $this->customer->store($request);
 
         $this->customer->update($request, $id);
 
