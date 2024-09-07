@@ -528,6 +528,13 @@
         // Load Order list by Ajax
         $('#all-order-table-full').DataTable($.extend({}, dataTableOptions, {
             "ajax": "{{ route('admin.order.getOrderReport') }}",
+            fixedColumns: {
+                leftColumns: 2 // Number of columns you want to fix on the left
+            },
+            paging: true,
+            scrollCollapse: true,
+            // scrollY: '400px',
+            scrollX: true,
             "columns": [{
                     'data': 'order_number',
                     'name': 'order_number'

@@ -166,8 +166,8 @@
                             </li>
                         @endcan
                         @can('index', \App\Models\Order::class)
-                            <li class="{{ Request::is('admin/order/order-full') ? 'active' : '' }}">
-                                <a href="{{ url('admin/order/order-full') }}">
+                            <li class="{{ Request::is('admin/order/order-report') ? 'active' : '' }}">
+                                <a href="{{ url('admin/order/order-report') }}">
                                     Order Report
                                 </a>
                             </li>

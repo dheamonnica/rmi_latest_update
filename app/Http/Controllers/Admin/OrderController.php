@@ -787,13 +787,63 @@ class OrderController extends Controller
                 return $order->cancel_by;
             })
             ->addColumn('payment_status', function ($order) {
-                return $order->payment_status;
+                // payment status:
+                // 1. unpaid
+                // 2. pending
+                // 3. paid
+                // 4. refund initiated
+                // 5. partially refunded
+                // 6. refunded
+                if ($order->payment_status == 1) {
+                    return '<span class="label label-danger">UNPAID</span>';
+                } else if ($order->payment_status == 2) {
+                    return 'Pending';
+                } else if ($order->payment_status == 3) {
+                    return '<span class="label label-info">PAID</span>';
+                } else if ($order->payment_status == 4) {
+                    return 'Refund Initiated';
+                } else if ($order->payment_status == 5) {
+                    return 'Partially Refunded';
+                } else if ($order->payment_status == 6) {
+                    return 'Refunded';
+                }
             })
             ->addColumn('order_status_id', function ($order) {
-                return $order->order_status_id;
+                // order status:
+                // 1. waiting for payment
+                // 2. payment error
+                // 3. confirm
+                // 4. fullfiled
+                // 5. awaiting delivery
+                // 6. delivered
+                // 7. refunded
+                // 8. cancelled
+                // 9. disputed
+                // 10. packed
+                if ($order->order_status_id == 1) {
+                    return '<span class="label">Waiting for payment</span>';
+                } else if ($order->order_status_id == 2) {
+                    return '<span class="label">Payment error</span>';
+                } else if ($order->order_status_id == 3) {
+                    return '<span class="label">Confirm</span>';
+                } else if ($order->order_status_id == 4) {
+                    return '<span class="label label-info">Fullfilled</span>';
+                } else if ($order->order_status_id == 5) {
+                    return '<span class="label">Awaiting delivery</span>';
+                } else if ($order->order_status_id == 6) {
+                    return '<span class="label label-success">Delivered</span>';
+                } else if ($order->order_status_id == 7) {
+                    return '<span class="label">Refunded</span>';
+                } else if ($order->order_status_id == 8) {
+                    return '<span class="label=">Cancelled</span>';
+                } else if ($order->order_status_id == 9) {
+                    return '<span class="label=">Disputed</span>';
+                } else if ($order->order_status_id == 10) {
+                    return '<span class="label=">Packed</span>';
+                }
             })
 
-            ->rawColumns(['order_number', 'po_number_ref', 'warehouse_name', 'client_name', 'selling_skuid', 'product_name', 'quantity', 'unit_price', 'purchase_price', 'total', 'discount', 'taxrate', 'Grand_Total', 'created_at', 'created_by', 'packed_date', 'packed_by', 'shipping_date', 'shipped_by', 'delivery_date', 'delivered_by', 'paid_date', 'paid_by', 'SLA_Order', 'SLA_Packing', 'SLA_Delivery', 'SLA_Payment'])
+            ->rawColumns(['order_number', 'po_number_ref', 'warehouse_name', 'client_name', 'selling_skuid', 'product_name', 'quantity', 'unit_price', 'purchase_price', 'total', 'discount', 'taxrate', 'Grand_Total', 'created_at', 'created_by', 'packed_date', 'packed_by', 'shipping_date', 'shipped_by', 'delivery_date', 'delivered_by', 'paid_date', 'paid_by', 'SLA_Order', 'SLA_Packing', 'SLA_Delivery', 'SLA_Payment', 'due_date_in_days', 'due_date', 'cancel_date', 'cancel_by', 'payment_status', 'order_status_id'])
             ->make(true);
     }
 }

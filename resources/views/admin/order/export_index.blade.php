@@ -69,7 +69,7 @@
               </div>
             </div> --}}
         </div> {{-- Box header --}}
-        <div class="table-responsive">
+        <div class="">
             <table class="table table-hover" id="all-order-table-full">
                 <thead>
                     <tr>
