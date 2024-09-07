@@ -1,3 +1,3 @@
 @if($customer->shop_id)
-    {{ $customer->getCoverageArea->name }}
+    {{ $customer->getCoverageArea->warehouse_name }}
 @endif
