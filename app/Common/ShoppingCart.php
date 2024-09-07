@@ -280,6 +280,7 @@ trait ShoppingCart
                 'customer_phone_number' => $request->phone,
                 'buyer_note' => $request->buyer_note,
                 'device_id' => $request->device_id ?? $cart->device_id,
+                'po_number_ref' => $request->po_number_ref ?? $cart->po_number_ref,
                 // 'is_digital' => $cart->is_digital,
             ])
         )->save();
