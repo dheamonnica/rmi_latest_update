@@ -159,7 +159,7 @@
                     </a>
                     <ul class="treeview-menu">
                         @can('index', \App\Models\Order::class)
-                            <li class="{{ Request::is('admin/order/order*') ? 'active' : '' }}">
+                            <li class="{{ Request::is('admin/order/order') ? 'active' : '' }}">
                                 <a href="{{ url('admin/order/order') }}">
                                     {{ trans('nav.orders') }}
                                 </a>

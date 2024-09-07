@@ -57,7 +57,8 @@ class Cart extends BaseModel
         'message_to_customer',
         'admin_note',
         'razorpay_order_id',
-        'is_digital'
+        'is_digital',
+        'po_number_ref'
     ];
 
     /**

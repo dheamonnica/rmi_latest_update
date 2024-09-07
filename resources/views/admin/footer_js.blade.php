@@ -549,6 +549,11 @@
                     'name': 'warehouse_name'
                 },
                 {
+                    'data': 'shop_id',
+                    'name': 'shop_id',
+                    visible: false
+                },
+                {
                     'data': 'client_name',
                     'name': 'client_name',
                 },
@@ -673,6 +678,11 @@
                 },
             ]
         }));
+
+        // if isFromPlatform
+        @if (!Auth::user()->isFromPlatform())
+            tableOrderReport.column('shop_id:name').search('{{ Auth::user()->shop_id }}').draw();
+        @endif
 
         function filterByWarehouseOrderReport() {
             var selectedMerchant = $('#merchantOrderReportFilter').val();

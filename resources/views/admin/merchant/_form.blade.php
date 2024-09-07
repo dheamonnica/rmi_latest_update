@@ -26,7 +26,7 @@
   <div class="col-md-6 nopadding-left">
     <div class="form-group">
       {!! Form::label('nice_name', trans('app.form.nice_name') . '*') !!}
-      {!! Form::email('nice_name', null, ['class' => 'form-control', 'placeholder' => trans('app.placeholder.valid_email'), 'required']) !!}
+      {!! Form::text('nice_name', null, ['class' => 'form-control', 'placeholder' => trans('app.placeholder.valid_email'), 'required']) !!}
       <div class="help-block with-errors"></div>
     </div>
   </div>

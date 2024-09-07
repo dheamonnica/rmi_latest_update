@@ -73,14 +73,16 @@
 
         <div class="input-group w-100 radius mb-4">
           <span class="input-group-addon">
-            <i class="fas fa-ticket no-fill"></i>
+            <i class="fas fa-file no-fill"></i>
           </span>
 
-          <input name="coupon" value="{{ $cart->coupon ? $cart->coupon->code : null }}" id="coupon{{ $cart->id }}" class="form-control" type="text" placeholder="@lang('theme.placeholder.have_coupon_from_seller')">
+          {{-- <input name="coupon" value="{{ $cart->coupon ? $cart->coupon->code : null }}" id="coupon{{ $cart->id }}" class="form-control" type="text" placeholder="@lang('theme.placeholder.have_coupon_from_seller')">
 
           <span class="input-group-btn">
             <button class="btn btn-default apply_seller_coupon" type="button" data-cart="{{ $cart->id }}">@lang('theme.button.apply_coupon')</button>
-          </span>
+          </span> --}}
+          <input name="po_number_ref" class="form-control" type="text" placeholder="Input PO Number Ref">
+          
         </div><!-- /input-group -->
 
         {{ Form::hidden('cart_id', $cart->id, ['id' => 'checkout-id']) }}
