@@ -24,50 +24,34 @@
                 <h1 class="box-title mr-5 mt-2">{{ trans('app.orders') }}</h1>
             </div>
             <div class="pull-left">
-                <select id="filter-all-order-table-order-status" class="btn btn-sm btn-default">
-                    <option value="0" selected>{{ 'Filter by order status' }}</option>
-                    <option value="0">{{ trans('app.all_orders') }}</option>
-                    @foreach ($order_statuses as $order_status_number => $order_status)
-                        <option value={{ $order_status_number }}>{{ $order_status }}</option>
+                <select id="merchantOrderReportFilter" class="btn btn-sm btn-default">
+                    <option value="" selected>Select Business Unit</option>
+                    @foreach ($merchants as $merchant)
+                        <option value="{{ $merchant }}">{{ $merchant }}</option>
                     @endforeach
                 </select>
-                <select id="filter-all-order-table-payment-status" class="btn btn-sm btn-default">
-                    <option value="0" selected>{{ trans('app.placeholder.filter_by_status') }}</option>
-                    <option value="0">{{ trans('app.all_orders') }}</option>
+
+                <select id="customerOrderReportFilter" class="btn btn-sm btn-default">
+                    <option value="" selected>Select Customer</option>
+                    @foreach ($customers as $customer)
+                        <option value="{{ $customer }}">{{ $customer }}</option>
+                    @endforeach
+                </select>
+
+                <select id="statusOrderReportFilter" class="btn btn-sm btn-default">
+                    <option value="">{{ trans('app.all_orders') }}</option>
+                    @foreach ($order_statuses as $order_status_number => $order_status)
+                        <option value={{ $order_status }}>{{ $order_status }}</option>
+                    @endforeach
+                </select>
+                <select id="paymentStatusOrderReportFilter" class="btn btn-sm btn-default">
+                    <option value="">{{ trans('app.form.all_payment_status') }}</option>
                     @foreach ($payment_statuses as $payment_status_number => $payment_status)
-                        <option value={{ $payment_status_number }}>{{ $payment_status }}</option>
+                        <option value={{ $payment_status }}>{{ $payment_status }}</option>
                     @endforeach
                 </select>
 
             </div>
-            {{-- <div class="pull-right">
-              <div class="btn-group">
-                <button type="button" class="btn btn-sm btn-default dropdown-toggle"
-                    data-toggle="dropdown"aria-expanded="false">
-                    {{ trans('app.assign_payment_status') }}
-                    <span class="sr-only">{{ trans('app.toggle_dropdown') }}</span>
-                    <span class="caret"></span>
-                </button>
-                <ul class="dropdown-menu" role="menu">
-                    <li><a href="javascript:void(0)" data-link="{{ route('admin.order.order.assignPaymentStatus', 'paid') }}" class="massAction" data-doafter="reload">{{ trans('app.mark_as_paid') }}</a></li>
-                    <li><a href="javascript:void(0)" data-link="{{ route('admin.order.order.assignPaymentStatus', 'unpaid') }}" class="massAction" data-doafter="reload">{{ trans('app.mark_as_unpaid') }}</a></li>
-                    <li><a href="javascript:void(0)" data-link="{{ route('admin.order.order.assignPaymentStatus', 'refunded') }}" class="massAction" data-doafter="reload">{{ trans('app.mark_as_refunded') }}</a></li>
-                </ul>
-              </div>
-              <div class="btn-group">
-                <button type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                    {{ trans('app.assign_order_status') }}
-                    <span class="sr-only">{{ trans('app.toggle_dropdown') }}</span>
-                    <span class="caret"></span>
-                </button>
-                <ul class="dropdown-menu" role="menu">
-                    @foreach ($order_statuses as $order_status_number => $order_status)
-                        <li><a href="javascript:void(0)" data-link="{{ route('admin.order.order.assignOrderStatus', $order_status_number) }}" class="massAction" data-doafter="reload">{{ $order_status }}</a></li>
-                    @endforeach
-                    <li><a href="javascript:void(0)" data-link="{{ route('admin.order.order.downloadSelected') }}" class="massAction" data-doafter="reload">{{ trans('app.download') }} {{ trans('app.invoices') }}</a></li>
-                </ul>
-              </div>
-            </div> --}}
         </div> {{-- Box header --}}
         <div class="">
             <table class="table table-hover" id="all-order-table-full">

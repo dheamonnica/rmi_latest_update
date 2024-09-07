@@ -12,6 +12,8 @@ use App\Http\Requests\Validations\CreateOrderRequest;
 use App\Http\Requests\Validations\FulfillOrderRequest;
 use App\Http\Requests\Validations\DeliveredConfirmedOrderRequest;
 use App\Models\Order;
+use App\Models\Merchant;
+use App\Models\Customer;
 use App\Repositories\Order\OrderRepository;
 use App\Services\FCMService;
 use Illuminate\Http\Request;
@@ -70,7 +72,17 @@ class OrderController extends Controller
 
         $deliveryBoysUser = ListHelper::deliveryBoyRole();
 
-        return view('admin.order.export_index', compact('orders', 'archives', 'deliveryBoysUser'));
+        $merchants = Merchant::whereNotNull('warehouse_name')
+            ->get()
+            ->pluck('warehouse_name', 'id')
+            ->toArray();
+
+        $customers = Customer::whereNotNull('name')
+            ->get()
+            ->pluck('name', 'id')
+            ->toArray();
+
+        return view('admin.order.export_index', compact('orders', 'archives', 'deliveryBoysUser', 'merchants', 'customers'));
     }
 
     /**
@@ -799,11 +811,11 @@ class OrderController extends Controller
                 // 5. partially refunded
                 // 6. refunded
                 if ($order->payment_status == 1) {
-                    return '<span class="label label-danger">UNPAID</span>';
+                    return '<span class="label label-danger">Awaiting payment</span>';
                 } else if ($order->payment_status == 2) {
                     return 'Pending';
                 } else if ($order->payment_status == 3) {
-                    return '<span class="label label-info">PAID</span>';
+                    return '<span class="label label-info">Paid</span>';
                 } else if ($order->payment_status == 4) {
                     return 'Refund Initiated';
                 } else if ($order->payment_status == 5) {
@@ -816,7 +828,7 @@ class OrderController extends Controller
                 // order status:
                 // 1. waiting for payment
                 // 2. payment error
-                // 3. confirm
+                // 3. confirmed
                 // 4. fullfiled
                 // 5. awaiting delivery
                 // 6. delivered
@@ -829,7 +841,7 @@ class OrderController extends Controller
                 } else if ($order->order_status_id == 2) {
                     return '<span class="label">Payment error</span>';
                 } else if ($order->order_status_id == 3) {
-                    return '<span class="label">Confirm</span>';
+                    return '<span class="label">Confirmed</span>';
                 } else if ($order->order_status_id == 4) {
                     return '<span class="label label-info">Fullfilled</span>';
                 } else if ($order->order_status_id == 5) {
