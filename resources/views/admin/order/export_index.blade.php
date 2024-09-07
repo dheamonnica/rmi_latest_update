@@ -66,6 +66,7 @@
                         <th>{{ trans('app.form.order_number') }}</th>
                         <th>{{ trans('app.form.po_number_ref') }}</th>
                         <th>{{ trans('app.form.business_unit') }}</th>
+                        <th>{{ trans('app.form.shop_id') }}</th>
                         <th>{{ trans('app.form.client') }}</th>
                         <th>{{ trans('app.form.selling_skuid') }}</th>
                         <th>{{ trans('app.product_name') }}</th>

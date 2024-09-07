@@ -1324,7 +1324,7 @@ class Order extends BaseModel
 
     public static function getOrderReport()
     {
-        $query = "SELECT order_number,po_number_ref,s.name as warehouse_name,c.name as client_name,p.selling_skuid,p.name as product_name,oi.quantity,oi.unit_price,p.purchase_price,oi.quantity*oi.unit_price total,
+        $query = "SELECT order_number,po_number_ref, o.shop_id,s.name as warehouse_name,c.name as client_name,p.selling_skuid,p.name as product_name,oi.quantity,oi.unit_price,p.purchase_price,oi.quantity*oi.unit_price total,
        case when o.discount  is null or o.discount = 0 then 0 else o.discount * oi.quantity*oi.unit_price / o.grand_total end discount,o.taxrate,(oi.quantity*oi.unit_price) -
        case when o.discount  is null or o.discount = 0 then 0 else (o.discount * (oi.quantity*oi.unit_price / o.grand_total) ) end +
        ((oi.quantity * oi.unit_price -
