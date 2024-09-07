@@ -1,3 +1,3 @@
-@if($customer->shop_id)
+@if($customer->shop_id !== null)
     {{ $customer->getCoverageArea->name }}
 @endif
