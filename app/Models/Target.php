@@ -59,7 +59,7 @@ class Target extends BaseModel
     public static function getReportData()
     {
         $query = "
-           select month, year, shop_id,s.name as warehouse_name, c.name as client_name,SUM(actual_sales) as actual_sales, sum(grand_total) as total_target
+           select month, year, report.shop_id,s.name as warehouse_name, c.name as client_name,SUM(actual_sales) as actual_sales, sum(grand_total) as total_target
             from(
             SELECT * FROM `target`
             union all
@@ -173,7 +173,7 @@ class Target extends BaseModel
     public static function getReportDataExpandClientAdministrator()
     {
         $query = "
-           select month, year, shop_id,s.name as warehouse_name, c.name as client_name,SUM(actual_sales) as actual_sales, sum(grand_total) as total_target
+           select month, year, report.shop_id,s.name as warehouse_name, c.name as client_name,SUM(actual_sales) as actual_sales, sum(grand_total) as total_target
             from(
             SELECT * FROM `target`
             union all
