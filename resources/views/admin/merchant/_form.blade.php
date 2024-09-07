@@ -25,6 +25,13 @@
   </div>
   <div class="col-md-6 nopadding-left">
     <div class="form-group">
+      {!! Form::label('nice_name', trans('app.form.nice_name') . '*') !!}
+      {!! Form::email('nice_name', null, ['class' => 'form-control', 'placeholder' => trans('app.placeholder.valid_email'), 'required']) !!}
+      <div class="help-block with-errors"></div>
+    </div>
+  </div>
+  <div class="col-md-6 nopadding-right">
+    <div class="form-group">
       @if (!isset($merchant))
         {!! Form::label('password', trans('app.form.temporary_password') . '*') !!}
         {!! Form::password('password', ['class' => 'form-control', 'id' => 'password', 'placeholder' => trans('app.placeholder.temporary_password'), 'data-minlength' => '6', 'required']) !!}

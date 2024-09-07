@@ -53,11 +53,11 @@
       {!! Form::text('name', null, ['class' => 'form-control', 'placeholder' => trans('app.placeholder.full_name'), 'required']) !!}
       <div class="help-block with-errors"></div>
     </div>
-    {{-- <div class="form-group">
+    <div class="form-group">
       {!! Form::label('nice_name', trans('app.form.nice_name')) !!}
       {!! Form::text('nice_name', null, ['class' => 'form-control', 'placeholder' => trans('app.placeholder.nice_name')]) !!}
     </div>
-    <div class="form-group">
+    {{-- <div class="form-group">
       {!! Form::label('role', trans('app.form.role')) !!}
       {!! Form::text('role', $profile->role->name, ['class' => 'form-control', 'disabled' => 'disabled']) !!}
     </div> --}}

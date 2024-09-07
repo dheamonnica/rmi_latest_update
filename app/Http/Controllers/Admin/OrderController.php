@@ -774,18 +774,34 @@ class OrderController extends Controller
             })
 
             ->addColumn('SLA_Order', function ($order) {
+                if ($order->SLA_Order == 0) {
+                    return "";
+                }
+
                 $class = $order->SLA_Order >= 15 ? 'label label-danger' : 'label label-info';
                 return "<span class='$class'>{$order->SLA_Order}</span>";
             })
             ->addColumn('SLA_Packing', function ($order) {
+                if ($order->SLA_Packing == 0) {
+                    return "";
+                }
+
                 $class = $order->SLA_Packing >= 15 ? 'label label-danger' : 'label label-info';
                 return "<span class='$class'>{$order->SLA_Packing}</span>";
             })
             ->addColumn('SLA_Delivery', function ($order) {
+                if ($order->SLA_Delivery == 0) {
+                    return "";
+                }
+
                 $class = $order->SLA_Delivery >= 90 ? 'label label-danger' : 'label label-info';
                 return "<span class='$class'>{$order->SLA_Delivery}</span>";
             })
             ->addColumn('SLA_Payment', function ($order) {
+                if ($order->SLA_Payment == 0) {
+                    return "";
+                }
+
                 $class = $order->SLA_Payment >= 40 ? 'label label-danger' : 'label label-info';
                 return "<span class='$class'>{$order->SLA_Payment}</span>";
             })
