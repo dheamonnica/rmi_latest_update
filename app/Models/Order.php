@@ -1347,7 +1347,7 @@ class Order extends BaseModel
                 '0', TIMESTAMPDIFF(MINUTE, o.shipping_date, o.delivery_date)) as SLA_Delivery,
         IF(
                 o.delivery_date = '0000-00-00 00:00:00' OR o.delivery_date IS NULL, 
-                '0', TIMESTAMPDIFF(MINUTE, o.delivery_date, o.paid_date)) as SLA_Payment
+                '0', TIMESTAMPDIFF(DAY, o.delivery_date, o.paid_date)) as SLA_Payment
         FROM orders as o
         LEFT join order_items oi on o.id=oi.order_id 
         left join products p on p.id=oi.product_id

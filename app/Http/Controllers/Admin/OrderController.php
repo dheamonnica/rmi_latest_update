@@ -762,16 +762,20 @@ class OrderController extends Controller
             })
 
             ->addColumn('SLA_Order', function ($order) {
-                return $order->SLA_Order;
+                $class = $order->SLA_Order >= 15 ? 'label label-danger' : 'label label-info';
+                return "<span class='$class'>{$order->SLA_Order}</span>";
             })
             ->addColumn('SLA_Packing', function ($order) {
-                return $order->SLA_Packing;
+                $class = $order->SLA_Packing >= 15 ? 'label label-danger' : 'label label-info';
+                return "<span class='$class'>{$order->SLA_Packing}</span>";
             })
             ->addColumn('SLA_Delivery', function ($order) {
-                return $order->SLA_Delivery;
+                $class = $order->SLA_Delivery >= 90 ? 'label label-danger' : 'label label-info';
+                return "<span class='$class'>{$order->SLA_Delivery}</span>";
             })
             ->addColumn('SLA_Payment', function ($order) {
-                return $order->SLA_Payment;
+                $class = $order->SLA_Payment >= 40 ? 'label label-danger' : 'label label-info';
+                return "<span class='$class'>{$order->SLA_Payment}</span>";
             })
 
             ->addColumn('due_date_in_days', function ($order) {

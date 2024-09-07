@@ -1245,6 +1245,7 @@ return [
         'sla_packing' => 'SLA Packing',
         'sla_delivery' => 'SLA Delivery',
         'sla_payment' => 'SLA Payment',
+        'sla_gudang' => 'SLA Gudang',
 
         // manufacture
         'manufacture_pic_name' => 'Manufacture PIC Name',

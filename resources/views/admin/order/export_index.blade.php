@@ -104,11 +104,11 @@
                         <th>{{ trans('app.form.paid_date') }}</th>
                         <th>{{ trans('app.form.paid_by') }}</th>
 
-                        <th>{{ trans('app.form.sla_order') }}</th>
-                        <th>{{ trans('app.form.sla_packing') }}</th>
-                        <th>{{ trans('app.form.sla_delivery') }}</th>
-                        <th>{{ trans('app.form.sla_payment') }}</th>
-                        
+                        <th>{{ trans('app.form.sla_order') }} (minutes)</th>
+                        <th>{{ trans('app.form.sla_gudang') }} (minutes)</th>
+                        <th>{{ trans('app.form.sla_delivery') }} (minutes)</th>
+                        <th>{{ trans('app.form.sla_payment') }} (minutes)</th>
+
                         <th>{{ trans('app.form.duedate_payment') }}</th>
                         <th>{{ trans('app.form.duedate_days_payment') }}</th>
                         <th>{{ trans('app.form.cancel_date') }}</th>
