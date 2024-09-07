@@ -91,7 +91,7 @@
                         <th>{{ trans('app.form.sla_order') }} (minutes)</th>
                         <th>{{ trans('app.form.sla_gudang') }} (minutes)</th>
                         <th>{{ trans('app.form.sla_delivery') }} (minutes)</th>
-                        <th>{{ trans('app.form.sla_payment') }} (minutes)</th>
+                        <th>{{ trans('app.form.sla_payment') }} (days)</th>
 
                         <th>{{ trans('app.form.duedate_payment') }}</th>
                         <th>{{ trans('app.form.duedate_days_payment') }}</th>
