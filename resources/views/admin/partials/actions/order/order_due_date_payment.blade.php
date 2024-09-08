@@ -1,13 +1,13 @@
 <td>
-    @if ($order->delivery_date)
+    @if ($order->created_at)
         @php
-            $date1 = new DateTime($order->delivery_date);
+            $date1 = new DateTime($order->created_at);
             $date2 = new DateTime(); // Defaults to today
 
             $interval = $date1->diff($date2);
             $diffInDays = $interval->format('%a');
         @endphp
 
-        {{45 - $diffInDays}} days
+        {{40 - $diffInDays}} days
     @endif
 </td>
