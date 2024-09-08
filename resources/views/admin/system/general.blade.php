@@ -15,7 +15,7 @@
           </a>
         </li>
 
-        <li>
+        {{-- <li>
           <a href="#envioronment_config_tab" data-toggle="tab">
             <i class="fa fa-cog hidden-sm"></i>
             {{ trans('app.environment_config') }}
@@ -34,7 +34,7 @@
             <i class="fa fa-key hidden-sm"></i>
             {{ trans('app.license') }}
           </a>
-        </li>
+        </li> --}}
       </ul>
 
       <div class="tab-content">

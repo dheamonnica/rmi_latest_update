@@ -75,8 +75,8 @@
                 </span>
               </a>
             </li>
-            <li class="devider">|</li>
-            <li>
+            {{-- <li class="devider">|</li> --}}
+            {{-- <li>
               <a href="{{ route('account', 'coupons') }}">
                 <span class="v">{{ $dashboard->coupons_count }}</span>
                 <span class="d">
@@ -92,7 +92,7 @@
                   <i class="fas fa-envelope no-fill"></i> @lang('theme.disputes')
                 </span>
               </a>
-            </li>
+            </li> --}}
           </ul>
         </div><!-- .my-info-details -->
       </div><!-- .my-info-container -->
