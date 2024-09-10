@@ -70,6 +70,8 @@ class MessageController extends Controller
 
     public function orderConversation(Request $request, Order $order)
     {
+        $this->authorize('fulfill', $order); // Check permission
+
         return view('admin.message._create', compact('order'));
     }
 
@@ -82,6 +84,8 @@ class MessageController extends Controller
     public function store(CreateMessageRequest $request)
     {
         $message = $this->message->store($request);
+
+        $this->authorize('fulfill', $message); // Check permission
 
         event(new NewMessage($message));
 
@@ -116,6 +120,8 @@ class MessageController extends Controller
     public function show(Request $request, $id)
     {
         $message = $this->message->find($id);
+
+        $this->authorize('show', $message); // Check permission
 
         $message->markAsRead();
 

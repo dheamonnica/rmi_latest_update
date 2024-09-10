@@ -133,10 +133,12 @@ if (!function_exists('setAdditionalCartInfo')) {
      */
     function setAdditionalCartInfo($request)
     {
+        // dd($request->all());
         $total = 0;
         $grand_total = 0;
         $shipping_weight = 0;
         $handling = config('shop_settings.order_handling_cost');
+        // $partial_status = $req->
 
         foreach ($request->input('cart') as $cart) {
             $total = $total + ($cart['quantity'] * $cart['unit_price']);

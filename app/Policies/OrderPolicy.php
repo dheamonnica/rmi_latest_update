@@ -52,6 +52,18 @@ class OrderPolicy
      * @param  \App\Models\Order  $order
      * @return mixed
      */
+    public function deliveredConfirmed(User $user, Order $order)
+    {
+        return (new Authorize($user, 'fulfill_order', $order))->check();
+    }
+
+    /**
+     * Determine whether the user can fulfill the Order.
+     *
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\Order  $order
+     * @return mixed
+     */
     public function fulfill(User $user, Order $order)
     {
         return (new Authorize($user, 'fulfill_order', $order))->check();

@@ -67,6 +67,7 @@
             <div class="col-md-6">
               <dir class="spacer30"></dir>
               <div class="form-group">
+                <input type="hidden" value="0" name="partial_status_id" id="order-partial-status">
                 {!! Form::label('admin_note', trans('app.form.admin_note'), ['class' => 'with-help']) !!}
                 <i class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="{{ trans('help.admin_note') }}"></i>
                 {!! Form::textarea('admin_note', isset($cart->admin_note) ? $cart->admin_note : null, ['class' => 'form-control summernote-without-toolbar', 'rows' => '2', 'placeholder' => trans('app.placeholder.admin_note')]) !!}
@@ -77,7 +78,8 @@
                 <tr>
                   <td class="text-right">{{ trans('app.total') }}</td>
                   <td class="text-right" width="40%">{{ get_formated_currency_symbol() }}
-                    <span id="summary-total">{{ get_formated_decimal(0, true, 2) }}</span>
+                    <span id="summary-total" class="hidden">{{ get_formated_decimal(0, true, 2) }}</span>
+                    <span id="summary-total-view">{{ get_formated_decimal(0, true, 2) }}</span>
                   </td>
                 </tr>
 
@@ -88,9 +90,11 @@
                     </a>
                   </td>
                   <td class="text-right" width="40%"> &minus; {{ get_formated_currency_symbol() }}
-                    <span id="summary-discount">
+                    <span id="summary-discount" class="hidden">
                       {{ isset($cart->discount) ? get_formated_decimal($cart->discount, true, 2) : get_formated_decimal(0, true, 2) }}
                     </span>
+
+                    <span id="summary-discount-view">{{ isset($cart->discount) ? get_formated_decimal($cart->discount, true, 2) : get_formated_decimal(0, true, 2) }}</span>
                   </td>
                 </tr>
 
@@ -101,7 +105,8 @@
                     <em id="summary-shipping-name" class="small"></em>
                   </td>
                   <td class="text-right" width="40%">{{ get_formated_currency_symbol() }}
-                    <span id="summary-shipping">{{ get_formated_decimal(0, true, 2) }}</span>
+                    <span id="summary-shipping" class="hidden">{{ get_formated_decimal(0, true, 2) }}</span>
+                    <span id="summary-shipping-view">{{ get_formated_decimal(0, true, 2) }}</span>
                   </td>
                 </tr>
 
@@ -113,7 +118,10 @@
                       <em id="summary-packaging-name" class="small">{{ $default_packaging ? $default_packaging->name : '' }}</em>
                     </td>
                     <td class="text-right" width="40%">{{ get_formated_currency_symbol() }}
-                      <span id="summary-packaging">
+                      <span id="summary-packaging" class="hidden">
+                        {{ get_formated_decimal($default_packaging ? $default_packaging->cost : 0, true, 2) }}
+                      </span>
+                      <span id="summary-packaging-view">
                         {{ get_formated_decimal($default_packaging ? $default_packaging->cost : 0, true, 2) }}
                       </span>
                     </td>
@@ -137,14 +145,16 @@
                       </small>
                   </td>
                   <td class="text-right" width="40%">{{ get_formated_currency_symbol() }}
-                    <span id="summary-tax">{{ get_formated_decimal(0, true, 2) }}</span>
+                    <span id="summary-tax" class="hidden">{{ get_formated_decimal(0, true, 2) }}</span>
+                    <span id="summary-tax-view">{{ get_formated_decimal(0, true, 2) }}</span>
                   </td>
                 </tr>
 
                 <tr class="lead">
                   <td class="text-right">{{ trans('app.grand_total') }}</td>
                   <td class="text-right" width="40%">{{ get_formated_currency_symbol() }}
-                    <span id="summary-grand-total">{{ get_formated_decimal(0, true, 2) }}</span>
+                    <span id="summary-grand-total" class="hidden">{{ get_formated_decimal(0, true, 2) }}</span>
+                    <span id="summary-grand-total-view">{{ get_formated_decimal(0, true, 2) }}</span>
                   </td>
                 </tr>
               </table>
@@ -465,7 +475,7 @@
         $("input:radio#custom_shipping").prop("checked", true).val($(this).val());
       });
 
-      $('body').on('change', '.itemQtt, .itemPrice', function() {
+      $('body').on('change', '.itemQtt, .itemPrice, .itemReqQtt', function() {
         var itemId = $(this).closest('tr').attr('id');
         calculateItemTotal(itemId);
       });
@@ -480,7 +490,6 @@
         function() {
           var ID = $("#product-to-add").select2('data')[0].id;
 
-          console.log('stock', productObj[ID].stockQtt);
           if(productObj[ID].stockQtt === 0) {
             $("#global-alert-msg").html('{{ trans('messages.notice.out_of_stock') }}');
             $("#global-alert-box").removeClass('hidden');
@@ -522,7 +531,6 @@
               // var isOfferAvailable = dateOfferAvailable ? 'Offer Available' : 'Offer Unavailable';
               var price = productObj[ID].offerPrice > 0 ? productObj[ID].offerPrice : productObj[ID].salePrice;
               //cart item added
-              console.log(productObj[ID])
               var node = '<tr id="' + ID + '">' +
                 '<td><img src="' + imgSrc + '" class="img-circle img-md" alt="{{ trans('app.image') }}"></td>' +
                 '<td class="nopadding-right" width="55%">' + itemDescription +
@@ -531,10 +539,12 @@
                 '<input type="hidden" name="cart[' + numOfRows + '][product_id]" value="' + productObj[ID].product_id + '"></input>' +
                 '<input type="hidden" name="cart[' + numOfRows + '][shipping_weight]" value="' + productObj[ID].shipping_weight + '" id="weight-' + ID + '" class="itemWeight"></input>' +
                 '<input type="hidden" name="cart[' + numOfRows + '][stock_quantity]" value="' + productObj[ID].stockQtt + '" id="stock-' + ID + '" class="itemStock"></input>' +
+                '<input type="hidden" name="cart[' + numOfRows + '][partial_status]" value="0" id="partial-' + ID + '" class="partialStatus"></input>' +
                 '</td>' +
                 // '<td class="small" width="15%">'+ isOfferAvailable + ` <i class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="" data-original-title="Offer Date: ${productObj[ID].offerStart} - ${productObj[ID].offerEnd}"></i></td>` +
                 '<td class="nopadding-right" width="15%">' +
-                '<input name="cart[' + numOfRows + '][unit_price]" value="' + getFormatedValue(price) + '" id="price-' + ID + '" type="number" class="form-control itemPrice no-border" placeholder="{{ trans('app.price') }}" required readonly>' +
+                '<input name="cart[' + numOfRows + '][unit_price]" value="' + getFormatedValue(price) + '" id="price-' + ID + '" type="hidden" class="form-control itemPrice no-border" placeholder="{{ trans('app.price') }}" required readonly>' +
+                'Rp ' + price.toLocaleString('id-ID') +
                 '</div>' +
                 '<td>x</td>' +
                 '<td class="nopadding-right text-center" width="10%">' +
@@ -546,8 +556,11 @@
                 '<input name="cart[' + numOfRows + '][req_quantity]" value="1" type="number" id="req-qtt-' + ID + '" class="form-control itemReqQtt no-border" placeholder="{{ trans('app.req_quantity') }}" required>' +
                 '</td>' +
                 '<td class="nopadding-right text-center" width="10%">{{ get_formated_currency_symbol() }}' +
-                '<span id="total-' + ID + '"  class="itemTotal">' +
-                  getFormatedValue(price) +
+                '<span id="total-' + ID + '"  class="itemTotal hidden">' +
+                  price +
+                '</span>' +
+                '<span id="total-view-' + ID + '"  class="itemTotalView">' +
+                  price.toLocaleString('id-ID') +
                 '</span>' +
                 '</td>' +
                 '<td class="small"><i class="fa fa-trash text-muted deleteThisRow" data-toggle="tooltip" data-placement="left" title="{{ trans('help.remove_this_cart_item') }}"></i></td>' +
@@ -574,6 +587,7 @@
 
         $("#weight-" + ID).val(itemWeight);
         $("#total-" + ID).text(itemTotal);
+        $("#total-view-" + ID).text(getItemTotal(ID).toLocaleString('id-ID'));
 
         calculateOrderTotal();
         return;
@@ -614,6 +628,7 @@
           }
         );
         $("#summary-total").text(getFormatedValue(sum));
+        $("#summary-total-view").text(sum.toLocaleString('id-ID'));
         
         $(".itemWeight").each(function() {
           cartWeight += ($(this).val()) * 1;
@@ -634,9 +649,11 @@
 
         return;
       };
-
+ 
       function setDiscount(value = 0) {
+
         $('#summary-discount').text(getFormatedValue(value));
+        $('#summary-discount-view').text(Number(value).toLocaleString('id-ID'));
         $('#cart-discount').val(value);
         calculateTax();
         return;
@@ -645,6 +662,7 @@
       function setShippingCost(name = '', value = 0, id = '') {
         value = value ? value : 0;
         $('#summary-shipping').text(getFormatedValue(value));
+        $('#summary-shipping-view').text(Number(value).toLocaleString('id-ID'));
         $("#summary-shipping-name").text(name);
         $('#cart-shipping').val(value);
         $('#shipping_rate_id').val(id);
@@ -655,6 +673,7 @@
       function setPackagingCost(name, value = 0, id = '') {
         value = value ? value : 0;
         $('#summary-packaging').text(getFormatedValue(value));
+        $('#summary-packaging-view').text(value.toLocaleString('id-ID'));
         $("#summary-packaging-name").text(name);
         $('#cart-packaging').val(value);
         $('#packaging_id').val(id);
@@ -692,6 +711,7 @@
 
         var tax = (total * taxrate) / 100;
         $("#summary-tax").text(getFormatedValue(tax));
+        $("#summary-tax-view").text(tax.toLocaleString('id-ID'));
         $("#cart-taxes").val(tax);
 
         calculateOrderSummary();
@@ -700,7 +720,8 @@
 
       function calculateOrderSummary() {
         var grand = getTotalAmount() + getTax();
-        $("#summary-grand-total").text(grand.toLocaleString('id-ID'));
+        $("#summary-grand-total").text(grand);
+        $("#summary-grand-total-view").text(grand.toLocaleString('id-ID'));
         return;
       }
 
@@ -744,6 +765,10 @@
         return $("#qtt-" + ID).val();
       };
 
+      function setItemQtt(ID, value) {
+        return $("#qtt-" + ID).val(value);
+      };
+
       function getItemPrice(ID) {
         return $("#price-" + ID).val();
       };
@@ -758,29 +783,56 @@
 
       function getItemTotal(ID) {
         // order item
-        console.log(getItemQtt(ID), 'getItemQtt')
         // stock_quantity
-        var stock = $("#stock-" + ID).val();
-        console.log(stock, 'stock');
+        var stock = Number($("#stock-" + ID).val());
+        var ordQty = Number(getItemQtt(ID));
+        var reqQty = Number(getItemReqQtt(ID));
+
+        console.log(stock, 'stock -> order');
+        console.log(getItemQtt(ID), 'order -> getItemQtt');
+        console.log(getItemReqQtt(ID), 'req -> getItemReqQtt');
+
+        console.log(stock < ordQty, 'stock < order');
+        console.log(ordQty < reqQty, 'order < stock');
 
         /**
           * Qty (dari Case di atas ini hanya bisa di input 5 Sesuai Stock) tapi Jika Order 10 Di stocknya kosong kita ttp bisa bikin Po meskipun stocknya kurang - Di stock inventory akan minus 
           * simulasi
-          * stock = 5
-          * getItemQtt(ID) = 10
-          * if (5 > 10) //false
-          * else if (5 < 10 ) //true
+          * stock = 22 //available stock -> order
+          * getItemQtt(ID) = 49 //ordQty 49
+          * getItemReqQtt(ID) = 50 //reqQty 50
+          * 
+          * if (ordQty < reqQty) //true 
           *  -> 10 - 5 = 5 => change into 5 - 10 = -5 (differential)
           *  -> update order_items -> is_partial = true
+          * else if (ordQty > reqQty ) //false
+          * =====================
+          * 22 stock -> order
+          * create?customer_id=17:1221 22 order -> getItemQtt
+          * create?customer_id=17:1222 23 req -> getItemReqQtt
           */
 
-        if(Number(getItemQtt(ID)) >= Number(stock)) {
-          $("#global-alert-msg").html('{{ trans('messages.notice.last_stock') }} - set as partial order, you can add the request quantity'); //alert last stock
-           // $("#global-alert-msg").html('{{ trans('messages.notice.last_stock') }}'); 
-           var stock = $("#partial-" + ID).val(1);
+        //debug
+        if(stock < ordQty) {
+          $("#global-alert-msg").html('{{ trans('messages.notice.last_stock') }} - reach maximum stock'); //alert last stock
+          // ordQty = stock;
+          setItemQtt(ID, stock);
 
+          if(ordQty < reqQty) {
+            $("#global-alert-msg").html('{{ trans('messages.notice.last_stock') }} - set as partial order'); //alert last stock
+
+            setPartialStatus(ID, "1");
+            $("#order-partial-status").val("1");
+          }
         } else {
-          $("#global-alert-box").addClass('hidden');
+          if(ordQty < reqQty) {
+            $("#global-alert-msg").html('{{ trans('messages.notice.last_stock') }} - set as partial order'); //alert last stock
+
+            setPartialStatus(ID, "1");
+            $("#order-partial-status").val("1");
+          } else {
+            $("#global-alert-box").addClass('hidden');
+          }
           $("#action-submit").removeClass('disabled');
         }
 

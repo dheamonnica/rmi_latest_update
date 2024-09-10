@@ -571,7 +571,7 @@
                       {!! Form::open(['route' => ['admin.order.order.saveDueDatePayment', $order], 'method' => 'put', 'class' => 'inline']) !!}
 
                       {!! Form::label('payment_terms', trans('app.form.payment_terms')) !!}
-                      {!! Form::select('payment_terms', $payment_terms, $order->due_date_payment ?? '', ['class' => 'form-control select2-normal', 'placeholder' => trans('app.placeholder.payment'), 'required']) !!}
+                      {!! Form::select('payment_terms', $payment_terms, $order->due_date_payment ?? '', ['class' => 'form-control select2', 'placeholder' => trans('app.placeholder.payment'), 'required']) !!}
                       <div class="help-block with-errors"></div>
                     </div>
 

@@ -459,9 +459,10 @@ class OrderController extends Controller
      * @param  $id
      * @return \Illuminate\Http\Response
      */
-    public function deliveredConfirmed(Request $request, $id)
+    public function deliveredConfirmed(DeliveredConfirmedOrderRequest $request, $id)
     {
         $order = $this->order->find($id);
+        $this->authorize('fulfill', $order); // Check permission
 
         $this->order->confimedDelivered($request, $order);
 
@@ -523,6 +524,8 @@ class OrderController extends Controller
     {
         $order = $this->order->find($id);
 
+        $this->authorize('fulfill', $order); // Check permission
+
         $this->order->updateDueDatePayment($request, $order);
 
         return back()->with('success', trans('messages.updated', ['model' => $this->model_name]));
@@ -541,7 +544,7 @@ class OrderController extends Controller
     {
         $order = $this->order->find($id);
 
-        // $this->authorize('fulfill', $order); // Check permission
+        $this->authorize('fulfill', $order); // Check permission
 
         $this->order->updateAdminNote($request, $order);
 
@@ -553,6 +556,8 @@ class OrderController extends Controller
 
         $order = $this->order->find($id);
 
+        $this->authorize('fulfill', $order); // Check permission
+
         $this->order->updateStatusDelivered($request, $order);
 
         return back()->with('success', trans('messages.updated', ['model' => $this->model_name]));
@@ -562,6 +567,8 @@ class OrderController extends Controller
     {
 
         $order = $this->order->find($id);
+
+        $this->authorize('fulfill', $order); // Check permission
 
         $this->order->updateStatusPacked($request, $order);
 
