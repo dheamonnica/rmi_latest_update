@@ -861,9 +861,10 @@ return [
         'waiting'   => 'Waiting',
         'waiting_for_payment' => 'Waiting for payment',
         'packed' => 'Packed',
-        'partial' => 'Partial',
+        'partials' => 'Partial',
         'partial_fulfilled' => 'Fulfilled',
         'awaiting_payment' => '	Awaiting payment',
+        ''
     ],
 
     'priorities' => [
@@ -1569,6 +1570,7 @@ return [
         'category_featured_image' => 'Category Featured Image',
         'text_position' => 'Text position',
         'download_limit' => 'Download Limit',
+        'payment' => 'Select Payment Due Date',
 
         'bank_account_type' => 'Bank Type',
         'bank_account_name' => 'Bank Account Name',

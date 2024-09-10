@@ -1203,7 +1203,7 @@ class Order extends BaseModel
             case static::STATUS_PARTIAL:
                 return '<span class="label label-danger">' . $partial_status . '</span>';
             case static::STATUS_PARTIAL_FULFILLED:
-                return '<span class="label label-outline">' . $partial_status . '</span>';
+                return '<span class="label label-primary">' . $partial_status . '</span>';
         }
 
         return null;
