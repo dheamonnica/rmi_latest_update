@@ -1250,7 +1250,11 @@ return [
         'sla_gudang' => 'SLA Gudang',
         'all_payment_status' => 'All Payment Status',
         'upload_document_SI' => 'Upload Document SI',
+        'doc_SI' => 'Document SI',
         'upload_document_faktur_pajak' => 'Upload Document Faktur Pajak',
+        'doc_faktur_pajak' => 'Document Faktur Pajak',
+        'upload_document_faktur_terbayar' => 'Upload Document Faktur Terbayar',
+        'doc_faktur_pajak_terbayar' => 'Document Faktur Pajak Terbayar',
 
         // manufacture
         'manufacture_pic_name' => 'Manufacture PIC Name',

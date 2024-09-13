@@ -719,6 +719,99 @@
 
         // end order table report
 
+        // ORDER PAYMENT DOCUMENT REPORT
+        var tableOrdePaymentDocReport = $('#payment-doc-table').DataTable($.extend({}, dataTableOptions, {
+            "ajax": "{{ route('admin.order.getOrderPaymentDocReport') }}",
+            scrollCollapse: true,
+            // scrollX: true,
+            "columns": [{
+                    'data': 'created_at',
+                    'name': 'created_at',
+                },
+                {
+                    'data': 'order_number',
+                    'name': 'order_number'
+                },
+                {
+                    'data': 'po_number_ref',
+                    'name': 'po_number_ref'
+                },
+                {
+                    'data': 'shop_id',
+                    'name': 'shop_id',
+                },
+                {
+                    'data': 'customer_id',
+                    'name': 'customer_id',
+                },
+                {
+                    'data': 'doc_SI',
+                    'name': 'doc_SI',
+                },
+                {
+                    'data': 'doc_faktur_pajak',
+                    'name': 'doc_faktur_pajak',
+                },
+                {
+                    'data': 'doc_faktur_pajak_terbayar',
+                    'name': 'doc_faktur_pajak_terbayar',
+                },
+                {
+                    'data': 'payment_status',
+                    'name': 'payment_status',
+                },
+                {
+                    'data': 'order_status_id',
+                    'name': 'order_status_id',
+                },
+                {
+                    'data': 'options',
+                    'name': 'options',
+                },
+
+            ]
+        }));
+
+        // if isFromPlatform
+        @if (!Auth::user()->isFromPlatform())
+            tableOrdePaymentDocReport.column('shop_id:name').search('{{ Auth::user()->shop_id }}').draw();
+        @endif
+
+        function filterByWarehouseOrderReport() {
+            var selectedMerchant = $('#merchantOrderPaymentDocReportFilter').val();
+
+            // Apply the business area filter to the 'business area' column (assume the column name is 'business area')
+            tableOrdePaymentDocReport.column('shop_id:name').search(selectedMerchant).draw();
+        }
+
+        function filterByCustomerOrderReport() {
+            var selectedCustomer = $('#customerOrderPaymentDocReportFilter').val();
+
+            // Apply the business area filter to the 'business area' column (assume the column name is 'business area')
+            tableOrdePaymentDocReport.column('customer_id:name').search(selectedCustomer).draw();
+        }
+
+        function filterByStatusOrderReport() {
+            var selectedStatus = $('#statusOrderPaymentDocReportFilter').val();
+
+            // Apply the business area filter to the 'business area' column (assume the column name is 'business area')
+            tableOrdePaymentDocReport.column('order_status_id:name').search(selectedStatus).draw();
+        }
+
+        function filterByPaymentStatusOrderReport() {
+            var selectedPaymentStatus = $('#paymentStatusOrderPaymentDocReportFilter').val();
+
+            // Apply the business area filter to the 'business area' column (assume the column name is 'business area')
+            tableOrdePaymentDocReport.column('payment_status:name').search(selectedPaymentStatus).draw();
+        }
+
+        $('#merchantOrderPaymentDocReportFilter').on('change', filterByWarehouseOrderReport);
+        $('#customerOrderPaymentDocReportFilter').on('change', filterByCustomerOrderReport);
+        $('#statusOrderPaymentDocReportFilter').on('change', filterByStatusOrderReport);
+        $('#paymentStatusOrderPaymentDocReportFilter').on('change', filterByPaymentStatusOrderReport);
+
+        // END ORDER PAYMENT DOCUMENT REPORT
+
         // Load customer list by Ajax
         $('#all-customer-table').DataTable($.extend({}, dataTableOptions, {
             "ajax": "{{ route('admin.admin.customer.getMore') }}",

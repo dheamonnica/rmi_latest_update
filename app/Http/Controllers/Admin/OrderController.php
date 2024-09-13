@@ -836,15 +836,15 @@ class OrderController extends Controller
                 if ($order->payment_status == 1) {
                     return '<span class="label label-danger">Awaiting payment</span>';
                 } else if ($order->payment_status == 2) {
-                    return 'Pending';
+                    return '<span class="label label-default">Pending</span>';
                 } else if ($order->payment_status == 3) {
                     return '<span class="label label-info">Paid</span>';
                 } else if ($order->payment_status == 4) {
-                    return 'Refund Initiated';
+                    return '<span class="label label-default">Refund Initiated</span>';
                 } else if ($order->payment_status == 5) {
-                    return 'Partially Refunded';
+                    return '<span class="label label-default">Partially Refunde</span>';
                 } else if ($order->payment_status == 6) {
-                    return 'Refunded';
+                    return '<span class="label label-default">Refunded</span>';
                 }
             })
             ->addColumn('order_status_id', function ($order) {
@@ -860,29 +860,217 @@ class OrderController extends Controller
                 // 9. disputed
                 // 10. packed
                 if ($order->order_status_id == 1) {
-                    return '<span class="label">Waiting for payment</span>';
+                    return '<span class="label label-default">Waiting for payment</span>';
                 } else if ($order->order_status_id == 2) {
-                    return '<span class="label">Payment error</span>';
+                    return '<span class="label label-default">Payment error</span>';
                 } else if ($order->order_status_id == 3) {
-                    return '<span class="label">Confirmed</span>';
+                    return '<span class="label label-default">Confirmed</span>';
                 } else if ($order->order_status_id == 4) {
                     return '<span class="label label-info">Fullfilled</span>';
                 } else if ($order->order_status_id == 5) {
-                    return '<span class="label">Awaiting delivery</span>';
+                    return '<span class="label label-default">Awaiting delivery</span>';
                 } else if ($order->order_status_id == 6) {
                     return '<span class="label label-success">Delivered</span>';
                 } else if ($order->order_status_id == 7) {
-                    return '<span class="label">Refunded</span>';
+                    return '<span class="label label-default">Refunded</span>';
                 } else if ($order->order_status_id == 8) {
-                    return '<span class="label=">Cancelled</span>';
+                    return '<span class="label label-default">Cancelled</span>';
                 } else if ($order->order_status_id == 9) {
-                    return '<span class="label=">Disputed</span>';
+                    return '<span class="label label-default">Disputed</span>';
                 } else if ($order->order_status_id == 10) {
-                    return '<span class="label=">Packed</span>';
+                    return '<span class="label label-default">Waiting for Packed</span>';
                 }
             })
 
             ->rawColumns(['order_number', 'po_number_ref', 'warehouse_name', 'client_name', 'selling_skuid', 'product_name', 'quantity', 'unit_price', 'purchase_price', 'total', 'discount', 'taxrate', 'Grand_Total', 'created_at', 'created_by', 'packed_date', 'packed_by', 'shipping_date', 'shipped_by', 'delivery_date', 'delivered_by', 'paid_date', 'paid_by', 'SLA_Order', 'SLA_Packing', 'SLA_Delivery', 'SLA_Payment', 'due_date_in_days', 'due_date', 'cancel_date', 'cancel_by', 'payment_status', 'order_status_id'])
             ->make(true);
+    }
+
+    public function paymentDocument()
+    {
+        $fulfilment = Route::is('admin.order.pickup') ? Order::FULFILMENT_TYPE_PICKUP : Order::FULFILMENT_TYPE_DELIVER;
+
+        $orders = $this->order->all($fulfilment);
+
+        $archives = $this->order->trashOnly();
+
+        $merchants = Merchant::whereNotNull('warehouse_name')
+            ->get()
+            ->pluck('warehouse_name', 'id')
+            ->toArray();
+
+        $customers = Customer::whereNotNull('name')
+            ->get()
+            ->pluck('name', 'id')
+            ->toArray();
+
+        return view('admin.order.payment_document', compact('orders', 'archives', 'merchants', 'customers'));
+    }
+
+    public function getOrderPaymentDocReport(Request $request)
+    {
+        $fulfilment = Route::is('admin.order.pickup') ? Order::FULFILMENT_TYPE_PICKUP : Order::FULFILMENT_TYPE_DELIVER;
+
+        $orders = $this->order->all($fulfilment);
+        return Datatables::of($orders)
+            ->addColumn('created_at', function ($order) {
+                return $order->created_at;
+            })
+            ->addColumn('order_number', function ($order) {
+                return $order->order_number;
+            })
+            ->addColumn('po_number_ref', function ($order) {
+                return $order->po_number_ref;
+            })
+            ->addColumn('shop_id', function ($order) {
+                return $order->getWarehouse->name;
+            })
+            ->addColumn('customer_id', function ($order) {
+                return $order->getCustomer->name;
+            })
+            ->addColumn('doc_SI', function ($order) {
+                if (empty($order->doc_SI)) {
+                    "";
+                } else {
+                    return "<a href='" . asset('storage/' . $order->doc_SI) . "' target='_blank'>Dokumen SI</a>";
+                }
+            })
+            ->addColumn('doc_faktur_pajak', function ($order) {
+                if (empty($order->doc_faktur_pajak)) {
+                    "";
+                } else {
+                    return "<a href='" . asset('storage/' . $order->doc_faktur_pajak) . "' target='_blank'>Dokumen Faktur Pajak</a>";
+                }
+            })
+            ->addColumn('doc_faktur_pajak_terbayar', function ($order) {
+                if (empty($order->doc_faktur_pajak_terbayar)) {
+                    "";
+                } else {
+                    return "<a href='" . asset('storage/' . $order->doc_faktur_pajak_terbayar) . "' target='_blank'>Dokumen Faktur Pajak Terbayar</a>";
+                }
+            })
+            ->addColumn('payment_status', function ($order) {
+                // payment status:
+                // 1. unpaid
+                // 2. pending
+                // 3. paid
+                // 4. refund initiated
+                // 5. partially refunded
+                // 6. refunded
+                if ($order->payment_status == 1) {
+                    return '<span class="label label-danger">Awaiting payment</span>';
+                } else if ($order->payment_status == 2) {
+                    return '<span class="label label-default">Pending</span>';
+                } else if ($order->payment_status == 3) {
+                    return '<span class="label label-info">Paid</span>';
+                } else if ($order->payment_status == 4) {
+                    return '<span class="label label-default">Refund Initiated</span>';
+                } else if ($order->payment_status == 5) {
+                    return '<span class="label label-default">Partially Refunde</span>';
+                } else if ($order->payment_status == 6) {
+                    return '<span class="label label-default">Refunded</span>';
+                }
+            })
+            ->addColumn('order_status_id', function ($order) {
+                // order status:
+                // 1. waiting for payment
+                // 2. payment error
+                // 3. confirmed
+                // 4. fullfiled
+                // 5. awaiting delivery
+                // 6. delivered
+                // 7. refunded
+                // 8. cancelled
+                // 9. disputed
+                // 10. packed
+                if ($order->order_status_id == 1) {
+                    return '<span class="label label-default">Waiting for payment</span>';
+                } else if ($order->order_status_id == 2) {
+                    return '<span class="label label-default">Payment error</span>';
+                } else if ($order->order_status_id == 3) {
+                    return '<span class="label label-default">Confirmed</span>';
+                } else if ($order->order_status_id == 4) {
+                    return '<span class="label label-info">Fullfilled</span>';
+                } else if ($order->order_status_id == 5) {
+                    return '<span class="label label-default">Awaiting delivery</span>';
+                } else if ($order->order_status_id == 6) {
+                    return '<span class="label label-success">Delivered</span>';
+                } else if ($order->order_status_id == 7) {
+                    return '<span class="label label-default">Refunded</span>';
+                } else if ($order->order_status_id == 8) {
+                    return '<span class="label label-default">Cancelled</span>';
+                } else if ($order->order_status_id == 9) {
+                    return '<span class="label label-default">Disputed</span>';
+                } else if ($order->order_status_id == 10) {
+                    return '<span class="label label-default">Waiting for Packed</span>';
+                }
+            })
+            ->editColumn('options', function ($order) {
+                return view('admin.partials.actions.order.option_payment', compact('order'));
+            })
+
+            ->rawColumns(['created_at', 'payment_status', 'order_status_id', 'options', 'doc_faktur_pajak', 'doc_faktur_pajak_terbayar', 'doc_SI'])
+            ->make(true);
+    }
+
+    public function orderPaymentEdit($id)
+    {
+        $order = $this->order->find($id);
+
+        return view('admin.order.payment._edit', compact('order'));
+    }
+
+    public function updateOrderPayment(Request $request, $id)
+    {
+        $orderId = $request->input('id');
+        $orderData = Order::find($orderId);
+
+        if ($request->hasFile('doc_SI') && $request->file('doc_faktur_pajak') && $request->file('doc_faktur_pajak_terbayar')) {
+            // DOC SI
+            $pdfFileSI = $request->file('doc_SI');
+            $originalFilenameSI = now()->format('d-m-Y') . '/PoNumberRef_' . str_replace('/', '_', $orderData->po_number_ref) . '/' . 'SI_' . $pdfFileSI->getClientOriginalName(); // Add a timestamp to the original filename
+            $pdfFileSI->storeAs('payment_documents', $originalFilenameSI, 'public');
+            $orderData->doc_SI = 'payment_documents/' . $originalFilenameSI;
+
+            // DOC FAKTUR PAJAK
+            $pdfFileFP = $request->file('doc_faktur_pajak');
+            $originalFilenameFP = now()->format('d-m-Y') . '/PoNumberRef_' . str_replace('/', '_', $orderData->po_number_ref) . '/' . 'FP_' . $pdfFileFP->getClientOriginalName(); // Add a timestamp to the original filename
+            $pdfFileFP->storeAs('payment_documents', $originalFilenameFP, 'public');
+            $orderData->doc_faktur_pajak = 'payment_documents/' . $originalFilenameFP;
+
+            // DOC FAKTUR PAJAK TERBAYAR
+            $pdfFileFPT = $request->file('doc_faktur_pajak_terbayar');
+            $originalFilenameFPT = now()->format('d-m-Y') . '/PoNumberRef_' . str_replace('/', '_', $orderData->po_number_ref) . '/' . 'FPT_' . $pdfFileFPT->getClientOriginalName(); // Add a timestamp to the original filename
+            $pdfFileFPT->storeAs('payment_documents', $originalFilenameFPT, 'public');
+            $orderData->doc_faktur_pajak_terbayar = 'payment_documents/' . $originalFilenameFPT;
+
+            $orderData->save();
+        } else if ($request->hasFile('doc_SI')) {
+            // DOC SI
+            $pdfFileSI = $request->file('doc_SI');
+            $originalFilenameSI = now()->format('d-m-Y') . '/PoNumberRef_' . str_replace('/', '_', $orderData->po_number_ref) . '/' . 'SI_' . $pdfFileSI->getClientOriginalName(); // Add a timestamp to the original filename
+            $pdfFileSI->storeAs('payment_documents', $originalFilenameSI, 'public');
+            $orderData->doc_SI = 'payment_documents/' . $originalFilenameSI;
+
+            $orderData->save();
+        } else if ($request->file('doc_faktur_pajak')) {
+            // DOC FAKTUR PAJAK
+            $pdfFileFP = $request->file('doc_faktur_pajak');
+            $originalFilenameFP = now()->format('d-m-Y') . '/PoNumberRef_' . str_replace('/', '_', $orderData->po_number_ref) . '/' . 'FP_' . $pdfFileFP->getClientOriginalName(); // Add a timestamp to the original filename
+            $pdfFileFP->storeAs('payment_documents', $originalFilenameFP, 'public');
+            $orderData->doc_faktur_pajak = 'payment_documents/' . $originalFilenameFP;
+
+            $orderData->save();
+        } else if ($request->file('doc_faktur_pajak_terbayar')) {
+            // DOC FAKTUR PAJAK TERBAYAR
+            $pdfFileFPT = $request->file('doc_faktur_pajak_terbayar');
+            $originalFilenameFPT = now()->format('d-m-Y') . '/PoNumberRef_' . str_replace('/', '_', $orderData->po_number_ref) . '/' . 'FPT_' . $pdfFileFPT->getClientOriginalName(); // Add a timestamp to the original filename
+            $pdfFileFPT->storeAs('payment_documents', $originalFilenameFPT, 'public');
+            $orderData->doc_faktur_pajak_terbayar = 'payment_documents/' . $originalFilenameFPT;
+
+            $orderData->save();
+        }
+
+        return back()->with('success', trans('messages.updated', ['model' => $this->model_name]));
     }
 }
