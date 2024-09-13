@@ -401,19 +401,38 @@ class OrderController extends Controller
         $orderId = $request->input('id');
         $orderData = Order::find($orderId);
 
-        // DOC SI
-        $pdfFileSI = $request->file('doc_SI');
-        $originalFilenameSI = now()->format('d-m-Y') . '_PoNumberRef_' . $orderData->po_number_ref . '_' . 'SI_' . $pdfFileSI->getClientOriginalName(); // Add a timestamp to the original filename
-        $pdfFileSI->storeAs('pdfs', $originalFilenameSI, 'public'); // Store with a unique filename
-        $orderData->doc_SI = 'pdfs/' . $originalFilenameSI;
+        if ($request->hasFile('doc_SI') && $request->file('doc_faktur_pajak')) {
+            // DOC SI
+            $pdfFileSI = $request->file('doc_SI');
+            $originalFilenameSI = '/' . now()->format('d-m-Y') . '/PoNumberRef_' . str_replace('/', '_', $orderData->po_number_ref) . '/' . 'SI_' . $pdfFileSI->getClientOriginalName(); // Add a timestamp to the original filename
+            $pdfFileSI->storeAs('payment_documents', $originalFilenameSI, 'public');
+            $orderData->doc_SI = 'payment_documents/' . $originalFilenameSI;
 
-        // DOC FAKTUR PAJAK
-        $pdfFileFP = $request->file('doc_faktur_pajak');
-        $originalFilenameFP = now()->format('d-m-Y') . '_PoNumberRef_' . $orderData->po_number_ref . '_' . 'FP_' . $pdfFileFP->getClientOriginalName(); // Add a timestamp to the original filename
-        $pdfFileFP->storeAs('pdfs', $originalFilenameFP, 'public'); // Store with a unique filename
-        $orderData->doc_faktur_pajak = 'pdfs/' . $originalFilenameFP;
+            // DOC FAKTUR PAJAK
+            $pdfFileFP = $request->file('doc_faktur_pajak');
+            $originalFilenameFP = '/' . now()->format('d-m-Y') . '/PoNumberRef_' . str_replace('/', '_', $orderData->po_number_ref) . '/' . 'FP_' . $pdfFileFP->getClientOriginalName(); // Add a timestamp to the original filename
+            $pdfFileFP->storeAs('payment_documents', $originalFilenameFP, 'public');
+            $orderData->doc_faktur_pajak = 'payment_documents/' . $originalFilenameFP;
 
-        $orderData->save();
+            $orderData->save();
+        } else if ($request->hasFile('doc_SI')) {
+            // DOC SI
+            $pdfFileSI = $request->file('doc_SI');
+            $originalFilenameSI = '/' . now()->format('d-m-Y') . '/PoNumberRef_' . str_replace('/', '_', $orderData->po_number_ref) . '/' . 'SI_' . $pdfFileSI->getClientOriginalName(); // Add a timestamp to the original filename
+            $pdfFileSI->storeAs('payment_documents', $originalFilenameSI, 'public');
+            $orderData->doc_SI = 'payment_documents/' . $originalFilenameSI;
+
+            $orderData->save();
+        } else if ($request->file('doc_faktur_pajak')) {
+            // DOC FAKTUR PAJAK
+            $pdfFileFP = $request->file('doc_faktur_pajak');
+            $originalFilenameFP = '/' . now()->format('d-m-Y') . '/PoNumberRef_' . str_replace('/', '_', $orderData->po_number_ref) . '/' . 'FP_' . $pdfFileFP->getClientOriginalName(); // Add a timestamp to the original filename
+            $pdfFileFP->storeAs('payment_documents', $originalFilenameFP, 'public');
+            $orderData->doc_faktur_pajak = 'payment_documents/' . $originalFilenameFP;
+
+            $orderData->save();
+        }
+
         return back()->with('success', trans('theme.notify.info_updated'));
     }
 
