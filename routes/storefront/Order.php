@@ -39,6 +39,23 @@ Route::middleware(['auth:customer', 'xssSanitizer'])->group(function () {
         OrderController::class, 'again'
     ])->name('order.again');
 
+    // Payment
+    Route::get('order/uploadPayment/{order}/{action?}', [
+        OrderController::class, 'showPaymentForm'
+    ])->name('uploadPayment.form');
+
+    Route::post('order/uploadDocPayment/save', [
+        OrderController::class, 'uploadDocPayment'
+    ])->name('order.uploadDocPayment.save');
+    
+    Route::delete('order/uploadDocPayment/remove', [
+        OrderController::class, 'deleteDocSI'
+    ])->name('order.uploadDocPayment.remove');
+
+    Route::delete('order/uploadDocPayment/removeFakturPajak', [
+        OrderController::class, 'deleteDocFakturPajak'
+    ])->name('order.uploadDocPayment.removeFakturPajak');
+
     // Order cancel
     Route::get('order/cancel/{order}/{action?}', [
         OrderCancelController::class, 'showForm'

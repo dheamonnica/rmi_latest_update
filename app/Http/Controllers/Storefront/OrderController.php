@@ -22,6 +22,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
 
 class OrderController extends Controller
 {
@@ -388,5 +389,49 @@ class OrderController extends Controller
             ->increment('download');
 
         return Storage::download($attachment->path, $attachment->name);
+    }
+    public function showPaymentForm($id)
+    {
+        $order = Order::find($id);
+        return view('theme::modals._upload_files_payment_order', compact('order'))->render();
+    }
+
+    public function uploadDocPayment(Request $request)
+    {
+        $orderId = $request->input('id');
+        $orderData = Order::find($orderId);
+
+        // DOC SI
+        $pdfFileSI = $request->file('doc_SI');
+        $originalFilenameSI = now()->format('d-m-Y') . '_PoNumberRef_' . $orderData->po_number_ref . '_' . 'SI_' . $pdfFileSI->getClientOriginalName(); // Add a timestamp to the original filename
+        $pdfFileSI->storeAs('pdfs', $originalFilenameSI, 'public'); // Store with a unique filename
+        $orderData->doc_SI = 'pdfs/' . $originalFilenameSI;
+
+        // DOC FAKTUR PAJAK
+        $pdfFileFP = $request->file('doc_faktur_pajak');
+        $originalFilenameFP = now()->format('d-m-Y') . '_PoNumberRef_' . $orderData->po_number_ref . '_' . 'FP_' . $pdfFileFP->getClientOriginalName(); // Add a timestamp to the original filename
+        $pdfFileFP->storeAs('pdfs', $originalFilenameFP, 'public'); // Store with a unique filename
+        $orderData->doc_faktur_pajak = 'pdfs/' . $originalFilenameFP;
+
+        $orderData->save();
+        return back()->with('success', trans('theme.notify.info_updated'));
+    }
+
+    public function deleteDocSI(Request $request)
+    {
+        $orderId = $request->input('id');
+        $orderData = Order::find($orderId);
+        $orderData->doc_SI = "";
+        $orderData->save();
+        return back()->with('success', trans('theme.notify.info_updated'));
+    }
+
+    public function deleteDocFakturPajak(Request $request)
+    {
+        $orderId = $request->input('id');
+        $orderData = Order::find($orderId);
+        $orderData->doc_faktur_pajak = "";
+        $orderData->save();
+        return back()->with('success', trans('theme.notify.info_updated'));
     }
 }

@@ -42,9 +42,13 @@
                 <span class="label label-danger pl-2 text-uppercase">@lang('theme.disputed')</span>
               @endif
             </h5>
-            <h5>
+            {{-- <h5>
               <span>@lang('theme.product_type'): </span>
               {{ $order->type }}
+            </h5> --}}
+            <h5>
+              <span>@lang('app.form.po_number_ref'): </span>
+              {{ $order->po_number_ref }}
             </h5>
           </td>
 
@@ -63,7 +67,7 @@
             </h5>
 
             <h5>
-              <span>@lang('theme.status')</span>
+              <span>@lang('theme.payment_status')</span>
               {!! $order->orderStatus(true) . ' &nbsp; ' . $order->paymentStatusName() !!}
             </h5>
           </td>
@@ -134,7 +138,7 @@
                     <i class="fa fa-file-pdf-o" aria-hidden="true"></i> @lang('theme.invoice')
                   </a>
 
-                  @if ($order->dispute)
+                  {{-- @if ($order->dispute)
                     <a href="{{ route('dispute.open', $order) }}" class="btn btn-default btn-sm btn-block" data-confirm="@lang('theme.confirm_action.open_a_dispute')">
                       <i class="fa fa-thumbs-o-down" aria-hidden="true"></i>
                       @lang('theme.dispute_detail')
@@ -144,7 +148,11 @@
                       <i class="fa fa-thumbs-o-down" aria-hidden="true"></i>
                       @lang('theme.button.open_dispute')
                     </a>
-                  @endif
+                  @endif --}}
+
+                  <div class="">
+                    <a href="{{ route('uploadPayment.form', ['order' => $order, 'action' => 'payment_upload_form']) }}" class="modalAction btn btn-default btn-sm btn-block my-1"><i class="fas fa-upload"></i> Upload Documents</a>
+                  </div>
 
                   @if ($order->canBeCanceled())
                     {!! Form::model($order, ['method' => 'PUT', 'route' => ['order.cancel', $order]]) !!}
