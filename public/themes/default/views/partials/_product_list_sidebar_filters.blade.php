@@ -42,7 +42,7 @@
   @endif
 
   {{-- Rating --}}
-  @unless (Request::is('search*'))
+  {{-- @unless (Request::is('search*'))
     <div class="category-filters-section">
       <h3>
         {{ trans('theme.rating') }}
@@ -76,10 +76,10 @@
         @endfor
       </ul>
     </div>
-  @endunless
+  @endunless --}}
 
   {{-- Price --}}
-  @php
+  {{-- @php
     $priceRange = $priceRange ?? \App\Helpers\ListHelper::get_price_ranges_from_linstings($products);
   @endphp
   @if ($priceRange['max'] - $priceRange['min'] > 0)
@@ -111,7 +111,7 @@
       </ul>
       <input type="text" id="price-slider" />
     </div>
-  @endif
+  @endif --}}
 
   {{-- Attribute --}}
   @if (isset($category->attrsList))

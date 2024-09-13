@@ -1,4 +1,4 @@
-<footer>
+{{-- <footer>
   <div class="footer">
     <div class="container">
       <div class="footer-inner">
@@ -205,4 +205,4 @@
 </footer>
 
 <!-- COPYRIGHT AREA -->
-@include('theme::nav.copyright')
+@include('theme::nav.copyright') --}}

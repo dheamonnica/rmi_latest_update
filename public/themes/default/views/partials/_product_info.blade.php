@@ -126,4 +126,4 @@
   </div><!-- /.row -->
 </div><!-- /.product-info -->
 
-@include('theme::partials._btn_shares')
+{{-- @include('theme::partials._btn_shares') --}}

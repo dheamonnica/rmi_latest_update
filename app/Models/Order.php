@@ -151,6 +151,8 @@ class Order extends BaseModel
         'created_by',
         'partial_status_id',
         'due_date_payment',
+        'doc_SI',
+        'doc_faktur_pajak',
     ];
 
     /**

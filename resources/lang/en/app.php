@@ -1249,6 +1249,8 @@ return [
         'sla_payment' => 'SLA Payment',
         'sla_gudang' => 'SLA Gudang',
         'all_payment_status' => 'All Payment Status',
+        'upload_document_SI' => 'Upload Document SI',
+        'upload_document_faktur_pajak' => 'Upload Document Faktur Pajak',
 
         // manufacture
         'manufacture_pic_name' => 'Manufacture PIC Name',
