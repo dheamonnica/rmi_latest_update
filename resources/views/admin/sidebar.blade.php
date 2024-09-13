@@ -164,15 +164,17 @@
                                     {{ trans('nav.orders') }}
                                 </a>
                             </li>
-                        @endcan
-                        @can('index', \App\Models\Order::class)
                             <li class="{{ Request::is('admin/order/order-report') ? 'active' : '' }}">
                                 <a href="{{ url('admin/order/order-report') }}">
                                     Order Report
                                 </a>
                             </li>
+                            <li class="{{ Request::is('admin/order/order-payment-document') ? 'active' : '' }}">
+                                <a href="{{ url('admin/order/order-payment-document') }}">
+                                    Payment Document
+                                </a>
+                            </li>
                         @endcan
-
                     </ul>
                 </li>
             @endif

@@ -1366,4 +1366,14 @@ class Order extends BaseModel
 
         return DB::select(DB::raw($query));
     }
+
+    public function getCustomer(): BelongsTo
+    {
+        return $this->belongsTo(Customer::class, 'customer_id');
+    }
+
+    public function getWarehouse(): BelongsTo
+    {
+        return $this->belongsTo(Shop::class, 'shop_id');
+    }
 }

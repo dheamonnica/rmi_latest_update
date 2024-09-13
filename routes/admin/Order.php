@@ -72,7 +72,20 @@ Route::post('{order}/deliveryboy/assign', [
   OrderController::class, 'assignDeliveryBoy'
 ])->name('deliveryboy.assign');
 
-Route::resource('order', OrderController::class)->except('update');
 Route::get('order-report', [
   OrderController::class, 'exportIndex'
 ])->name('order.exportIndex');
+
+Route::get('order-payment-document', [
+  OrderController::class, 'paymentDocument'
+])->name('order.paymentDocument');
+
+Route::get('/getOrderPaymentDocReport',[OrderController::class, 'getOrderPaymentDocReport'])->name('getOrderPaymentDocReport')->middleware('ajax');
+
+Route::get('order-payment-document-edit/{order}', [
+  OrderController::class, 'orderPaymentEdit'
+])->name('order.orderPaymentEdit');
+
+Route::put('updateDocPayment/{order}', [OrderController::class, 'updateOrderPayment'])->name('order.updateDocPayment');
+
+Route::resource('order', OrderController::class)->except('update');
