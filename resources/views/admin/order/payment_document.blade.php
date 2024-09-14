@@ -8,7 +8,7 @@
     <div class="box">
         <div class="box-header with-border">
             <div class="pull-left">
-                <h1 class="box-title mr-5 mt-2">{{ trans('app.orders') }} PAYMENT DOCUMENt</h1>
+                <h1 class="box-title mr-5 mt-2">{{ trans('app.orders') }} PAYMENT DOCUMENT</h1>
             </div>
             <div class="pull-left">
                 <select id="merchantOrderPaymentDocReportFilter" class="btn btn-sm btn-default">
