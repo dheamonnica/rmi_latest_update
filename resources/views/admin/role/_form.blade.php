@@ -21,7 +21,7 @@
         <i class="fa fa-question-circle" data-toggle="tooltip" data-placement="bottom" title="{{ $special_role ? trans('help.cant_edit_special_role') : trans('help.role_type') }}">
         </i>
         {{ Form::hidden('public', null) }}
-        {!! Form::select('public', ['0' => trans('app.platform'), '1' => trans('app.merchant')], null, ['id' => $special_role ? '' : 'user-role-status', 'class' => 'form-control select2-normal', 'placeholder' => trans('app.placeholder.status'), $special_role ? 'disabled' : 'required']) !!}
+        {!! Form::select('public', ['0' => 'Management', '1' => 'Operational'], null, ['id' => $special_role ? '' : 'user-role-status', 'class' => 'form-control select2-normal', 'placeholder' => trans('app.placeholder.status'), $special_role ? 'disabled' : 'required']) !!}
         <div class="help-block with-errors"></div>
       </div>
     </div>

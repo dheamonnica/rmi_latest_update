@@ -16,9 +16,9 @@
 @section('content')
     @php
         $order_statuses = \App\Helpers\ListHelper::order_statuses();
-        $payment_statuses = \App\Helpers\ListHelper::payment_statuses()
+        $payment_statuses = \App\Helpers\ListHelper::payment_statuses();
     @endphp
-    <div class="box">  
+    <div class="box">
         <div class="box-header with-border">
             <div class="pull-left">
                 <h1 class="box-title mr-5 mt-2">{{ trans('app.orders') }}</h1>
@@ -40,34 +40,47 @@
                 </select>
             </div>
             <div class="pull-right">
-              <div class="btn-group">
-                <button type="button" class="btn btn-sm btn-default dropdown-toggle"
-                    data-toggle="dropdown"aria-expanded="false">
-                    {{ trans('app.assign_payment_status') }}
-                    <span class="sr-only">{{ trans('app.toggle_dropdown') }}</span>
-                    <span class="caret"></span>
-                </button>
-                <ul class="dropdown-menu" role="menu">
-                    <li><a href="javascript:void(0)" data-link="{{ route('admin.order.order.assignPaymentStatus', 'paid') }}" class="massAction" data-doafter="reload">{{ trans('app.mark_as_paid') }}</a></li>
-                    <li><a href="javascript:void(0)" data-link="{{ route('admin.order.order.assignPaymentStatus', 'unpaid') }}" class="massAction" data-doafter="reload">{{ trans('app.mark_as_unpaid') }}</a></li>
-                    <li><a href="javascript:void(0)" data-link="{{ route('admin.order.order.assignPaymentStatus', 'refunded') }}" class="massAction" data-doafter="reload">{{ trans('app.mark_as_refunded') }}</a></li>
-                </ul>
-              </div>
-              <div class="btn-group">
-                <button type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                    {{ trans('app.assign_order_status') }}
-                    <span class="sr-only">{{ trans('app.toggle_dropdown') }}</span>
-                    <span class="caret"></span>
-                </button>
-                <ul class="dropdown-menu" role="menu">
-                    @foreach ($order_statuses as $order_status_number => $order_status)
-                        <li><a href="javascript:void(0)" data-link="{{ route('admin.order.order.assignOrderStatus', $order_status_number) }}" class="massAction" data-doafter="reload">{{ $order_status }}</a></li>
-                    @endforeach
-                    <li><a href="javascript:void(0)" data-link="{{ route('admin.order.order.downloadSelected') }}" class="massAction" data-doafter="reload">{{ trans('app.download') }} {{ trans('app.invoices') }}</a></li>
-                </ul>
-              </div>
-              <a href="javascript:void(0)" data-link="{{ route('admin.order.order.searchCustomer') }}"
-              class="ajax-modal-btn btn btn-new btn-lg btn-flat ml-5">{{ trans('app.add_order') }}</a>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-sm btn-default dropdown-toggle"
+                        data-toggle="dropdown"aria-expanded="false">
+                        {{ trans('app.assign_payment_status') }}
+                        <span class="sr-only">{{ trans('app.toggle_dropdown') }}</span>
+                        <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a href="javascript:void(0)"
+                                data-link="{{ route('admin.order.order.assignPaymentStatus', 'paid') }}" class="massAction"
+                                data-doafter="reload">{{ trans('app.mark_as_paid') }}</a></li>
+                        <li><a href="javascript:void(0)"
+                                data-link="{{ route('admin.order.order.assignPaymentStatus', 'unpaid') }}"
+                                class="massAction" data-doafter="reload">{{ trans('app.mark_as_unpaid') }}</a></li>
+                        <li><a href="javascript:void(0)"
+                                data-link="{{ route('admin.order.order.assignPaymentStatus', 'refunded') }}"
+                                class="massAction" data-doafter="reload">{{ trans('app.mark_as_refunded') }}</a></li>
+                    </ul>
+                </div>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown"
+                        aria-expanded="false">
+                        {{ trans('app.assign_order_status') }}
+                        <span class="sr-only">{{ trans('app.toggle_dropdown') }}</span>
+                        <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu">
+                        @foreach ($order_statuses as $order_status_number => $order_status)
+                            <li><a href="javascript:void(0)"
+                                    data-link="{{ route('admin.order.order.assignOrderStatus', $order_status_number) }}"
+                                    class="massAction" data-doafter="reload">{{ $order_status }}</a></li>
+                        @endforeach
+                        <li><a href="javascript:void(0)" data-link="{{ route('admin.order.order.downloadSelected') }}"
+                                class="massAction" data-doafter="reload">{{ trans('app.download') }}
+                                {{ trans('app.invoices') }}</a></li>
+                    </ul>
+                </div>
+                @if (Auth::user()->isFromMerchant())
+                    <a href="javascript:void(0)" data-link="{{ route('admin.order.order.searchCustomer') }}"
+                        class="ajax-modal-btn btn btn-new btn-lg btn-flat ml-5">{{ trans('app.add_order') }}</a>
+                @endif
             </div>
         </div> {{-- Box header --}}
         <div class="">
@@ -102,7 +115,13 @@
             <h3 class="box-title">
                 @can('massDestroy', \App\Models\Order::class)
                     {!! Form::open(['route' => ['admin.order.order.emptyTrash'], 'method' => 'delete', 'class' => 'data-form']) !!}
-                    {!! Form::button('<i class="fa fa-trash-o"></i>', [ 'type' => 'submit','class' => 'confirm btn btn-default btn-flat ajax-silent','title' => trans('help.empty_trash'), 'data-toggle' => 'tooltip','data-placement' => 'right',]) !!}
+                    {!! Form::button('<i class="fa fa-trash-o"></i>', [
+                        'type' => 'submit',
+                        'class' => 'confirm btn btn-default btn-flat ajax-silent',
+                        'title' => trans('help.empty_trash'),
+                        'data-toggle' => 'tooltip',
+                        'data-placement' => 'right',
+                    ]) !!}
                     {!! Form::close() !!}
                     {{ trans('app.archived_orders') }}
                 @else
@@ -146,12 +165,24 @@
                             <td>{{ $archive->deleted_at->diffForHumans() }}</td>
                             <td class="row-options">
                                 @can('archive', $archive)
-                                    <a href="{{ route('admin.order.order.restore', $archive->id) }}"><i data-toggle="tooltip" data-placement="top" title="{{ trans('app.restore') }}" class="fa fa-database"></i></a>
+                                    <a href="{{ route('admin.order.order.restore', $archive->id) }}"><i data-toggle="tooltip"
+                                            data-placement="top" title="{{ trans('app.restore') }}"
+                                            class="fa fa-database"></i></a>
                                 @endcan
 
                                 @can('delete', $archive)
-                                    {!! Form::open(['route' => ['admin.order.order.destroy', $archive->id], 'method' => 'delete','class' => 'data-form',]) !!}
-                                    {!! Form::button('<i class="glyphicon glyphicon-trash"></i>', ['type' => 'submit', 'class' => 'confirm ajax-silent', 'title' => trans('app.delete_permanently'), 'data-toggle' => 'tooltip', 'data-placement' => 'top', ]) !!}
+                                    {!! Form::open([
+                                        'route' => ['admin.order.order.destroy', $archive->id],
+                                        'method' => 'delete',
+                                        'class' => 'data-form',
+                                    ]) !!}
+                                    {!! Form::button('<i class="glyphicon glyphicon-trash"></i>', [
+                                        'type' => 'submit',
+                                        'class' => 'confirm ajax-silent',
+                                        'title' => trans('app.delete_permanently'),
+                                        'data-toggle' => 'tooltip',
+                                        'data-placement' => 'top',
+                                    ]) !!}
                                     {!! Form::close() !!}
                                 @endcan
                             </td>

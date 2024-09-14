@@ -139,13 +139,13 @@
                             @endcan
                         @endif
 
-                        @can('index', \App\Models\Supplier::class)
+                        {{-- @can('index', \App\Models\Supplier::class)
                             <li class="{{ Request::is('admin/stock/supplier*') ? 'active' : '' }}">
                                 <a href="{{ url('admin/stock/supplier') }}">
                                     {{ trans('nav.suppliers') }}
                                 </a>
                             </li>
-                        @endcan
+                        @endcan --}}
                     </ul>
                 </li>
             @endif
@@ -552,7 +552,7 @@
                     </ul>
                 </li>
 
-                <li
+                {{-- <li
                     class="treeview {{ Request::is('admin/promotions*') || Request::is('admin/flashdeal*') ? 'active' : '' }}">
                     <a href="javascript:void(0)">
                         <i class="fa fa-bullhorn"></i>
@@ -587,7 +587,7 @@
                             </li>
                         @endif
                     </ul>
-                </li>
+                </li> --}}
             @endif
 
             {{-- Except vendor --}}
