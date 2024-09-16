@@ -1161,13 +1161,13 @@ class Order extends BaseModel
         switch ($this->order_status_id) {
             // case static::STATUS_WAITING_FOR_PAYMENT:
             // case static::STATUS_PAYMENT_ERROR:
-            // case static::STATUS_CANCELED:
-            // case static::STATUS_RETURNED:
-            //     return '<span class="label label-danger">' . $order_status . '</span>';
+            case static::STATUS_CANCELED:
+            case static::STATUS_RETURNED:
+                return '<span class="label label-outline">' . $order_status . '</span>';
 
             // case static::STATUS_CONFIRMED:
-            // case static::STATUS_AWAITING_DELIVERY:
-            //     return '<span class="label label-outline">' . $order_status . '</span>';
+            case static::STATUS_AWAITING_DELIVERY:
+                return '<span class="label label-outline">' . $order_status . '</span>';
 
             // case static::STATUS_FULFILLED:
             //     return '<span class="label label-info">' . $order_status . '</span>';
@@ -1178,8 +1178,11 @@ class Order extends BaseModel
             case static::STATUS_CONFIRMED:
                 return '<span class="label label-danger">' . $order_status . '</span>';
             case static::STATUS_PACKED:
+                return '<span class="label label-outline">' . $order_status . '</span>';
             case static::STATUS_WAITING_FOR_PAYMENT:
+                return '<span class="label label-outline">' . $order_status . '</span>';
             case static::STATUS_PAYMENT_ERROR:
+                return '<span class="label label-outline">' . $order_status . '</span>';
             case static::STATUS_RETURNED:
                 return '<span class="label label-outline">' . $order_status . '</span>';
             case static::STATUS_FULFILLED:

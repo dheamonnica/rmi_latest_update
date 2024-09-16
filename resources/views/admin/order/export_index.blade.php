@@ -39,20 +39,45 @@
                 </select>
 
                 <select id="statusOrderReportFilter" class="btn btn-sm btn-default">
-                    <option value="">{{ trans('app.all_orders') }}</option>
+                    <option value="" selected>Select Status</option>
                     @foreach ($order_statuses as $order_status_number => $order_status)
                         <option value={{ $order_status }}>{{ $order_status }}</option>
                     @endforeach
                 </select>
                 <select id="paymentStatusOrderReportFilter" class="btn btn-sm btn-default">
-                    <option value="">{{ trans('app.form.all_payment_status') }}</option>
+                    <option value="" selected>Select Payment Status</option>
                     @foreach ($payment_statuses as $payment_status_number => $payment_status)
                         <option value={{ $payment_status }}>{{ $payment_status }}</option>
                     @endforeach
                 </select>
+            </div>
+            <!-- Date Filter -->
+            <div class="pull-right py-3" style="width: 100%">
+                <div class="row">
+                    <div class="col-md-3 nopadding-right">
+                        {!! Form::text('startDateOrderReportFilter', null, [
+                            'class' => 'form-control datepicker',
+                            'placeholder' => trans('app.form.from'),
+                            'id' => 'startDateOrderReportFilter',
+                        ]) !!}
+                    </div>
+                    <div class="col-md-3 nopadding-left">
+                        {!! Form::text('endDateOrderReportFilter', null, [
+                            'class' => 'form-control datepicker',
+                            'placeholder' => trans('app.form.to'),
+                            'id' => 'endDateOrderReportFilter',
+                        ]) !!}
+                    </div>
+                    <div class="col-md-3 nopadding-left py-1">
+                        <button id="dateRangeOrderReportFilterButton">
+                            <i class="fa fa-filter"></i>
+                        </button>
+                    </div>
+                </div>
 
             </div>
-        </div> {{-- Box header --}}
+        </div>
+
         <div class="">
             <table class="table table-hover" id="all-order-table-full">
                 <thead>
