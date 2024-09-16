@@ -112,11 +112,13 @@ class Customer extends CustomerWallet
         'hospital_pic_name',
         'hospital_pic_phone',
         'hospital_pic_email',
+        'hospital_pic_position',
         'hospital_group',
         'title',
         'shop_id',
         'merchant_id',
         'hospital_tax_name',
+        'hospital_tax_number',
     ];
 
     /**
