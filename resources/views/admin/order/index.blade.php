@@ -24,20 +24,18 @@
                 <h1 class="box-title mr-5 mt-2">{{ trans('app.orders') }}</h1>
             </div>
             <div class="pull-left">
-                <select id="filter-all-order-table-order-status" class="btn btn-sm btn-default">
+                {{-- <select id="filter-all-order-table-order-status" class="btn btn-sm btn-default">
                     <option value="0" selected>{{ 'Filter by order status' }}</option>
-                    <option value="0">{{ trans('app.all_orders') }}</option>
                     @foreach ($order_statuses as $order_status_number => $order_status)
                         <option value={{ $order_status_number }}>{{ $order_status }}</option>
                     @endforeach
                 </select>
                 <select id="filter-all-order-table-payment-status" class="btn btn-sm btn-default">
                     <option value="0" selected>{{ trans('app.placeholder.filter_by_status') }}</option>
-                    <option value="0">{{ trans('app.all_orders') }}</option>
                     @foreach ($payment_statuses as $payment_status_number => $payment_status)
                         <option value={{ $payment_status_number }}>{{ $payment_status }}</option>
                     @endforeach
-                </select>
+                </select> --}}
             </div>
             <div class="pull-right">
                 <div class="btn-group">
@@ -54,9 +52,9 @@
                         <li><a href="javascript:void(0)"
                                 data-link="{{ route('admin.order.order.assignPaymentStatus', 'unpaid') }}"
                                 class="massAction" data-doafter="reload">{{ trans('app.mark_as_unpaid') }}</a></li>
-                        <li><a href="javascript:void(0)"
+                        {{-- <li><a href="javascript:void(0)"
                                 data-link="{{ route('admin.order.order.assignPaymentStatus', 'refunded') }}"
-                                class="massAction" data-doafter="reload">{{ trans('app.mark_as_refunded') }}</a></li>
+                                class="massAction" data-doafter="reload">{{ trans('app.mark_as_refunded') }}</a></li> --}}
                     </ul>
                 </div>
                 <div class="btn-group">
