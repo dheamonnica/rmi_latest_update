@@ -1254,6 +1254,8 @@ return [
         'doc_faktur_pajak' => 'Document Faktur Pajak',
         'upload_document_faktur_terbayar' => 'Upload Document Faktur Terbayar',
         'doc_faktur_pajak_terbayar' => 'Document Faktur Pajak Terbayar',
+        'from' => 'From',
+        'to' => 'To',
 
         // manufacture
         'manufacture_pic_name' => 'Manufacture PIC Name',

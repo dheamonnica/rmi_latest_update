@@ -708,6 +708,20 @@
             tableOrderReport.column('payment_status:name').search(selectedPaymentStatus).draw();
         }
 
+        function filterByDateRangeOrderTable() {
+            var startDate = $('#startDateOrderReportFilter').val();
+            var endDate = $('#endDateOrderReportFilter').val();
+            console.log(startDate, endDate);
+
+            // If both dates are selected, filter by range
+            if (startDate && endDate) {
+                tableOrderReport.column('created_at:name')
+                    .search(startDate + '|' + endDate, true, false)
+                    .draw();
+            }
+        }
+
+        $('#dateRangeOrderReportFilterButton').on('click', filterByDateRangeOrderTable);
         $('#merchantOrderReportFilter').on('change', filterByWarehouseOrderTable);
         $('#customerOrderReportFilter').on('change', filterByCustomerOrderTable);
         $('#statusOrderReportFilter').on('change', filterByStatusOrderTable);
