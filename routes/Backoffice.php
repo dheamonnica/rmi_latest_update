@@ -81,6 +81,8 @@ Route::middleware('auth')->name('admin.')->prefix('admin')->group(function () {
         include 'admin/CRM.php';
         // Visit Plan
         include 'admin/Visit.php';
+        // PIC
+        include 'admin/PIC.php';
 
         Route::get('secretLogin/{user}', [
             Admin\DashboardController::class,
