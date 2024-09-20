@@ -61,31 +61,38 @@
 </div>
 
 <div class="row">
-  <div class="col-md-4 nopadding-right">
+  <div class="col-md-3 nopadding-right">
     <div class="form-group">
       {!! Form::label('hospital_pic_name', trans('app.form.hospital_pic_name') . '*') !!}
       {!! Form::text('hospital_pic_name', null, ['class' => 'form-control', 'placeholder' => trans('app.form.hospital_pic_name'), 'required']) !!}
       <div class="help-block with-errors"></div>
     </div>
   </div>
-  <div class="col-md-4 nopadding-left">
+  <div class="col-md-3 nopadding-left nopadding-right">
     <div class="form-group">
       {!! Form::label('hospital_pic_phone', trans('app.form.hospital_pic_phone') . '*') !!}
       {!! Form::text('hospital_pic_phone', null, ['class' => 'form-control', 'placeholder' => trans('app.form.hospital_pic_phone'), 'required']) !!}
       <div class="help-block with-errors"></div>
     </div>
   </div>
-  <div class="col-md-4 nopadding-left">
+  <div class="col-md-3 nopadding-left nopadding-right">
     <div class="form-group">
       {!! Form::label('hospital_pic_email', trans('app.form.hospital_pic_email') . '*') !!}
       {!! Form::email('hospital_pic_email', null, ['class' => 'form-control', 'placeholder' => trans('app.form.hospital_pic_email'), 'required']) !!}
       <div class="help-block with-errors"></div>
     </div>
   </div>
+  <div class="col-md-3 nopadding-left">
+    <div class="form-group">
+      {!! Form::label('hospital_pic_position', trans('app.form.hospital_pic_position') . '*') !!}
+      {!! Form::text('hospital_pic_position', null, ['class' => 'form-control', 'placeholder' => trans('app.form.hospital_pic_position'), 'required']) !!}
+      <div class="help-block with-errors"></div>
+    </div>
+  </div>
 </div>
 
 <div class="row">
-  <div class="col-md-6 nopadding-right">
+  <div class="col-md-4 nopadding-right">
     <div class="form-group">
       {!! Form::label('hospital_tax_name', trans('app.form.hospital_tax_name') . '*') !!}
       {!! Form::text('hospital_tax_name', null, ['class' => 'form-control', 'placeholder' => trans('app.form.hospital_tax_name'), 'required']) !!}
@@ -93,7 +100,15 @@
     </div>
   </div>
 
-  <div class="col-md-6 nopadding-left">
+  <div class="col-md-4 nopadding-right nopadding-left">
+    <div class="form-group">
+      {!! Form::label('hospital_tax_number', trans('app.form.hospital_tax_number') . '*') !!}
+      {!! Form::text('hospital_tax_number', null, ['class' => 'form-control', 'placeholder' => trans('app.form.hospital_tax_number'), 'required']) !!}
+      <div class="help-block with-errors"></div>
+    </div>
+  </div>
+
+  <div class="col-md-4 nopadding-left">
     <div class="form-group">
       {!! Form::label('merchant_id', trans('app.form.coverage_area') . '*') !!}
       {!! Form::select('merchant_id', $merchants, null, ['id' => 'coverage_area', 'class' => 'form-control flat', 'placeholder' => trans('app.form.coverage_area') . '*', 'required']) !!}

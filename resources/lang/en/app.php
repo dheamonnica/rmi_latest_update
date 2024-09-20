@@ -67,6 +67,7 @@ return [
         'visit' => 'Visit',
         'segment' => 'Segment',
         'requirement' => 'Requirement',
+        'pic' => 'PIC',
     ],
 
     // Application Levels
@@ -1196,8 +1197,12 @@ return [
         'hospital_pic_name' => 'Hospital PIC Name',
         'hospital_pic_phone' => 'Hospital PIC Phone',
         'hospital_pic_email' => 'Hospital PIC Email',
+        'hospital_pic_position' => 'Hospital PIC Position',
         'hospital_tax_name' => 'Hospital Tax Name',
+        'hospital_tax_number' => 'Hospital Tax Number',
         'coverage_area' => 'Coverage Area',
+        'add_pic' => 'Add PIC',
+        'position_' => 'Position',
 
         // product
         'licence_number' => 'Licence Number',
