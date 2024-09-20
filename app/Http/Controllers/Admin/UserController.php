@@ -13,6 +13,7 @@ use App\Http\Requests\Validations\UpdateUserRequest;
 use App\Repositories\User\UserRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Payroll;
 
 class UserController extends Controller
 {
@@ -55,7 +56,15 @@ class UserController extends Controller
     {
         // Check if the merchant can add more user in the team
         if (Auth::user()->isFromPlatform() || Auth::user()->shop->canAddMoreUser()) {
-            return view('admin.user._create');
+            $user_position = Payroll::get()
+            ->pluck('position', 'position')
+            ->toArray();
+
+            $user_level = Payroll::get()
+            ->pluck('level', 'level')
+            ->toArray();
+
+            return view('admin.user._create', compact('user_position', 'user_level'));
         }
 
         return view('admin.partials._max_user_limit_notice');
@@ -98,8 +107,15 @@ class UserController extends Controller
     public function edit($id)
     {
         $user = $this->user->find($id);
+        $user_position = Payroll::get()
+            ->pluck('position', 'position')
+            ->toArray();
 
-        return view('admin.user._edit', compact('user'));
+        $user_level = Payroll::get()
+        ->pluck('level', 'level')
+        ->toArray();
+
+        return view('admin.user._edit', compact('user', 'user_position', 'user_level'));
     }
 
     /**

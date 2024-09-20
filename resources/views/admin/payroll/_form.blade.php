@@ -3,7 +3,7 @@
         <div class="form-group">
             {!! Form::label('position', trans('app.form.position_'), ['class' => 'with-help']) !!}
             {!! Form::text('position', null, [
-                'placeholder' => trans('app.form.position'),
+                'placeholder' => trans('app.form.position_'),
                 'class' => 'form-control',
                 'required',
             ]) !!}
