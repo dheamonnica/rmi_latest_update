@@ -470,6 +470,89 @@
         // $('#filter-all-order-table-order-status, #filter-all-order-table-payment-status').on('change',
         //     handleFilterChange);
 
+        // PAYROLL TABLE
+        $('#payroll-tables').DataTable($.extend({}, dataTableOptions, {
+            "ajax": "{{ route('admin.admin.payroll.getPayrolls') }}",
+            "columns": [{
+                    'data': 'checkbox',
+                    'name': 'checkbox',
+                    'orderable': false,
+                    'searchable': false,
+                    'exportable': false,
+                    'printable': false
+                },
+                {
+                    'data': 'position',
+                    'name': 'position'
+                },
+                {
+                    'data': 'grade',
+                    'name': 'grade'
+                },
+                {
+                    'data': 'sub_grade',
+                    'name': 'sub_grade'
+                },
+                {
+                    'data': 'level',
+                    'name': 'level'
+                },
+                {
+                    'data': 'take_home_pay',
+                    'name': 'take_home_pay'
+                },
+                {
+                    'data': 'basic_salary',
+                    'name': 'basic_salary'
+                },
+                {
+                    'data': 'operational_allowance',
+                    'name': 'operational_allowance'
+                },
+                {
+                    'data': 'position_allowance',
+                    'name': 'position_allowance'
+                },
+                {
+                    'data': 'child_education_allowance',
+                    'name': 'child_education_allowance'
+                },
+                {
+                    'data': 'transportation',
+                    'name': 'transportation'
+                },
+                {
+                    'data': 'quota',
+                    'name': 'quota'
+                },
+                {
+                    'data': 'created_by',
+                    'name': 'created_by'
+                },
+                {
+                    'data': 'created_at',
+                    'name': 'created_at'
+                },
+                {
+                    'data': 'updated_at',
+                    'name': 'updated_at'
+                },
+                {
+                    'data': 'updated_by',
+                    'name': 'updated_by'
+                },
+                {
+                    'data': 'option',
+                    'name': 'option',
+                    'orderable': false,
+                    'searchable': false,
+                    'exportable': false,
+                    'printable': false
+                }
+            ]
+        }));
+        // END PAYROLL TABLE
+
         // ORDER TABLE
         $('#all-order-table').DataTable($.extend({}, dataTableOptions, {
             "ajax": "{{ route('admin.order.bulkorder_process', ['paymentStatus' => '0', 'orderStatus' => '0']) }}",

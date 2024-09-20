@@ -218,6 +218,15 @@
                             </li>
                         @endcan
 
+                        @if (Auth::user()->isAdmin())
+                            <li
+                                class="{{ Request::is('admin/payroll*') ? 'active' : '' }}">
+                                <a href="{{ url('admin/payroll') }}">
+                                    {{ trans('nav.payroll') }}
+                                </a>
+                            </li>
+                        @endif
+
                         @if (
                             (Auth::user()->isAdmin() || Gate::allows('index', \Incevio\Package\Inspector\Models\InspectorModel::class)) &&
                                 is_incevio_package_loaded('inspector'))
