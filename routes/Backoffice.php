@@ -83,6 +83,8 @@ Route::middleware('auth')->name('admin.')->prefix('admin')->group(function () {
         include 'admin/Visit.php';
         // PIC
         include 'admin/PIC.php';
+        // Payroll
+        include 'admin/Payroll.php';
 
         Route::get('secretLogin/{user}', [
             Admin\DashboardController::class,

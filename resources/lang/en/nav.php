@@ -18,6 +18,7 @@ return [
     'announcements' => 'announcements',
     'users' => 'Users',
     'customers' => 'Customers',
+    'payroll' => 'Payroll',
     'currencies' => 'Currencies',
     'shops' => 'Shops',
     'shipping_zones' => 'Shipping zones',

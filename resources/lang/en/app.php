@@ -68,6 +68,7 @@ return [
         'segment' => 'Segment',
         'requirement' => 'Requirement',
         'pic' => 'PIC',
+        'payroll' => 'Payroll',
     ],
 
     // Application Levels
@@ -1346,6 +1347,19 @@ return [
         'bank_account' => 'Bank Account',
         'bank_account_type' => 'Bank Type',
         'bank_account_name' => 'Bank Account Name',
+
+        // payroll
+        'grade' => 'Grade',
+        'sub_grade' => 'Sub Grade',
+        'level' => 'Level',
+        'take_home_pay' => 'Take Home Pay',
+        'basic_salary' => 'Basic Salary',
+        'operational_allowance' => 'Operational Allowance',
+        'position_allowance' => 'Position Allowance',
+        'child_education_allowance' => 'Child Education Allowance',
+        'transportation' => 'Transportation',
+        'quota' => 'Quota',
+        'create_payroll' => 'Create Payroll',
     ],
 
     'placeholder' => [
