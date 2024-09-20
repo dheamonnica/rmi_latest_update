@@ -119,6 +119,8 @@ class User extends Authenticatable
         'pic_name',
         'warehouse_name',
         'phone',
+        'position',
+        'level'
     ];
 
     /**

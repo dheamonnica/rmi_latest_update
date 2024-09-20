@@ -48,14 +48,32 @@
 @endunless
 
 <div class="row">
-  <div class="col-md-4 nopadding-right">
+  <div class="col-md-3 nopadding-right">
     <div class="form-group">
       {!! Form::label('role_id', trans('app.form.role') . '*') !!}
       {!! Form::select('role_id', $roles, null, ['class' => 'form-control select2-normal', 'placeholder' => trans('app.placeholder.select'), 'required']) !!}
       <div class="help-block with-errors"></div>
     </div>
   </div>
-  <div class="col-md-4 nopadding">
+  <div class="col-md-2 nopadding-left nopadding-right">
+    <div class="form-group">
+        {!! Form::label('position', trans('app.form.position_')  . '*') !!}
+        {!! Form::select('position', ['' => 'Select'] + $user_position, null, [
+            'class' => 'form-control select2-normal',
+            'required',
+        ]) !!}
+    </div>
+  </div>
+  <div class="col-md-2 nopadding-left nopadding-right">
+    <div class="form-group">
+        {!! Form::label('level', trans('app.form.level')  . '*') !!}
+        {!! Form::select('level', ['' => 'Select'] + $user_level, null, [
+            'class' => 'form-control select2-normal',
+            'required',
+        ]) !!}
+    </div>
+  </div>
+  <div class="col-md-3 nopadding-left nopadding-right">
     <div class="form-group">
       {!! Form::label('dob', trans('app.form.dob')) !!}
       <div class="input-group">
@@ -64,7 +82,7 @@
       </div>
     </div>
   </div>
-  <div class="col-md-4 nopadding-left">
+  <div class="col-md-2 nopadding-left">
     <div class="form-group">
       {!! Form::label('sex', trans('app.form.sex')) !!}
       {!! Form::select('sex', ['app.male' => trans('app.male'), 'app.female' => trans('app.female'), 'app.other' => trans('app.other')], null, ['class' => 'form-control select2-normal', 'placeholder' => trans('app.placeholder.sex')]) !!}
