@@ -38,7 +38,9 @@
             <th>{{ trans('app.email') }}</th>
             <th>{{ trans('app.role') }}</th>
             <th>{{ trans('app.status') }}</th>
-            <th>&nbsp;</th>
+            <th>{{ trans('app.form.position_') }}</th>
+            <th>{{ trans('app.form.level') }}</th>
+            <th>{{ trans('app.option') }}</th>
           </tr>
         </thead>
         <tbody id="massSelectArea">
@@ -57,6 +59,8 @@
                 <span class="label label-outline">{{ optional($user->role)->name }}</span>
               </td>
               <td>{{ $user->active ? trans('app.active') : trans('app.inactive') }}</td>
+              <td>{{ $user->position }}</td>
+              <td>{{ $user->level }}</td>
               <td class="row-options">
                 @can('view', $user)
                   <a href="javascript:void(0)" data-link="{{ route('admin.admin.user.show', $user->id) }}" class="ajax-modal-btn"><i data-toggle="tooltip" data-placement="top" title="{{ trans('app.profile') }}" class="fa fa-user-circle-o"></i></a>&nbsp;
@@ -77,7 +81,7 @@
                     <a href="javascript:void(0)" data-link="{{ route('address.create', ['user', $user->id]) }}" class="ajax-modal-btn"><i data-toggle="tooltip" data-placement="top" title="{{ trans('app.add_address') }}" class="fa fa-plus-square-o"></i></a>&nbsp;
                   @endif
                 @endcan
-
+              
                 @can('delete', $user)
                   {!! Form::open(['route' => ['admin.admin.user.trash', $user->id], 'method' => 'delete', 'class' => 'data-form']) !!}
                   {!! Form::button('<i class="fa fa-trash-o"></i>', ['type' => 'submit', 'class' => 'confirm ajax-silent', 'title' => trans('app.trash'), 'data-toggle' => 'tooltip', 'data-placement' => 'top']) !!}
