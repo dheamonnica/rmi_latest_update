@@ -553,6 +553,129 @@
         }));
         // END PAYROLL TABLE
 
+        // PAYROLL REPORT TABLE
+        $('#payroll-report-tables').DataTable($.extend({}, dataTableOptions, {
+            "ajax": "{{ route('admin.admin.payroll.getReportPayroll') }}",
+            "columns": [{
+                    'data': 'checkbox',
+                    'name': 'checkbox',
+                    'orderable': false,
+                    'searchable': false,
+                    'exportable': false,
+                    'printable': false
+                },
+                {
+                    'data': 'full_name',
+                    'name': 'full_name'
+                },
+                {
+                    'data': 'position',
+                    'name': 'position'
+                },
+                {
+                    'data': 'organization',
+                    'name': 'organization'
+                },
+                {
+                    'data': 'basic_sallary',
+                    'name': 'basic_sallary'
+                },
+                {
+                    'data': 'position_allowance',
+                    'name': 'position_allowance'
+                },
+                {
+                    'data': 'transportation',
+                    'name': 'transportation'
+                },
+                {
+                    'data': 'operational_allowance',
+                    'name': 'operational_allowance'
+                },
+                {
+                    'data': 'child_education_allowance',
+                    'name': 'child_education_allowance'
+                },
+                {
+                    'data': 'sales_bonus',
+                    'name': 'sales_bonus'
+                },
+                {
+                    'data': 'bonus',
+                    'name': 'bonus'
+                },
+                {
+                    'data': 'overtime',
+                    'name': 'overtime'
+                },
+                {
+                    'data': 'reimburse_e_toll_gasoline',
+                    'name': 'reimburse_e_toll_gasoline'
+                },
+                {
+                    'data': 'medical_reimbursement',
+                    'name': 'medical_reimbursement'
+                },
+                {
+                    'data': 'tax_allowance',
+                    'name': 'tax_allowance'
+                },
+                {
+                    'data': 'total_allowance',
+                    'name': 'total_allowance'
+                },
+                {
+                    'data': 'lateness_deduction',
+                    'name': 'lateness_deduction'
+                },
+                {
+                    'data': 'alpha_deduction',
+                    'name': 'alpha_deduction'
+                },
+                {
+                    'data': 'absence_deduction',
+                    'name': 'absence_deduction'
+                },
+                {
+                    'data': 'loan',
+                    'name': 'loan'
+                },
+                {
+                    'data': 'installment',
+                    'name': 'installment'
+                },
+                {
+                    'data': 'employee_pension_security',
+                    'name': 'employee_pension_security'
+                },
+                {
+                    'data': 'employee_jht',
+                    'name': 'employee_jht'
+                },
+                {
+                    'data': 'pph_21',
+                    'name': 'pph_21'
+                },
+                {
+                    'data': 'total_deduction',
+                    'name': 'total_deduction'
+                },
+                {
+                    'data': 'pph_21_payment',
+                    'name': 'pph_21_payment'
+                },
+                {
+                    'data': 'take_home_pay',
+                    'name': 'take_home_pay'
+                },
+                {
+                    'data': 'telecommunication_allowance',
+                    'name': 'telecommunication_allowance'
+                }
+            ]
+        }));
+        // END PAYROLL REPORT TABLE
+
         // ORDER TABLE
         $('#all-order-table').DataTable($.extend({}, dataTableOptions, {
             "ajax": "{{ route('admin.order.bulkorder_process', ['paymentStatus' => '0', 'orderStatus' => '0']) }}",
