@@ -108,6 +108,134 @@ class PayrollController extends Controller
             ->make(true);
     }
 
+    public function report()
+    {
+        return view('admin.payroll.report');
+    }
+
+    public function getReportPayroll(Request $request)
+    {
+        $payrolls = Payroll::getReportPayroll();
+
+        return Datatables::of($payrolls)
+            ->addColumn('checkbox', function ($payroll) {
+                return '<td><input id="' . $payroll->id . '" type="checkbox" class="massCheck"></td>';
+            })
+            ->addColumn('full_name', function ($payroll) {
+                return $payroll->full_name;
+            })
+            ->addColumn('position', function ($payroll) {
+                return $payroll->position;
+            })
+            ->addColumn('organization', function ($payroll) {
+                return $payroll->organization;
+            })
+            ->addColumn('basic_sallary', function ($payroll) {
+                return number_format($payroll->basic_sallary, 0, '.', '.');
+            })
+            ->addColumn('position_allowance', function ($payroll) {
+                return number_format($payroll->position_allowance, 0, '.', '.');
+            })
+            ->addColumn('transportation', function ($payroll) {
+                return number_format($payroll->transportation, 0, '.', '.');
+            })
+            ->addColumn('operational_allowance', function ($payroll) {
+                return number_format($payroll->operational_allowance, 0, '.', '.');
+            })
+            ->addColumn('child_education_allowance', function ($payroll) {
+                return number_format($payroll->child_education_allowance, 0, '.', '.');
+            })
+            ->addColumn('sales_bonus', function ($payroll) {
+                return number_format($payroll->sales_bonus, 0, '.', '.');
+            })
+            ->addColumn('bonus', function ($payroll) {
+                return number_format($payroll->bonus, 0, '.', '.');
+            })
+            ->addColumn('overtime', function ($payroll) {
+                return number_format($payroll->overtime, 0, '.', '.');
+            })
+            ->addColumn('reimburse_e_toll_gasoline', function ($payroll) {
+                return number_format($payroll->reimburse_e_toll_gasoline, 0, '.', '.');
+            })
+            ->addColumn('medical_reimbursement', function ($payroll) {
+                return number_format($payroll->medical_reimbursement, 0, '.', '.');
+            })
+            ->addColumn('tax_allowance', function ($payroll) {
+                return number_format($payroll->tax_allowance, 0, '.', '.');
+            })
+            ->addColumn('total_allowance', function ($payroll) {
+                return number_format($payroll->total_allowance, 0, '.', '.');
+            })
+            ->addColumn('lateness_deduction', function ($payroll) {
+                return number_format($payroll->lateness_deduction, 0, '.', '.');
+            })
+            ->addColumn('alpha_deduction', function ($payroll) {
+                return number_format($payroll->alpha_deduction, 0, '.', '.');
+            })
+            ->addColumn('absence_deduction', function ($payroll) {
+                return number_format($payroll->absence_deduction, 0, '.', '.');
+            })
+            ->addColumn('loan', function ($payroll) {
+                return number_format($payroll->loan, 0, '.', '.');
+            })
+            ->addColumn('installment', function ($payroll) {
+                return number_format($payroll->installment, 0, '.', '.');
+            })
+            ->addColumn('employee_pension_security', function ($payroll) {
+                return number_format($payroll->employee_pension_security, 0, '.', '.');
+            })
+            ->addColumn('employee_jht', function ($payroll) {
+                return number_format($payroll->employee_jht, 0, '.', '.');
+            })
+            ->addColumn('pph_21', function ($payroll) {
+                return number_format($payroll->pph_21, 0, '.', '.');
+            })
+            ->addColumn('total_deduction', function ($payroll) {
+                return number_format($payroll->total_deduction, 0, '.', '.');
+            })
+            ->addColumn('pph_21_payment', function ($payroll) {
+                return number_format($payroll->pph_21_payment, 0, '.', '.');
+            })
+            ->addColumn('take_home_pay', function ($payroll) {
+                return number_format($payroll->take_home_pay, 0, '.', '.');
+            })
+            ->addColumn('telecommunication_allowance', function ($payroll) {
+                return number_format($payroll->telecommunication_allowance, 0, '.', '.');
+            })
+
+            ->rawColumns([
+                'checkbox',
+                'full_name',
+                'position',
+                'organization',
+                'basic_sallary',
+                'position_allowance',
+                'transportation',
+                'operational_allowance',
+                'child_education_allowance',
+                'sales_bonus',
+                'bonus',
+                'overtime',
+                'reimburse_e_toll_gasoline',
+                'medical_reimbursement',
+                'tax_allowance',
+                'total_allowance',
+                'lateness_deduction',
+                'alpha_deduction',
+                'absence_deduction',
+                'loan',
+                'installment',
+                'employee_pension_security',
+                'employee_jht',
+                'pph_21',
+                'total_deduction',
+                'pph_21_payment',
+                'take_home_pay',
+                'telecommunication_allowance'
+            ])
+            ->make(true);
+    }
+
     /**
      * Show the form for creating a new resource.
      *

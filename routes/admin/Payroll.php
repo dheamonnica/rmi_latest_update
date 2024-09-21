@@ -6,10 +6,18 @@ Route::get('payroll', [
     PayrollController::class,
     'index'
 ])->name('admin.payroll.index');
+Route::get('payroll-report', [
+    PayrollController::class,
+    'report'
+])->name('admin.payroll.report');
 Route::get('getPayrolls', [
     PayrollController::class,
     'getPayrolls'
 ])->name('admin.payroll.getPayrolls')->middleware('ajax');
+Route::get('getReportPayroll', [
+    PayrollController::class,
+    'getReportPayroll'
+])->name('admin.payroll.getReportPayroll')->middleware('ajax');
 Route::get('create', [
     PayrollController::class,
     'create'

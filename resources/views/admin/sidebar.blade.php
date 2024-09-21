@@ -219,8 +219,7 @@
                         @endcan
 
                         @if (Auth::user()->isAdmin())
-                            <li
-                                class="{{ Request::is('admin/payroll*') ? 'active' : '' }}">
+                            <li class="{{ Request::is('admin/payroll*') ? 'active' : '' }}">
                                 <a href="{{ url('admin/payroll') }}">
                                     {{ trans('nav.payroll') }}
                                 </a>
@@ -241,6 +240,29 @@
                         @endif
                     </ul>
                 </li>
+
+                @if (Auth::user()->isAdmin())
+                    <li
+                        class="treeview {{ Request::is('admin/payroll*') ? 'active' : '' }}">
+                        <a href="javascript:void(0)">
+                            <i class="fa fa-list"></i>
+                            <span>Payroll</span>
+                            <i class="fa fa-angle-left pull-right"></i>
+                        </a>
+                        <ul class="treeview-menu">
+                            <li class="{{ Request::is('admin/payroll') ? 'active' : '' }}">
+                                <a href="{{ url('admin/payroll') }}">
+                                    {{ trans('nav.payroll_data') }}
+                                </a>
+                            </li>
+                            <li class="{{ Request::is('admin/payroll-report') ? 'active' : '' }}">
+                                <a href="{{ url('admin/payroll-report') }}">
+                                    {{ trans('nav.payroll_reports') }}
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                @endif
             @endif
 
             @if (Gate::allows('index', \App\Models\Merchant::class) || Gate::allows('index', \App\Models\Shop::class))
