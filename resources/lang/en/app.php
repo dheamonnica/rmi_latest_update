@@ -1353,7 +1353,7 @@ return [
         'sub_grade' => 'Sub Grade',
         'level' => 'Level',
         'take_home_pay' => 'Take Home Pay',
-        'basic_salary' => 'Basic Salary',
+        'basic_sallary' => 'Basic Sallary',
         'operational_allowance' => 'Operational Allowance',
         'position_allowance' => 'Position Allowance',
         'child_education_allowance' => 'Child Education Allowance',
