@@ -119,9 +119,6 @@ class BudgetController extends Controller
             ->addColumn('picture', function ($budget) {
                 return view('admin.budget.partials.picture', compact('budget'));
             })
-            ->addColumn('warehouse', function ($budget) {
-                return view('admin.budget.partials.warehouse', compact('budget'));
-            })
             ->addColumn('status', function ($budget) {
                 return view('admin.budget.partials.status', compact('budget'));
             })

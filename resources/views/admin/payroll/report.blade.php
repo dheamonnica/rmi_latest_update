@@ -27,7 +27,7 @@
                         <th>{{ trans('app.form.full_name') }}</th>
                         <th>{{ trans('app.form.job_position') }}</th>
                         <th>{{ trans('app.form.organization') }}</th>
-                        <th>{{ trans('app.form.basic_salary') }}</th>
+                        <th>{{ trans('app.form.basic_sallary') }}</th>
                         <th style="background: rgb(163, 193, 163)">{{ trans('app.form.position_allowance') }}</th>
                         <th style="background: rgb(163, 193, 163)">{{ trans('app.form.transportation_allowance') }}</th>
                         <th style="background: rgb(163, 193, 163)">{{ trans('app.form.daily_operational_allowance') }}</th>

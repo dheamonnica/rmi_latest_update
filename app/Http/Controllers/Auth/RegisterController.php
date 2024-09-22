@@ -134,7 +134,7 @@ class RegisterController extends Controller
 
             if($request['shop_name']) {
 
-                $merchant['role_id'] = 10;
+                $merchant['role_id'] = 16;
                 $merchant['business_name'] = $request->input('shop_name');
                 $merchant['country_id'] = $request->input('country_id');
                  // Create a new manufacturer record

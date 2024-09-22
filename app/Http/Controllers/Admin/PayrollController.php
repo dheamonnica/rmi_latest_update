@@ -71,8 +71,8 @@ class PayrollController extends Controller
             ->addColumn('take_home_pay', function ($payroll) {
                 return $payroll->take_home_pay;
             })
-            ->addColumn('basic_salary', function ($payroll) {
-                return $payroll->basic_salary;
+            ->addColumn('basic_sallary', function ($payroll) {
+                return $payroll->basic_sallary;
             })
             ->addColumn('operational_allowance', function ($payroll) {
                 return $payroll->operational_allowance;
@@ -99,12 +99,12 @@ class PayrollController extends Controller
                 return $payroll->updated_at;
             })
             ->addColumn('updated_by', function ($payroll) {
-                return $payroll->getCreatedUsername->name;
+                return $payroll->updated_at ? $payroll->getUpdatedUsername->name : '';
             })
             ->addColumn('option', function ($payroll) {
                 return view('admin.payroll.partials.options', compact('payroll'));
             })
-            ->rawColumns(['checkbox', 'position', 'grade', 'sub_grade', 'level', 'take_home_pay', 'basic_salary', 'operational_allowance', 'position_allowance', 'child_education_allowance', 'transportation', 'quota', 'created_at', 'created_by', 'updated_at', 'updated_by', 'options'])
+            ->rawColumns(['checkbox', 'position', 'grade', 'sub_grade', 'level', 'take_home_pay', 'basic_sallary', 'operational_allowance', 'position_allowance', 'child_education_allowance', 'transportation', 'quota', 'created_at', 'created_by', 'updated_at', 'updated_by', 'options'])
             ->make(true);
     }
 

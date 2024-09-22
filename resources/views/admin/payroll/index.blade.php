@@ -33,7 +33,7 @@
                         <th>{{ trans('app.form.sub_grade') }}</th>
                         <th>{{ trans('app.form.level') }}</th>
                         <th>{{ trans('app.form.take_home_pay') }}</th>
-                        <th>{{ trans('app.form.basic_salary') }}</th>
+                        <th>{{ trans('app.form.basic_sallary') }}</th>
                         <th>{{ trans('app.form.operational_allowance') }}</th>
                         <th>{{ trans('app.form.position_allowance') }}</th>
                         <th>{{ trans('app.form.child_education_allowance') }}</th>

@@ -59,9 +59,9 @@
     </div>
     <div class="col-md-3 nopadding-right nopadding-left">
         <div class="form-group">
-            {!! Form::label('basic_salary', trans('app.form.basic_salary'), ['class' => 'with-help']) !!}
-            {!! Form::number('basic_salary', null, [
-                'placeholder' => trans('app.form.basic_salary'),
+            {!! Form::label('basic_sallary', trans('app.form.basic_sallary'), ['class' => 'with-help']) !!}
+            {!! Form::number('basic_sallary', null, [
+                'placeholder' => trans('app.form.basic_sallary'),
                 'class' => 'form-control',
                 'required',
             ]) !!}

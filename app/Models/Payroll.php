@@ -59,7 +59,7 @@ class Payroll extends BaseModel
         lateness_deduction+alpha_deduction+absence_deduction+loan+installment+kasbon+employee_pension_security+employee_jht + pph_21 total_deduction ,0 pph_21_payment,
         (basic_sallary + position_allowance + transportation + operational_allowance + child_education_allowance + sales_bonus + bonus  + overtime + reimburse_e_toll_gasoline + medical_reimbursement + tax_allowance)  - (lateness_deduction+alpha_deduction+absence_deduction+loan+installment+kasbon+employee_pension_security+employee_jht + pph_21) as take_home_pay,quota telecommunication_allowance
         from (SELECT u.id,name,p.position,null as organization,basic_sallary,position_allowance,transportation,operational_allowance * 26 as operational_allowance,child_education_allowance,0 sales_bonus, 0 bonus,0 overtime,0 reimburse_e_toll_gasoline,0 medical_reimbursement, 0 tax_allowance, 0 lateness_deduction, 0 alpha_deduction,0 absence_deduction,0 loan,0 installment, 0 kasbon,0 employee_pension_security, 0 employee_jht,0 pph_21 ,quota FROM payrolls p
-        left join users u on p.level=u.level) aa;";
+        left join users u on p.level=u.level where p.deleted_at is null) aa;";
 
         return DB::select(DB::raw($query));
     }

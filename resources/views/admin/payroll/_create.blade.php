@@ -10,6 +10,7 @@
         {!! Form::hidden('created_by', Auth::user()->id) !!}
         {!! Form::hidden('created_at', now()) !!}
         {!! Form::hidden('updated_at', null) !!}
+        {!! Form::hidden('updated_by', null) !!}
       </div>
       <div class="modal-footer">
         {!! Form::submit(trans('app.form.save'), ['class' => 'btn btn-flat btn-new']) !!}

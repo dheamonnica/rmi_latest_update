@@ -502,8 +502,8 @@
                     'name': 'take_home_pay'
                 },
                 {
-                    'data': 'basic_salary',
-                    'name': 'basic_salary'
+                    'data': 'basic_sallary',
+                    'name': 'basic_sallary'
                 },
                 {
                     'data': 'operational_allowance',
