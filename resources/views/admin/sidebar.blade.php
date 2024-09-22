@@ -8,7 +8,8 @@
                     <i class="fa fa-dashboard"></i> <span>
                         @if (Auth::user()->isAdmin() || Auth::user()->isMerchant() || Auth::user()->role_id === 13)
                             {{ trans('nav.dashboard') }}
-                        @else
+                        {{-- vendor manufacturing --}}
+                        @elseif(Auth::user()->role_id === 16)
                             Offering Status
                         @endif
                     </span>
@@ -242,8 +243,7 @@
                 </li>
 
                 @if (Auth::user()->isAdmin())
-                    <li
-                        class="treeview {{ Request::is('admin/payroll*') ? 'active' : '' }}">
+                    <li class="treeview {{ Request::is('admin/payroll*') ? 'active' : '' }}">
                         <a href="javascript:void(0)">
                             <i class="fa fa-list"></i>
                             <span>Payroll</span>
@@ -621,8 +621,8 @@
                 </li> --}}
             @endif
 
-            {{-- Except vendor --}}
-            @if (Auth::user()->id !== 10)
+            {{-- Except vendor manufacturing --}}
+            @if (Auth::user()->role_id !== 16)
                 <li
                     class="treeview {{ Request::is('admin/report*') || Request::is('admin/shop/report*') ? 'active' : '' }}">
                     <a href="javascript:void(0)">
