@@ -99,7 +99,7 @@ class PayrollController extends Controller
                 return $payroll->updated_at;
             })
             ->addColumn('updated_by', function ($payroll) {
-                return $payroll->getCreatedUsername->name;
+                return $payroll->updated_at ? $payroll->getUpdatedUsername->name : '';
             })
             ->addColumn('option', function ($payroll) {
                 return view('admin.payroll.partials.options', compact('payroll'));
