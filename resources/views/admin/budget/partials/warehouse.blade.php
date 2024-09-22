@@ -1,3 +1,1 @@
-@if ($budget->created_by)
-    <td>{{ $budget->getWarehouseByName->name }}</td>
-@endif
+<td>{{ $budget->shop_id === null ? 'Management' : $budget->getWarehouseByName->name }}</td>
