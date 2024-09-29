@@ -1386,6 +1386,8 @@ return [
 
         // department
         'create_department' => 'Create Department',
+        'department_name' => 'Department Name',
+        'department' => 'Department',
     ],
 
     'placeholder' => [
