@@ -28,6 +28,8 @@ use App\Repositories\Payroll\EloquentPayroll;
 use App\Repositories\Payroll\PayrollRepository;
 use App\Repositories\Department\EloquentDepartment;
 use App\Repositories\Department\DepartmentRepository;
+use App\Repositories\Overtime\EloquentOvertime;
+use App\Repositories\Overtime\OvertimeRepository;
 use App\Contracts\PaymentServiceContract;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Database\Eloquent\Collection;
@@ -110,6 +112,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(PICRepository::class, EloquentPIC::class);
         $this->app->bind(PayrollRepository::class, EloquentPayroll::class);
         $this->app->bind(DepartmentRepository::class, EloquentDepartment::class);
+        $this->app->bind(OvertimeRepository::class, EloquentOvertime::class);
 
         // Ondemand Img manupulation
         $this->app->singleton(

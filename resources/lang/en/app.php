@@ -70,6 +70,7 @@ return [
         'pic' => 'PIC',
         'payroll' => 'Payroll',
         'department' => 'Department',
+        'overtime' => 'Overtime',
     ],
 
     // Application Levels
@@ -1338,6 +1339,8 @@ return [
         'total_plan' => 'Total Plan',
         'total_actual_visit' => 'Total Actual Visit',
         'success_rate' => 'Success Rate',
+        'plan' => 'Plan',
+        'action' => 'Action',
 
         // site visit
         'assignee' => 'Assignee',
@@ -1388,6 +1391,11 @@ return [
         'create_department' => 'Create Department',
         'department_name' => 'Department Name',
         'department' => 'Department',
+
+        // overtime
+        'create_overtime' => 'Create Overtime',
+        'start_time' => 'Start Time',
+        'end_time' => 'End Time',
     ],
 
     'placeholder' => [

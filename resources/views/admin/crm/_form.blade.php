@@ -39,3 +39,28 @@
         </div>
     </div>
 </div>
+
+<div class="row">
+    <div class="col-md-6 nopadding-right">
+        <div class="form-group">
+            {!! Form::label('plan', trans('app.form.plan'), ['class' => 'with-help']) !!}
+            {!! Form::textarea('plan', null, [
+                'class' => 'form-control',
+                'placeholder' => trans('app.form.plan'),
+                'required',
+            ]) !!}
+            <div class="help-block with-errors"></div>
+        </div>
+    </div>
+    <div class="col-md-6 nopadding-left">
+        <div class="form-group">
+            {!! Form::label('action', trans('app.form.action'), ['class' => 'with-help']) !!}
+            {!! Form::textarea('action', null, [
+                'class' => 'form-control',
+                'placeholder' => trans('app.form.action'),
+                'required',
+            ]) !!}
+            <div class="help-block with-errors"></div>
+        </div>
+    </div>
+</div>

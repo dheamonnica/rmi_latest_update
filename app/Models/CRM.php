@@ -27,6 +27,8 @@ class CRM extends BaseModel
         'date',
         'client_id',
         'shop_id',
+        'plan',
+        'action',
         'verfified_by',
         'verified_at',
         'created_by',

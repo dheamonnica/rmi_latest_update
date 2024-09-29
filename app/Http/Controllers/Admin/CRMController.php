@@ -217,6 +217,12 @@ class CRMController extends Controller
             ->addColumn('picture', function ($crm) {
                 return view('admin.crm.partials.picture', ['crm' => $crm]);
             })
+            ->addColumn('plan', function ($crm) {
+                return $crm->plan;
+            })
+            ->addColumn('action', function ($crm) {
+                return $crm->action;
+            })
             ->addColumn('verified_status', function ($crm) {
                 return view('admin.crm.partials.verified_status', ['crm' => $crm]);
             })
@@ -241,7 +247,7 @@ class CRMController extends Controller
             ->addColumn('options', function ($crm) {
                 return view('admin.crm.partials.options', ['crm' => $crm]);
             })
-            ->rawColumns(['checkbox', 'date', 'month', 'year', 'warehouse', 'client', 'picture', 'status', 'created_at', 'created_by', 'verified_status', 'verified_at', 'verified_by', 'updated_at', 'updated_by', 'options'])
+            ->rawColumns(['checkbox', 'date', 'month', 'year', 'warehouse', 'client', 'picture', 'plan', 'action', 'verified_status', 'created_at', 'created_by', 'verified_at', 'verified_by', 'updated_at', 'updated_by', 'options'])
             ->make(true);
     }
 
