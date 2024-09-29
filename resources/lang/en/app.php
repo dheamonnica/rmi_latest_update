@@ -1338,6 +1338,8 @@ return [
         'total_plan' => 'Total Plan',
         'total_actual_visit' => 'Total Actual Visit',
         'success_rate' => 'Success Rate',
+        'plan' => 'Plan',
+        'action' => 'Action',
 
         // site visit
         'assignee' => 'Assignee',

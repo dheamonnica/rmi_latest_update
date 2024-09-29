@@ -2473,6 +2473,14 @@
                     'name': 'picture'
                 },
                 {
+                    'data': 'plan',
+                    'name': 'plan'
+                },
+                {
+                    'data': 'action',
+                    'name': 'action'
+                },
+                {
                     'data': 'verified_status',
                     'name': 'verified_status'
                 },
