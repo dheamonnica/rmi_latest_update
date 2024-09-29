@@ -666,40 +666,6 @@
                                 </ul>
                             </li>
 
-                            <li class="treeview {{ Request::is('admin/budget*') }}">
-                                <a href="javascript:void(0)">
-                                    <span>Budget</span>
-                                    <i class="fa fa-angle-left pull-right"></i>
-                                </a>
-                                <ul class="treeview-menu">
-                                    <li class="{{ Request::is('admin/budget*') ? 'active' : '' }}">
-                                        <a href="{{ route('admin.budget.reportAdministrator') }}">
-                                            Budget Report
-                                        </a>
-                                    </li>
-
-                                    <li class="{{ Request::is('admin/budget*') ? 'active' : '' }}">
-                                        <a href="{{ route('admin.budget.index') }}">
-                                            Budget Data
-                                        </a>
-                                    </li>
-
-                                    <li class="{{ Request::is('admin/overtime*') ? 'active' : '' }}">
-                                        <a href="{{ route('admin.overtime.index') }}">
-                                            Overtime
-                                        </a>
-                                    </li>
-                                    {{-- SUPERADMIN ONLY --}}
-                                    @if (Auth::user()->id === 1)
-                                        <li class="{{ Request::is('admin/requirement*') ? 'active' : '' }}">
-                                            <a href="{{ route('admin.requirement.index') }}">
-                                                Budget Categories
-                                            </a>
-                                        </li>
-                                    @endif
-                                </ul>
-                            </li>
-
                             @if (Auth::user()->id === 1)
                                 <li class="treeview {{ Request::is('admin/approval*') }}">
                                     <a href="javascript:void(0)">
@@ -707,6 +673,12 @@
                                         <i class="fa fa-angle-left pull-right"></i>
                                     </a>
                                     <ul class="treeview-menu">
+                                        <li class="{{ Request::is('admin/budget*') ? 'active' : '' }}">
+                                            <a href="{{ route('admin.budget.reportAdministrator') }}">
+                                                Budget Report
+                                            </a>
+                                        </li>
+
                                         <li class="{{ Request::is('admin/budget*') ? 'active' : '' }}">
                                             <a href="{{ route('admin.budget.index') }}">
                                                 Budget Data
@@ -719,8 +691,8 @@
                                             </a>
                                         </li>
 
-                                        <li class="{{ Request::is('admin/requirement*') ? 'active' : '' }}">
-                                            <a href="{{ route('admin.requirement.index') }}">
+                                        <li class="{{ Request::is('admin/overtime*') ? 'active' : '' }}">
+                                            <a href="{{ route('admin.overtime.index') }}">
                                                 Overtime
                                             </a>
                                         </li>
