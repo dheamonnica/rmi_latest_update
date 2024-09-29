@@ -69,6 +69,7 @@ return [
         'requirement' => 'Requirement',
         'pic' => 'PIC',
         'payroll' => 'Payroll',
+        'department' => 'Department',
     ],
 
     // Application Levels
@@ -1382,6 +1383,9 @@ return [
         'total_deduction' => 'Total Deduction',
         'pph_21_payment' => 'PPH 21 Payment',
         'telecommunication_allowance' => 'Telecommunication Allowance',
+
+        // department
+        'create_department' => 'Create Department',
     ],
 
     'placeholder' => [
