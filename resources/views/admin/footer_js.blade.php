@@ -553,8 +553,8 @@
         }));
         // END PAYROLL TABLE
 
-         // DEPARTMENT TABLE
-         $('#department-tables').DataTable($.extend({}, dataTableOptions, {
+        // DEPARTMENT TABLE
+        $('#department-tables').DataTable($.extend({}, dataTableOptions, {
             "ajax": "{{ route('admin.admin.department.getDepartments') }}",
             "columns": [{
                     'data': 'checkbox',
@@ -595,6 +595,69 @@
             ]
         }));
         // END DEPARTMENT TABLE
+
+        // OVERTIME TABLE
+        $('#overtime-tables').DataTable($.extend({}, dataTableOptions, {
+            "ajax": "{{ route('admin.admin.overtime.getOvertimes') }}",
+            "columns": [{
+                    'data': 'checkbox',
+                    'name': 'checkbox',
+                    'orderable': false,
+                    'searchable': false,
+                    'exportable': false,
+                    'printable': false
+                },
+                {
+                    'data': 'user_id',
+                    'name': 'user_id'
+                },
+                {
+                    'data': 'start_time',
+                    'name': 'nastart_timeme'
+                },
+                {
+                    'data': 'end_time',
+                    'name': 'end_time'
+                },
+                {
+                    'data': 'status',
+                    'name': 'status'
+                },
+                {
+                    'data': 'approved_by',
+                    'name': 'approved_by'
+                },
+                {
+                    'data': 'approved_at',
+                    'name': 'approved_at'
+                },
+                {
+                    'data': 'created_by',
+                    'name': 'created_by'
+                },
+                {
+                    'data': 'created_at',
+                    'name': 'created_at'
+                },
+                {
+                    'data': 'updated_at',
+                    'name': 'updated_at'
+                },
+                {
+                    'data': 'updated_by',
+                    'name': 'updated_by'
+                },
+                {
+                    'data': 'option',
+                    'name': 'option',
+                    'orderable': false,
+                    'searchable': false,
+                    'exportable': false,
+                    'printable': false
+                }
+            ]
+        }));
+        // END OVERTIME TABLE
 
         // PAYROLL REPORT TABLE
         $('#payroll-report-tables').DataTable($.extend({}, dataTableOptions, {

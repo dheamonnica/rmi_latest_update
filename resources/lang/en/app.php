@@ -70,6 +70,7 @@ return [
         'pic' => 'PIC',
         'payroll' => 'Payroll',
         'department' => 'Department',
+        'overtime' => 'Overtime',
     ],
 
     // Application Levels
@@ -1390,6 +1391,11 @@ return [
         'create_department' => 'Create Department',
         'department_name' => 'Department Name',
         'department' => 'Department',
+
+        // overtime
+        'create_overtime' => 'Create Overtime',
+        'start_time' => 'Start Time',
+        'end_time' => 'End Time',
     ],
 
     'placeholder' => [

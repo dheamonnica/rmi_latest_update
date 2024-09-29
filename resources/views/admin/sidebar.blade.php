@@ -8,7 +8,7 @@
                     <i class="fa fa-dashboard"></i> <span>
                         @if (Auth::user()->isAdmin() || Auth::user()->isMerchant() || Auth::user()->role_id === 13)
                             {{ trans('nav.dashboard') }}
-                        {{-- vendor manufacturing --}}
+                            {{-- vendor manufacturing --}}
                         @elseif(Auth::user()->role_id === 16)
                             Offering Status
                         @endif
@@ -684,9 +684,9 @@
                                         </a>
                                     </li>
 
-                                    <li class="{{ Request::is('admin/segment*') ? 'active' : '' }}">
-                                        <a href="{{ route('admin.segment.index') }}">
-                                            Budget Config
+                                    <li class="{{ Request::is('admin/overtime*') ? 'active' : '' }}">
+                                        <a href="{{ route('admin.overtime.index') }}">
+                                            Overtime
                                         </a>
                                     </li>
                                     {{-- SUPERADMIN ONLY --}}
@@ -699,6 +699,34 @@
                                     @endif
                                 </ul>
                             </li>
+
+                            @if (Auth::user()->id === 1)
+                                <li class="treeview {{ Request::is('admin/approval*') }}">
+                                    <a href="javascript:void(0)">
+                                        <span>Approval</span>
+                                        <i class="fa fa-angle-left pull-right"></i>
+                                    </a>
+                                    <ul class="treeview-menu">
+                                        <li class="{{ Request::is('admin/budget*') ? 'active' : '' }}">
+                                            <a href="{{ route('admin.budget.index') }}">
+                                                Budget Data
+                                            </a>
+                                        </li>
+
+                                        <li class="{{ Request::is('admin/requirement*') ? 'active' : '' }}">
+                                            <a href="{{ route('admin.requirement.index') }}">
+                                                Budget Categories
+                                            </a>
+                                        </li>
+
+                                        <li class="{{ Request::is('admin/requirement*') ? 'active' : '' }}">
+                                            <a href="{{ route('admin.requirement.index') }}">
+                                                Overtime
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+                            @endif
 
                             <li class="treeview {{ Request::is('admin/target*') }}">
                                 <a href="javascript:void(0)">
