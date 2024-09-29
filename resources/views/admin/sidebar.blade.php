@@ -202,6 +202,14 @@
                             </li>
                         @endcan
 
+                        @can('index', \App\Models\User::class)
+                            <li class="{{ Request::is('admin/admin/department*') ? 'active' : '' }}">
+                                <a href="{{ url('admin/department') }}">
+                                    {{ trans('nav.departments') }}
+                                </a>
+                            </li>
+                        @endcan
+
                         @if (Auth::user()->isMerchant())
                             <li class="{{ Request::is('admin/admin/deliveryboys*') ? 'active' : '' }}">
                                 <a href="{{ route('admin.admin.deliveryboy.index') }}">

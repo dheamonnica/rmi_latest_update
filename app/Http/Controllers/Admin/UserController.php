@@ -10,6 +10,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Validations\AdminUserUpdatePasswordRequest as UpdatePasswordRequest;
 use App\Http\Requests\Validations\CreateUserRequest;
 use App\Http\Requests\Validations\UpdateUserRequest;
+use App\Models\Department;
 use App\Repositories\User\UserRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -57,14 +58,19 @@ class UserController extends Controller
         // Check if the merchant can add more user in the team
         if (Auth::user()->isFromPlatform() || Auth::user()->shop->canAddMoreUser()) {
             $user_position = Payroll::get()
-            ->pluck('position', 'position')
-            ->toArray();
+                ->pluck('position', 'position')
+                ->toArray();
 
             $user_level = Payroll::get()
-            ->pluck('level', 'level')
-            ->toArray();
+                ->pluck('level', 'level')
+                ->toArray();
 
-            return view('admin.user._create', compact('user_position', 'user_level'));
+            $departments = Department::whereNull('deleted_at')
+                ->get()
+                ->pluck('name', 'id')
+                ->toArray();
+
+            return view('admin.user._create', compact('user_position', 'user_level', 'departments'));
         }
 
         return view('admin.partials._max_user_limit_notice');
@@ -112,10 +118,15 @@ class UserController extends Controller
             ->toArray();
 
         $user_level = Payroll::get()
-        ->pluck('level', 'level')
-        ->toArray();
+            ->pluck('level', 'level')
+            ->toArray();
 
-        return view('admin.user._edit', compact('user', 'user_position', 'user_level'));
+        $departments = Department::whereNull('deleted_at')
+            ->get()
+            ->pluck('name', 'id')
+            ->toArray();
+
+        return view('admin.user._edit', compact('user', 'user_position', 'user_level', 'departments'));
     }
 
     /**

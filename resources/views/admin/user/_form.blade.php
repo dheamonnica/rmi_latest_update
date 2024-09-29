@@ -1,16 +1,25 @@
 <div class="row">
-  <div class="col-md-8 nopadding-right">
+  <div class="col-md-4 nopadding-right">
     <div class="form-group">
       {!! Form::label('name', trans('app.form.full_name') . '*') !!}
       {!! Form::text('name', null, ['class' => 'form-control', 'placeholder' => trans('app.placeholder.full_name'), 'required']) !!}
       <div class="help-block with-errors"></div>
     </div>
   </div>
-  <div class="col-md-4 nopadding-left">
+  <div class="col-md-4 nopadding-left nopadding-right">
     <div class="form-group">
       {!! Form::label('active', trans('app.form.status') . '*') !!}
       {!! Form::select('active', ['1' => trans('app.active'), '0' => trans('app.inactive')], null, ['class' => 'form-control select2-normal', 'placeholder' => trans('app.placeholder.status'), 'required']) !!}
       <div class="help-block with-errors"></div>
+    </div>
+  </div>
+  <div class="col-md-4 nopadding-left">
+    <div class="form-group">
+        {!! Form::label('department_id', trans('app.form.department_name')  . '*') !!}
+        {!! Form::select('department_id', ['' => 'Select'] + $departments, null, [
+            'class' => 'form-control select2-normal',
+            'required',
+        ]) !!}
     </div>
   </div>
 </div>

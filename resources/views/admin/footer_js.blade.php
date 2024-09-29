@@ -553,6 +553,49 @@
         }));
         // END PAYROLL TABLE
 
+         // DEPARTMENT TABLE
+         $('#department-tables').DataTable($.extend({}, dataTableOptions, {
+            "ajax": "{{ route('admin.admin.department.getDepartments') }}",
+            "columns": [{
+                    'data': 'checkbox',
+                    'name': 'checkbox',
+                    'orderable': false,
+                    'searchable': false,
+                    'exportable': false,
+                    'printable': false
+                },
+                {
+                    'data': 'name',
+                    'name': 'name'
+                },
+                {
+                    'data': 'created_by',
+                    'name': 'created_by'
+                },
+                {
+                    'data': 'created_at',
+                    'name': 'created_at'
+                },
+                {
+                    'data': 'updated_at',
+                    'name': 'updated_at'
+                },
+                {
+                    'data': 'updated_by',
+                    'name': 'updated_by'
+                },
+                {
+                    'data': 'option',
+                    'name': 'option',
+                    'orderable': false,
+                    'searchable': false,
+                    'exportable': false,
+                    'printable': false
+                }
+            ]
+        }));
+        // END DEPARTMENT TABLE
+
         // PAYROLL REPORT TABLE
         $('#payroll-report-tables').DataTable($.extend({}, dataTableOptions, {
             "ajax": "{{ route('admin.admin.payroll.getReportPayroll') }}",

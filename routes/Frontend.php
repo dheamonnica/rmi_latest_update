@@ -121,7 +121,7 @@ Route::middleware('storefront')->namespace('Storefront')->group(function () {
     ])->name('inCategoriesSearch')->middleware('xssSanitizer');
 
     Route::get('search_order', [
-        HomeController::class, 'search'
+        HomeController::class, 'searchPoNumber'
     ])->name('inOrderSearch')->middleware('xssSanitizer');
 
     Route::get('blog', [

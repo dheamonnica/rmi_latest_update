@@ -120,7 +120,8 @@ class User extends Authenticatable
         'warehouse_name',
         'phone',
         'position',
-        'level'
+        'level',
+        'department_id',
     ];
 
     /**
@@ -525,5 +526,10 @@ class User extends Authenticatable
     public function scopeMine($query)
     {
         return $query->where('shop_id', Auth::user()->merchantId());
+    }
+
+    public function getDepartmentByName()
+    {
+        return $this->belongsTo(Department::class, 'department_id');
     }
 }

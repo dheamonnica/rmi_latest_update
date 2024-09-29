@@ -141,7 +141,7 @@ class HomeController extends Controller
       
     }
 
-    public function search(Request $request)
+    public function searchPoNumber(Request $request)
     {
         $order = Order::select(['id', 'po_number_ref', 'created_at','packed_date','shipping_date','delivery_date','paid_date'])
             ->where('po_number_ref', $request->q)->get();;

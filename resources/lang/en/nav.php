@@ -40,6 +40,7 @@ return [
     'digital_products' => 'Digital Items',
     'physical_products' => 'Inventory',
     'warehouses' => 'Warehouses',
+    'departments' => 'Departments',
 
     'utilities' => 'Utilities',
     'support' => 'Support desk',

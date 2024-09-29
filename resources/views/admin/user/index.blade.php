@@ -40,6 +40,7 @@
             <th>{{ trans('app.status') }}</th>
             <th>{{ trans('app.form.position_') }}</th>
             <th>{{ trans('app.form.level') }}</th>
+            <th>{{ trans('app.form.department') }}</th>
             <th>{{ trans('app.option') }}</th>
           </tr>
         </thead>
@@ -61,6 +62,7 @@
               <td>{{ $user->active ? trans('app.active') : trans('app.inactive') }}</td>
               <td>{{ $user->position }}</td>
               <td>{{ $user->level }}</td>
+              <td>{{ $user->getDepartmentByName ? $user->getDepartmentByName->name : '' }}</td>
               <td class="row-options">
                 @can('view', $user)
                   <a href="javascript:void(0)" data-link="{{ route('admin.admin.user.show', $user->id) }}" class="ajax-modal-btn"><i data-toggle="tooltip" data-placement="top" title="{{ trans('app.profile') }}" class="fa fa-user-circle-o"></i></a>&nbsp;

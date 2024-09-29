@@ -13,6 +13,8 @@ use App\Http\Resources\ListingResource;
 use App\Http\Requests\Validations\ProductSearchRequest;
 // use Illuminate\Support\Facades\View;
 // use Illuminate\Database\Eloquent\Collection as Eloquent;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 
 trait InventorySearch
 {
@@ -27,14 +29,21 @@ trait InventorySearch
       return redirect()->back()->with('warning', trans('theme.notify.no_item_listed'));
     }
 
-    $query = Inventory::search($request->input('q'))
-      ->query(function ($q1) {
-        $q1->whereHas('shop', function ($q2) {
-          $q2->where('active', true);
-        })
-          ->active()
-          ->where('parent_id', null);
-      });
+    // $query = Inventory::search(request()->get('q'));
+    // ->query(function ($q1) {
+    //   $q1->whereHas('shop', function ($q2) {
+    //     $q2->where('active', true);
+    //   })
+    //     ->active()
+    //     ->where('parent_id', null);
+    // });
+
+    $query = Inventory::where('title', 'LIKE', '%' . request()->get('q') . '%')
+      ->whereHas('shop', function ($q2) {
+        $q2->where('active', true); // Filter related 'shop' records where 'active' is true
+      })
+      ->active() // Assuming you have a local scope 'active' for filtering active records
+      ->where('shop_id', Auth::guard('customer')->user()->shop_id); // Filter where 'parent_id' is null
 
     if (config('scout.driver') == 'tntsearch') {
       $items = $query->paginate(0);

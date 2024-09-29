@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin;
 use App\Http\Controllers\Admin\MerchantSwitchToCustomer;
+use App\Models\Department;
 use Illuminate\Support\Facades\Route;
 
 // Installer routes
@@ -85,6 +86,8 @@ Route::middleware('auth')->name('admin.')->prefix('admin')->group(function () {
         include 'admin/PIC.php';
         // Payroll
         include 'admin/Payroll.php';
+        // Department
+        include 'admin/Department.php';
 
         Route::get('secretLogin/{user}', [
             Admin\DashboardController::class,
