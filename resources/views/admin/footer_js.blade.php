@@ -695,16 +695,16 @@
                     'name': 'transportation'
                 },
                 {
-                    'data': 'operational_allowance',
-                    'name': 'operational_allowance'
+                    'data': 'uang_oprational_harian',
+                    'name': 'uang_oprational_harian'
                 },
                 {
                     'data': 'child_education_allowance',
                     'name': 'child_education_allowance'
                 },
                 {
-                    'data': 'sales_bonus',
-                    'name': 'sales_bonus'
+                    'data': 'bonus_penjualan',
+                    'name': 'bonus_penjualan'
                 },
                 {
                     'data': 'bonus',
@@ -715,68 +715,68 @@
                     'name': 'overtime'
                 },
                 {
-                    'data': 'reimburse_e_toll_gasoline',
-                    'name': 'reimburse_e_toll_gasoline'
+                    'data': 'reimburse_etoll_bensin',
+                    'name': 'reimburse_etoll_bensin'
                 },
                 {
-                    'data': 'medical_reimbursement',
-                    'name': 'medical_reimbursement'
-                },
-                {
-                    'data': 'tax_allowance',
-                    'name': 'tax_allowance'
+                    'data': 'reimburse_pengobatan_sakit',
+                    'name': 'reimburse_pengobatan_sakit'
                 },
                 {
                     'data': 'total_allowance',
                     'name': 'total_allowance'
                 },
                 {
-                    'data': 'lateness_deduction',
-                    'name': 'lateness_deduction'
+                    'data': 'total_allowance',
+                    'name': 'total_allowance'
                 },
                 {
-                    'data': 'alpha_deduction',
-                    'name': 'alpha_deduction'
+                    'data': 'potongan_keterlambatan',
+                    'name': 'potongan_keterlambatan'
                 },
                 {
-                    'data': 'absence_deduction',
-                    'name': 'absence_deduction'
+                    'data': 'potongan_alpha',
+                    'name': 'potongan_alpha'
                 },
                 {
-                    'data': 'loan',
-                    'name': 'loan'
+                    'data': 'potongan_absensi',
+                    'name': 'potongan_absensi'
                 },
                 {
-                    'data': 'installment',
-                    'name': 'installment'
+                    'data': 'pinjaman',
+                    'name': 'pinjaman'
                 },
                 {
-                    'data': 'employee_pension_security',
-                    'name': 'employee_pension_security'
+                    'data': 'cicilan',
+                    'name': 'cicilan'
                 },
                 {
-                    'data': 'employee_jht',
-                    'name': 'employee_jht'
+                    'data': 'jaminan_pensiun_employee',
+                    'name': 'jaminan_pensiun_employee'
                 },
                 {
-                    'data': 'pph_21',
-                    'name': 'pph_21'
+                    'data': 'JHT_employee',
+                    'name': 'JHT_employee'
+                },
+                {
+                    'data': 'PPH21',
+                    'name': 'PPH21'
                 },
                 {
                     'data': 'total_deduction',
                     'name': 'total_deduction'
                 },
                 {
-                    'data': 'pph_21_payment',
-                    'name': 'pph_21_payment'
+                    'data': 'PPH21_payment',
+                    'name': 'PPH21_payment'
                 },
                 {
                     'data': 'take_home_pay',
                     'name': 'take_home_pay'
                 },
                 {
-                    'data': 'telecommunication_allowance',
-                    'name': 'telecommunication_allowance'
+                    'data': 'telekomunikasi',
+                    'name': 'telekomunikasi'
                 }
             ]
         }));

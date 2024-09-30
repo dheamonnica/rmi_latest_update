@@ -623,6 +623,21 @@
 
             {{-- Except vendor manufacturing --}}
             @if (Auth::user()->role_id !== 16)
+                <li class="treeview {{ Request::is('admin/approval*') }}">
+                    <a href="javascript:void(0)">
+                        <i class="fa fa-check"></i>
+                        <span>Approval</span>
+                        <i class="fa fa-angle-left pull-right"></i>
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </a>
+                    <ul class="treeview-menu">
+                        <li class="{{ Request::is('admin/overtime*') ? 'active' : '' }}">
+                            <a href="{{ route('admin.overtime.index') }}">
+                                Overtime
+                            </a>
+                        </li>
+                    </ul>
+                </li>
                 <li
                     class="treeview {{ Request::is('admin/report*') || Request::is('admin/shop/report*') ? 'active' : '' }}">
                     <a href="javascript:void(0)">
@@ -669,31 +684,18 @@
                             @if (Auth::user()->id === 1)
                                 <li class="treeview {{ Request::is('admin/approval*') }}">
                                     <a href="javascript:void(0)">
-                                        <span>Approval</span>
+                                        <span>Reimburse</span>
                                         <i class="fa fa-angle-left pull-right"></i>
                                     </a>
                                     <ul class="treeview-menu">
                                         <li class="{{ Request::is('admin/budget*') ? 'active' : '' }}">
-                                            <a href="{{ route('admin.budget.reportAdministrator') }}">
-                                                Budget Report
-                                            </a>
-                                        </li>
-
-                                        <li class="{{ Request::is('admin/budget*') ? 'active' : '' }}">
                                             <a href="{{ route('admin.budget.index') }}">
-                                                Budget Data
+                                                Data
                                             </a>
                                         </li>
-
                                         <li class="{{ Request::is('admin/requirement*') ? 'active' : '' }}">
                                             <a href="{{ route('admin.requirement.index') }}">
-                                                Budget Categories
-                                            </a>
-                                        </li>
-
-                                        <li class="{{ Request::is('admin/overtime*') ? 'active' : '' }}">
-                                            <a href="{{ route('admin.overtime.index') }}">
-                                                Overtime
+                                                Category
                                             </a>
                                         </li>
                                     </ul>
@@ -729,6 +731,13 @@
                                 </ul>
                             </li>
                         @endif
+
+                        <li class="{{ Request::is('admin/budget*') ? 'active' : '' }}">
+                            <a href="{{ route('admin.budget.reportAdministrator') }}">
+                                Budget Report
+                            </a>
+                        </li>
+
                         <li class="{{ Request::is('admin/visit*') ? 'active' : '' }}">
                             <a href="{{ route('admin.visit.index') }}">
                                 Visit Plan Report

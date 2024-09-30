@@ -139,14 +139,14 @@ class PayrollController extends Controller
             ->addColumn('transportation', function ($payroll) {
                 return number_format($payroll->transportation, 0, '.', '.');
             })
-            ->addColumn('operational_allowance', function ($payroll) {
-                return number_format($payroll->operational_allowance, 0, '.', '.');
+            ->addColumn('uang_oprational_harian', function ($payroll) {
+                return number_format($payroll->uang_oprational_harian, 0, '.', '.');
             })
             ->addColumn('child_education_allowance', function ($payroll) {
                 return number_format($payroll->child_education_allowance, 0, '.', '.');
             })
-            ->addColumn('sales_bonus', function ($payroll) {
-                return number_format($payroll->sales_bonus, 0, '.', '.');
+            ->addColumn('bonus_penjualan', function ($payroll) {
+                return number_format($payroll->bonus_penjualan, 0, '.', '.');
             })
             ->addColumn('bonus', function ($payroll) {
                 return number_format($payroll->bonus, 0, '.', '.');
@@ -154,53 +154,53 @@ class PayrollController extends Controller
             ->addColumn('overtime', function ($payroll) {
                 return number_format($payroll->overtime, 0, '.', '.');
             })
-            ->addColumn('reimburse_e_toll_gasoline', function ($payroll) {
-                return number_format($payroll->reimburse_e_toll_gasoline, 0, '.', '.');
+            ->addColumn('reimburse_etoll_bensin', function ($payroll) {
+                return number_format($payroll->reimburse_etoll_bensin, 0, '.', '.');
             })
-            ->addColumn('medical_reimbursement', function ($payroll) {
-                return number_format($payroll->medical_reimbursement, 0, '.', '.');
-            })
-            ->addColumn('tax_allowance', function ($payroll) {
-                return number_format($payroll->tax_allowance, 0, '.', '.');
+            ->addColumn('reimburse_pengobatan_sakit', function ($payroll) {
+                return number_format($payroll->reimburse_pengobatan_sakit, 0, '.', '.');
             })
             ->addColumn('total_allowance', function ($payroll) {
                 return number_format($payroll->total_allowance, 0, '.', '.');
             })
-            ->addColumn('lateness_deduction', function ($payroll) {
-                return number_format($payroll->lateness_deduction, 0, '.', '.');
+            ->addColumn('total_allowance', function ($payroll) {
+                return number_format($payroll->total_allowance, 0, '.', '.');
             })
-            ->addColumn('alpha_deduction', function ($payroll) {
-                return number_format($payroll->alpha_deduction, 0, '.', '.');
+            ->addColumn('potongan_keterlambatan', function ($payroll) {
+                return number_format($payroll->potongan_keterlambatan, 0, '.', '.');
             })
-            ->addColumn('absence_deduction', function ($payroll) {
-                return number_format($payroll->absence_deduction, 0, '.', '.');
+            ->addColumn('potongan_alpha', function ($payroll) {
+                return number_format($payroll->potongan_alpha, 0, '.', '.');
             })
-            ->addColumn('loan', function ($payroll) {
-                return number_format($payroll->loan, 0, '.', '.');
+            ->addColumn('potongan_absensi', function ($payroll) {
+                return number_format($payroll->potongan_absensi, 0, '.', '.');
             })
-            ->addColumn('installment', function ($payroll) {
-                return number_format($payroll->installment, 0, '.', '.');
+            ->addColumn('pinjaman', function ($payroll) {
+                return number_format($payroll->pinjaman, 0, '.', '.');
             })
-            ->addColumn('employee_pension_security', function ($payroll) {
-                return number_format($payroll->employee_pension_security, 0, '.', '.');
+            ->addColumn('cicilan', function ($payroll) {
+                return number_format($payroll->cicilan, 0, '.', '.');
             })
-            ->addColumn('employee_jht', function ($payroll) {
-                return number_format($payroll->employee_jht, 0, '.', '.');
+            ->addColumn('jaminan_pensiun_employee', function ($payroll) {
+                return number_format($payroll->jaminan_pensiun_employee, 0, '.', '.');
             })
-            ->addColumn('pph_21', function ($payroll) {
-                return number_format($payroll->pph_21, 0, '.', '.');
+            ->addColumn('JHT_employee', function ($payroll) {
+                return number_format($payroll->JHT_employee, 0, '.', '.');
+            })
+            ->addColumn('PPH21', function ($payroll) {
+                return number_format($payroll->PPH21, 0, '.', '.');
             })
             ->addColumn('total_deduction', function ($payroll) {
                 return number_format($payroll->total_deduction, 0, '.', '.');
             })
-            ->addColumn('pph_21_payment', function ($payroll) {
-                return number_format($payroll->pph_21_payment, 0, '.', '.');
+            ->addColumn('PPH21_payment', function ($payroll) {
+                return number_format($payroll->PPH21_payment, 0, '.', '.');
             })
             ->addColumn('take_home_pay', function ($payroll) {
                 return number_format($payroll->take_home_pay, 0, '.', '.');
             })
-            ->addColumn('telecommunication_allowance', function ($payroll) {
-                return number_format($payroll->telecommunication_allowance, 0, '.', '.');
+            ->addColumn('telekomunikasi', function ($payroll) {
+                return number_format($payroll->telekomunikasi, 0, '.', '.');
             })
 
             ->rawColumns([
