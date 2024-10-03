@@ -1313,6 +1313,34 @@ if (!function_exists('get_formated_order_number')) {
     }
 }
 
+if (!function_exists('get_formated_movement_number')) {
+    function get_formated_movement_number($shop_from_id = null,$shop_to_id = null, $stock_transfer_id = null)
+    {
+        $stock_transfer_id = $stock_transfer_id ?? str_pad(rand(1, 999999), 6, '0', STR_PAD_LEFT);
+
+        $date_stamp = date('Ymd');
+
+        $pattern = '/#INV\/([A-Z]{3})\//';
+        $trasferNumberFrom = getShopConfig((int) $shop_from_id, 'order_number_prefix');
+        $trasferNumberTo = getShopConfig((int) $shop_to_id, 'order_number_prefix', false);
+
+        preg_match($pattern, $trasferNumberFrom, $matcheFrom);
+
+        if (isset($matcheFrom[1])) {
+            $shop_from = $matcheFrom[1];  // Output: BGR
+        }
+
+        preg_match($pattern, $trasferNumberTo, $matcheTo);
+
+        if (isset($matcheTo[1])) {
+            $shop_to = $matcheTo[1];  // Output: BGR
+        }
+
+        // return '#MOV/'.getShopConfig($shop_from_id, 'order_number_suffix').'/'.getShopConfig($shop_to_id, 'order_number_suffix') .'/' . $date_stamp .'/'. $stock_transfer_id;
+        return '#MOV/'.$shop_from.'/'.$shop_to.'/' . $date_stamp .'/'. $stock_transfer_id;
+    }
+}
+
 // if (! function_exists('php_max_execution_time'))
 // {
 //     // Returns the time limit in php config file
@@ -3115,5 +3143,43 @@ if (!function_exists('is_catalog_enabled')) {
     function is_catalog_enabled()
     {
         return (bool) config('system_settings.catalog_system_enable', true);
+    }
+}
+
+if (!function_exists('get_stock_transfer_status_name')) {
+    /**
+     * get_order_status_name
+     *
+     * @param  int $label
+     *
+     * @return string
+    * const STATUS_STOCK_TRANSFER_CREATED = 'Created'; //1
+    * const STATUS_STOCK_TRANSFER_PACKING = 'Packing'; //2
+    * const STATUS_STOCK_TRANSFER_SEND_BY_WAREHOUSE = 'Send By '; //3
+    * const STATUS_STOCK_TRANSFER_ON_DELIVERY = 'On Delivery'; //4
+    * const STATUS_STOCK_TRANSFER_DELIVERED = 'Delivered'; //5
+    * const STATUS_STOCK_TRANSFER_RECEIVED_BY = 'Received By'; //6
+    * const STATUS_STOCK_TRANSFER_APPROVED = 'Approved'; //7
+     */
+    function get_stock_transfer_status_name($status = 1)
+    {
+        switch ($status) {
+            case Inventory::STATUS_STOCK_TRANSFER_CREATED:
+                return trans('app.statuses.stock_transfer.created');               
+            case Inventory::STATUS_STOCK_TRANSFER_PACKING:
+                return trans('app.statuses.stock_transfer.packing');
+            case Inventory::STATUS_STOCK_TRANSFER_SEND_BY_WAREHOUSE:
+                return trans('app.statuses.stock_transfer.send_by_warehouse');
+            case Inventory::STATUS_STOCK_TRANSFER_ON_DELIVERY:
+                return trans('app.statuses.stock_transfer.on_delivery');
+            case Inventory::STATUS_STOCK_TRANSFER_DELIVERED:
+                return trans('app.statuses.stock_transfer.delivered');
+            case Inventory::STATUS_STOCK_TRANSFER_RECEIVED_BY:
+                return trans('app.statuses.stock_transfer.received_by');
+            case Inventory::STATUS_STOCK_TRANSFER_APPROVED:
+                return trans('app.statuses.stock_transfer.approved');
+            default:
+                return trans('app.statuses.packed');
+        }
     }
 }

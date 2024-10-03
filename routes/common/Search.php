@@ -20,6 +20,10 @@ Route::middleware('ajax')->name('search.')->group(function () {
         SearchController::class, 'findMerchant'
     ])->name('merchant');
 
+    Route::get('search/warehouse', [
+        SearchController::class, 'findWarehouse'
+    ])->name('warehouse');
+
     Route::get('search/findProduct', [
         SearchController::class, 'findProductForSelect'
     ])->name('findProduct');

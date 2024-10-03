@@ -2,7 +2,11 @@
   <div class="box-header with-bcart">
     <h3 class="box-title"><i class="fa fa-cubes"></i> </h3>
     <div class="box-tools pull-right">
-      {{-- <a href="javascript:void(0)" data-link="{{ route('admin.stock.inventory.bulk') }}" class="ajax-modal-btn btn btn-default btn-flat">{{ trans('app.bulk_import') }}</a> --}}
+
+                    
+    {{-- @can('stock_movement', \App\Models\StockMovement::class) --}}
+    <a href="javascript:void(0)" data-link="{{ route('admin.stock.inventory.stockTransfer') }}" class="ajax-modal-btn btn btn-default btn-flat">{{ trans('app.stock_transfer') }}</a>
+    {{-- @endcan --}}
 
       <button type="button" class="btn btn-new btn-flat" data-widget="collapse"><i class="fa fa-plus"></i> {{ trans('app.add_inventory') }}</button>
     </div>

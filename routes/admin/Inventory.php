@@ -25,6 +25,27 @@ Route::post('inventory/downloadFailedRows', [
   InventoryUploadController::class, 'downloadFailedRows'
 ])->name('inventory.downloadFailedRows');
 
+
+Route::get('inventory/stockTransfer', [
+  InventoryController::class, 'showForm'
+])->name('inventory.stockTransfer');
+
+Route::post('inventory/stockTransferWarehouse', [
+  InventoryController::class, 'stockTransferWarehouse'
+])->name('inventory.stockTransferWarehouse');
+
+Route::post('inventory/storeStockTransfer', [
+  InventoryController::class, 'storeStockTransfer'
+])->name('inventory.storeStockTransfer');
+
+Route::post('inventory/updateStatusStocktransfer/{stock_transfer}', [
+  InventoryController::class, 'updateStatusStocktransfer'
+])->name('inventory.updateStatusStocktransfer');
+
+Route::get('inventory/stockTransferDetails/{stock_transfer}', [
+  InventoryController::class, 'stockTransferDetails'
+])->name('inventory.stockTransferDetails');
+
 // Mass Actions
 Route::post('inventory/massTrash', [
   InventoryController::class, 'massTrash'
@@ -95,3 +116,6 @@ Route::get('inventory/getCombinations', [InventoryController::class, 'getCombina
 
 
 Route::resource('inventory', InventoryController::class)->except('create', 'store', 'update', 'index');
+
+Route::get('inventory/searchWarehouse', [InventoryController::class, 'searchWarehouse'])->name('order.searchWarehouse');
+
