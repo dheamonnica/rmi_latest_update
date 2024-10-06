@@ -2,6 +2,7 @@
     {!! Form::hidden('id') !!}
     <div class="col-md-4 nopadding-right">
         <div class="form-group">
+            {!! Form::hidden('doc_si_uploaded_at', now()) !!}
             {!! Form::label('upload_document_SI', trans('app.form.upload_document_SI'), ['class' => 'with-help']) !!}
             {!! Form::file('doc_SI') !!}
             @if ($order->doc_SI)
@@ -12,6 +13,7 @@
     </div>
     <div class="col-md-4 nopadding-right">
         <div class="form-group">
+            {!! Form::hidden('doc_faktur_pajak_uploaded_at', now()) !!}
             {!! Form::label('upload_document_faktur_pajak', trans('app.form.upload_document_faktur_pajak'), [
                 'class' => 'with-help',
             ]) !!}
@@ -24,6 +26,7 @@
     </div>
     <div class="col-md-4 nopadding-right">
         <div class="form-group">
+            {!! Form::hidden('doc_faktur_pajak_terbayar_uploaded_at', now()) !!}
             {!! Form::label('upload_document_faktur_terbayar', trans('app.form.upload_document_faktur_terbayar'), [
                 'class' => 'with-help',
             ]) !!}

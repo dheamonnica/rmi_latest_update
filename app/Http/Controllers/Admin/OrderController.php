@@ -935,6 +935,9 @@ class OrderController extends Controller
                     return "<a href='" . asset('storage/' . $order->doc_SI) . "' target='_blank'>Dokumen SI</a>";
                 }
             })
+            ->addColumn('doc_si_uploaded_at', function ($order) {
+                return $order->doc_si_uploaded_at;
+            })
             ->addColumn('doc_faktur_pajak', function ($order) {
                 if (empty($order->doc_faktur_pajak)) {
                     "";
@@ -942,12 +945,18 @@ class OrderController extends Controller
                     return "<a href='" . asset('storage/' . $order->doc_faktur_pajak) . "' target='_blank'>Dokumen Faktur Pajak</a>";
                 }
             })
+            ->addColumn('doc_faktur_pajak_uploaded_at', function ($order) {
+                return $order->doc_faktur_pajak_uploaded_at;
+            })
             ->addColumn('doc_faktur_pajak_terbayar', function ($order) {
                 if (empty($order->doc_faktur_pajak_terbayar)) {
                     "";
                 } else {
                     return "<a href='" . asset('storage/' . $order->doc_faktur_pajak_terbayar) . "' target='_blank'>Dokumen Faktur Pajak Terbayar</a>";
                 }
+            })
+            ->addColumn('doc_faktur_pajak_terbayar_uploaded_at', function ($order) {
+                return $order->doc_faktur_pajak_terbayar_uploaded_at;
             })
             ->addColumn('payment_status', function ($order) {
                 // payment status:
@@ -1009,7 +1018,7 @@ class OrderController extends Controller
                 return view('admin.partials.actions.order.option_payment', compact('order'));
             })
 
-            ->rawColumns(['created_at', 'payment_status', 'order_status_id', 'options', 'doc_faktur_pajak', 'doc_faktur_pajak_terbayar', 'doc_SI'])
+            ->rawColumns(['created_at', 'order_number', 'po_number_ref', 'shop_id', 'customer_id', 'doc_SI', 'doc_si_uploaded_at', 'doc_faktur_pajak', 'doc_faktur_pajak_uploaded_at', 'doc_faktur_pajak_terbayar', 'doc_faktur_pajak_terbayar_uploaded_at', 'payment_status', 'order_status_id', 'options'])
             ->make(true);
     }
 
@@ -1031,18 +1040,21 @@ class OrderController extends Controller
             $originalFilenameSI = now()->format('d-m-Y') . '/PoNumberRef_' . str_replace('/', '_', $orderData->po_number_ref) . '/' . 'SI_' . $pdfFileSI->getClientOriginalName(); // Add a timestamp to the original filename
             $pdfFileSI->storeAs('payment_documents', $originalFilenameSI, 'public');
             $orderData->doc_SI = 'payment_documents/' . $originalFilenameSI;
+            $orderData->doc_si_uploaded_at = $request->input('doc_si_uploaded_at');
 
             // DOC FAKTUR PAJAK
             $pdfFileFP = $request->file('doc_faktur_pajak');
             $originalFilenameFP = now()->format('d-m-Y') . '/PoNumberRef_' . str_replace('/', '_', $orderData->po_number_ref) . '/' . 'FP_' . $pdfFileFP->getClientOriginalName(); // Add a timestamp to the original filename
             $pdfFileFP->storeAs('payment_documents', $originalFilenameFP, 'public');
             $orderData->doc_faktur_pajak = 'payment_documents/' . $originalFilenameFP;
+            $orderData->doc_faktur_pajak_uploaded_at = $request->input('doc_faktur_pajak_uploaded_at');
 
             // DOC FAKTUR PAJAK TERBAYAR
             $pdfFileFPT = $request->file('doc_faktur_pajak_terbayar');
             $originalFilenameFPT = now()->format('d-m-Y') . '/PoNumberRef_' . str_replace('/', '_', $orderData->po_number_ref) . '/' . 'FPT_' . $pdfFileFPT->getClientOriginalName(); // Add a timestamp to the original filename
             $pdfFileFPT->storeAs('payment_documents', $originalFilenameFPT, 'public');
             $orderData->doc_faktur_pajak_terbayar = 'payment_documents/' . $originalFilenameFPT;
+            $orderData->doc_faktur_pajak_terbayar_uploaded_at = $request->input('doc_faktur_pajak_terbayar_uploaded_at');
 
             $orderData->save();
         } else if ($request->hasFile('doc_SI')) {
@@ -1051,6 +1063,7 @@ class OrderController extends Controller
             $originalFilenameSI = now()->format('d-m-Y') . '/PoNumberRef_' . str_replace('/', '_', $orderData->po_number_ref) . '/' . 'SI_' . $pdfFileSI->getClientOriginalName(); // Add a timestamp to the original filename
             $pdfFileSI->storeAs('payment_documents', $originalFilenameSI, 'public');
             $orderData->doc_SI = 'payment_documents/' . $originalFilenameSI;
+            $orderData->doc_si_uploaded_at = $request->input('doc_si_uploaded_at');
 
             $orderData->save();
         } else if ($request->file('doc_faktur_pajak')) {
@@ -1059,6 +1072,7 @@ class OrderController extends Controller
             $originalFilenameFP = now()->format('d-m-Y') . '/PoNumberRef_' . str_replace('/', '_', $orderData->po_number_ref) . '/' . 'FP_' . $pdfFileFP->getClientOriginalName(); // Add a timestamp to the original filename
             $pdfFileFP->storeAs('payment_documents', $originalFilenameFP, 'public');
             $orderData->doc_faktur_pajak = 'payment_documents/' . $originalFilenameFP;
+            $orderData->doc_faktur_pajak_uploaded_at = $request->input('doc_faktur_pajak_uploaded_at');
 
             $orderData->save();
         } else if ($request->file('doc_faktur_pajak_terbayar')) {
@@ -1067,6 +1081,7 @@ class OrderController extends Controller
             $originalFilenameFPT = now()->format('d-m-Y') . '/PoNumberRef_' . str_replace('/', '_', $orderData->po_number_ref) . '/' . 'FPT_' . $pdfFileFPT->getClientOriginalName(); // Add a timestamp to the original filename
             $pdfFileFPT->storeAs('payment_documents', $originalFilenameFPT, 'public');
             $orderData->doc_faktur_pajak_terbayar = 'payment_documents/' . $originalFilenameFPT;
+            $orderData->doc_faktur_pajak_terbayar_uploaded_at = $request->input('doc_faktur_pajak_terbayar_uploaded_at');
 
             $orderData->save();
         }

@@ -1304,6 +1304,7 @@ return [
         'doc_faktur_pajak_terbayar' => 'Document Faktur Pajak Terbayar',
         'from' => 'From',
         'to' => 'To',
+        'uploaded_at' => 'Uploaded At',
 
         // manufacture
         'manufacture_pic_name' => 'Manufacture PIC Name',
