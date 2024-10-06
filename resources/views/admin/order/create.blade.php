@@ -204,6 +204,27 @@
     <div class="col-md-3 nopadding-left">
       <div class="box">
         <div class="box-header with-border">
+          <h3 class="box-title"><i class="fa fa-calendar"></i> {{ trans('app.backdate') }}</h3>
+          <div class="box-tools pull-right">
+            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+          </div>
+        </div> <!-- /.box-header -->
+        <div class="box-body">
+          <div class="form-group">
+            {!! Form::label('backdate', trans('app.form.backdate'), ['class' => 'with-help']) !!}
+            <i class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="{{ trans('help.backdate') }}"></i>
+            <div class="input-group">
+              <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+              {!! Form::text('backdate', null, ['class' => 'datepicker form-control', 'placeholder' => trans('app.form.backdate'), '']) !!}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-3 nopadding-left">
+      <div class="box">
+        <div class="box-header with-border">
           <h3 class="box-title"> {{ trans('app.customer') }}</h3>
         </div> <!-- /.box-header -->
         <div class="box-body">

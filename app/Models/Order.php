@@ -153,6 +153,9 @@ class Order extends BaseModel
         'due_date_payment',
         'doc_SI',
         'doc_faktur_pajak',
+        'created_at',
+        'updated_at',
+        'is_backdate',
     ];
 
     /**
