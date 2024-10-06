@@ -15,6 +15,10 @@ use App\Http\Requests\Validations\AddInventoryRequest;
 use App\Http\Requests\Validations\CreateInventoryRequest;
 use App\Http\Requests\Validations\UpdateInventoryRequest;
 use App\Http\Requests\Validations\CreateInventoryWithVariantRequest;
+use App\Models\Shop;
+use App\Models\StockTransfer;
+use App\Models\User;
+use DB;
 
 class InventoryController extends Controller
 {
@@ -90,6 +94,8 @@ class InventoryController extends Controller
             $inventory = $inventory->inActive();
         } elseif ($status == 'outOfStock') {
             $inventory = $inventory->stockOut();
+        } elseif ($status == 'stockTransfer') {
+            $inventory = $inventory->stockTransfer();
         }
 
         $inventory = $inventory->get();
@@ -111,8 +117,8 @@ class InventoryController extends Controller
             ->editColumn('checkbox', function ($inventory) {
                 return view('admin.inventory.partials.checkbox', compact('inventory'));
             })
-            ->editColumn('image', function ($inventory) {
-                return view('admin.inventory.partials.image', compact('inventory'));
+            ->editColumn('image', function ($inventory) use ($status) {
+                return view('admin.inventory.partials.image', compact('inventory', 'status'));
             })
             ->editColumn('quantity', function ($inventory) {
                 return view('admin.inventory.partials.quantity', compact('inventory'));
@@ -141,12 +147,34 @@ class InventoryController extends Controller
 
             $rawColumns[] = 'base_price';
         } else {
+
             $data = $data->editColumn('sale_price', function ($inventory) {
                 return view('admin.inventory.partials.price', compact('inventory'));
             })->addColumn('option', function ($inventory) {
                 return view('admin.inventory.partials.options', compact('inventory'));
             });
 
+            if ($status == 'stockTransfer') {
+                $data = $data->editColumn('option', function ($inventory) {
+                    $stock_transfer = StockTransfer::where('id',$inventory->stock_transfer_id)->first();
+                    return view('admin.inventory.partials.stock_transfer_options', compact('stock_transfer'));
+                });
+
+                $data = $data->editColumn('status', function ($inventory) {
+                    return get_stock_transfer_status_name((int) $inventory->status);
+                });
+
+                $data = $data->editColumn('updated_by', function ($inventory) {
+                    $user = User::find($inventory->updated_by);
+                    return $inventory->updated_by ? $user->pic_name .' ('.$user->warehouse_name.')': '-';
+                });
+
+                $data = $data->editColumn('approve_by', function ($inventory) {
+                    $user = User::find($inventory->approve_by);
+                    return $inventory->approve_by ? $user->pic_name.' ('.$user->warehouse_name.')' : '-';
+                });
+            }
+            
             $rawColumns[] = 'sale_price';
         }
 
@@ -743,4 +771,82 @@ class InventoryController extends Controller
 
         return $filtered_string;
     }
+
+    /**
+     * Show stock transfer form
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function showForm()
+    {
+        return view('admin.inventory._stock_transfer');
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function searchWarehouse()
+    {
+        return view('admin.order._search_warehouse');
+    }
+
+    public function stockTransferWarehouse(Request $request)
+    {
+        // dump($request->input('warehouse_id'));
+        $data['shop_arrival_id'] = (int) $request->input('warehouse_id');
+        $data['shop_depature_id'] = (int) Auth::user()->shop_id;
+        $data['shop_depature'] = Shop::where('id', (int) Auth::user()->shop_id)->first();
+        $data['shop_arrival'] = Shop::where('id', (int) $request->input('warehouse_id'))->first();
+
+        return view('admin.inventory._stock_transfer_form', $data);
+    }
+
+    public function storeStockTransfer(Request $request)
+    {
+        // dd($request->all());
+
+        $request->validate([
+            //'sku' => 'bail|required|composite_unique:inventories,sku,shop_id:' .  auth()->user()->merchantId()
+        ]);
+
+
+       $inventory = $this->inventory->storeStockTransfer($request);
+
+        $request->session()->flash('success', trans('messages.created', ['model' => $this->model]));
+
+        return redirect()->route('admin.stock.inventory.index');
+
+    //    return response()->json($this->getJsonParams($inventory));
+
+        /**
+         * get inventory each product 
+         * each warehouse
+         * get current stock
+         * 
+         * create stock transfer information
+         * calculate stock -> insert stock_transfer_items
+         * 
+         */
+    }
+
+    public function stockTransferDetails(Request $request, StockTransfer $stock_transfer)
+    {
+        return view('admin.inventory._show_stock_transfer', compact('stock_transfer'));
+    }
+
+    public function updateStatusStocktransfer(Request $request, StockTransfer $stock_transfer)
+    {
+        $request->validate([
+            //'sku' => 'bail|required|composite_unique:inventories,sku,shop_id:' .  auth()->user()->merchantId()
+        ]);
+
+       $inventory = $this->inventory->updateStockTransferStatus($request, $stock_transfer);
+
+        $request->session()->flash('success', trans('messages.created', ['model' => $this->model]));
+
+        return redirect()->back();
+    }
+
 }

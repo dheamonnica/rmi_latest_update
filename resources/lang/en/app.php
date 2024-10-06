@@ -806,6 +806,35 @@ return [
     'update_payment_terms' => 'Update Payment Term',
     'delivered_order' => 'Order Delivered',
 
+    //stock_transfer here
+    'stock_transfer' => 'Stock Transfer',
+    'status' => 'Status',
+    'movement_number' => 'Movement Number',
+    'send_by' => 'Sender',
+    'received_by' => 'Receiver',
+    'transfer_date' => 'Date',
+    'qty' => 'Quantity',
+    'approve_by' => 'Approved By',
+    'approve_date' => 'Date Approved',
+    'updated_by' => 'Updated By',
+    'last_update' => 'Last Update',
+    'add_to_transfer' => 'Add To Transfer',
+    'quantity_total' => 'Quantity Total',
+    'product_total' => 'Product Total',
+    'transfer_type' => 'Transfer Type',
+    'transfer_stock' => 'Transfer Stock',
+    'send_by_warehouse' => 'Send By Warehouse',
+    'send_by_warehouse_at' => 'Send By Warehouse At',
+    'on_delivery_by' => 'On Delivery By',
+    'on_delivery_at' => 'On Delivery At',
+    'expired_date' => 'Expired Date',
+    'transfer_qty' => 'Transfer Qty',
+    'delivered_by' => 'Delivered By',
+    'delivered_at' => 'Delivered At',
+    'received_at' => 'Received At',
+    'approved_by' => 'Approved By',
+    'approved_at' => 'Approved At',
+
     'payment_method_type' => [
         'paypal' => [
             'name' => 'PayPal',
@@ -868,7 +897,17 @@ return [
         'partials' => 'Partial',
         'partial_fulfilled' => 'Fulfilled',
         'awaiting_payment' => '	Awaiting payment',
-        ''
+        '',
+        'stock_transfer' => [
+            'approved' => 'Approved',
+            'created' => 'Created',
+            'packing' => 'Packing',
+            'send_by_warehouse' => 'Send By Warehouse',
+            'on_delivery' => 'On Delivery',
+            'delivered' => 'Delivered',
+            'received_by' => 'Received By',
+            'packed' => 'packed',
+        ]
     ],
 
     'priorities' => [
@@ -1396,6 +1435,12 @@ return [
         'create_overtime' => 'Create Overtime',
         'start_time' => 'Start Time',
         'end_time' => 'End Time',
+
+        //stock transfer
+        'stock_transfer' => 'Stock Transfer',
+        'search_warehouse' => 'Search Warehouse',
+        'transfer_stock' => 'Transfer Stock',
+        'transfer_type' => 'Transfer Type',
     ],
 
     'placeholder' => [
@@ -1638,6 +1683,9 @@ return [
         'bank_account_type' => 'Bank Type',
         'bank_account_name' => 'Bank Account Name',
         'bank_account' => 'Bank Account',
+
+        //stock_transfer
+        'search_warehouse' => 'Search Warehouse',
     ],
 
     // Version 1.3.0
@@ -2050,3 +2098,6 @@ return [
     'year_start' => 'Year Start',
     'year_end' => 'Year End',
 ];
+
+
+//all stock transfer here

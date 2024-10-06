@@ -143,6 +143,8 @@ class ViewComposerServiceProvider extends ServiceProvider
         $this->composeViewShippingMethodsPage();
 
         $this->composeWarehouseForm();
+
+        $this->composeCreateStockTransferForm();
     }
 
     /**
@@ -742,6 +744,58 @@ class ViewComposerServiceProvider extends ServiceProvider
         );
     }
 
+     /**
+     * compose partial view of invoice and order filter
+     */
+    private function composeCreateStockTransferForm()
+    {
+        View::composer(
+            'admin.inventory._stock_transfer_form',
+
+            function ($view) {
+                $config = Config::findOrFail(Auth::user()->merchantId());
+
+                $inventories = Inventory::mine()->available()->with('attributeValues')->get();
+
+                foreach ($inventories as $inventory) {
+                    $str = ' - ';
+
+                    foreach ($inventory->attributeValues as $k => $attrValue) {
+                        $str .= $attrValue->value . ' - ';
+                    }
+
+                    $str = substr($str, 0, -3);
+
+                    $items[$inventory->id] = $inventory->sku . '(sku): ' . $inventory->title . $str . ' - ' . $inventory->expired_date . '(exp) - ' . $inventory->stock_quantity . '(pcs)';
+
+                    if ($inventory->image) {
+                        $img_path = optional($inventory->image)->path;
+                    } elseif ($inventory->product->featuredImage) {
+                        $img_path = optional($inventory->product->featuredImage)->path;
+                    } else {
+                        $img_path = optional($inventory->product->image)->path;
+                    }
+
+                    $product_info[$inventory->id] = [
+                        'id' => $inventory->product_id,
+                        'image' => $img_path,
+                        'salePrice' => round($inventory->sale_price, 2),
+                        'offerPrice' => round($inventory->offer_price, 2),
+                        'stockQtt' => $inventory->stock_quantity,
+                        'shipping_weight' => $inventory->shipping_weight,
+                        'offerStart' => $inventory->offer_start === null ? null : $inventory->offer_start->format('Y-m-d h:i:a'),
+                        'offerEnd' => $inventory->offer_end === null ? null : $inventory->offer_end->format('Y-m-d h:i:a'),
+                        'dateNow' => date("Y-m-d h:i:a"),
+                        'product_id' => $inventory->product_id,
+                    ];
+                }
+
+                $view->with('products', isset($items) ? $items : []);
+                $view->with('inventories', isset($product_info) ? $product_info : []);
+
+            }
+        );
+    }
     /**
      * compose partial view of ticket create form
      */

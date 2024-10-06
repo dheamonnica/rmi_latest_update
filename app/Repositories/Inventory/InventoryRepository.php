@@ -21,4 +21,8 @@ interface InventoryRepository
     public function getAttributeList(array $variants);
 
     public function confirmAttributes($attributeWithValues);
+
+    public function storeStockTransfer(Request $request);
+
+    public function updateStockTransferStatus(Request $request, $stockTransfer);
 }

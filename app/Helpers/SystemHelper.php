@@ -217,10 +217,12 @@ if (!function_exists('getShopConfig')) {
      *
      * @param $int packaging
      */
-    function getShopConfig($shop, $column)
+    function getShopConfig($shop, $column, $return = true)
     {
-        if (config('shop_settings') && array_key_exists($column, config('shop_settings'))) {
-            return config('shop_settings.' . $column);
+        if ($return) {
+            if (config('shop_settings') && array_key_exists($column, config('shop_settings'))) {
+                return config('shop_settings.' . $column);
+            }
         }
 
         return DB::table('configs')->where('shop_id', $shop)->value($column);
