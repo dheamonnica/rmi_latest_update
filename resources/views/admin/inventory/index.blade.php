@@ -20,6 +20,12 @@
             {{ trans('app.inactive_stocks') }}
           </a>
         </li>
+        <li class="{{ Request::input('tab') == 'stock_transfer' ? 'active' : '' }}">
+          <a href="#stock_transfers_tab" data-toggle="tab">
+            <i class="fa fa-bell-o hidden-sm"></i>
+            {{ trans('app.stock_transfer') }}
+          </a>
+        </li>
         <li class="{{ Request::input('tab') == 'out_of_stock' ? 'active' : '' }}">
           <a href="#stock_out_tab" data-toggle="tab">
             <i class="fa fa-bullhorn hidden-sm"></i>
@@ -102,6 +108,49 @@
               </tr>
             </thead>
             <tbody id="massSelectArea2">
+            </tbody>
+          </table>
+        </div>
+
+        <div class="tab-pane {{ Request::input('tab') == 'stock_transfer' ? 'active' : '' }} responsive-table" id="stock_transfers_tab">
+          <table class="table table-hover" id="stockTransfer">
+            <thead>
+              @can('massDelete', \App\Models\Inventory::class)
+                  <th class="massActionWrapper">
+                    <!-- Check all button -->
+                    <div class="btn-group ">
+                      <button type="button" class="btn btn-xs btn-default checkbox-toggle">
+                        <i class="fa fa-square-o" data-toggle="tooltip" data-placement="top" title="{{ trans('app.select_all') }}"></i>
+                      </button>
+                      <button type="button" class="btn btn-xs btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                        <span class="caret"></span>
+                        <span class="sr-only">{{ trans('app.toggle_dropdown') }}</span>
+                      </button>
+                      <ul class="dropdown-menu" role="menu">
+                        <li><a href="javascript:void(0)" data-link="{{ route('admin.stock.inventory.massTrash') }}" class="massAction " data-doafter="reload"><i class="fa fa-trash"></i> {{ trans('app.trash') }}</a></li>
+                        <li><a href="javascript:void(0)" data-link="{{ route('admin.stock.inventory.massDestroy') }}" class="massAction " data-doafter="reload"><i class="fa fa-times"></i> {{ trans('app.delete_permanently') }}</a></li>
+                      </ul>
+                    </div>
+                  </th>
+                @endcan
+                <th>{{ trans('app.image') }}</th>
+                <th>{{ trans('app.sku') }}</th>
+                <th>{{ trans('app.title') }}</th>
+                <th>{{ trans('app.form.expired_date') }}</th>
+                <th>{{ trans('app.movement_number') }}</th>
+                <th>{{ trans('app.send_by') }}</th>
+                <th>{{ trans('app.received_by') }}</th>
+                <th>{{ trans('app.transfer_date') }}</th>
+                <th>{{ trans('app.status') }}</th>
+                <th>{{ trans('app.qty') }}</th>
+                <th>{{ trans('app.approve_by') }}</th>
+                <th>{{ trans('app.approve_date') }}</th>
+                <th>{{ trans('app.updated_by') }}</th>
+                <th>{{ trans('app.last_update') }}</th>
+                <th>{{ trans('app.option') }}</th>
+              </tr>
+            </thead>
+            <tbody id="massSelectArea4">
             </tbody>
           </table>
         </div>

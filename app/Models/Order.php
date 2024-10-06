@@ -148,7 +148,6 @@ class Order extends BaseModel
         'packed_date',
         'packed_by',
         'created_by',
-        'created_by',
         'partial_status_id',
         'due_date_payment',
         'doc_SI',
@@ -157,6 +156,9 @@ class Order extends BaseModel
         'doc_faktur_pajak_uploaded_at',
         'doc_faktur_pajak_terbayar',
         'doc_faktur_pajak_terbayar_uploaded_at'
+        'created_at',
+        'updated_at',
+        'is_backdate',
     ];
 
     /**

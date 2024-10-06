@@ -24,6 +24,14 @@ class Inventory extends Inspectable
 
     const CONDITIONS = ['New', 'Used', 'Refurbished'];
 
+    const STATUS_STOCK_TRANSFER_CREATED = 1;
+    const STATUS_STOCK_TRANSFER_PACKING = 2;
+    const STATUS_STOCK_TRANSFER_SEND_BY_WAREHOUSE = 3;
+    const STATUS_STOCK_TRANSFER_ON_DELIVERY = 4;
+    const STATUS_STOCK_TRANSFER_DELIVERED = 5;
+    const STATUS_STOCK_TRANSFER_RECEIVED_BY = 6;
+    const STATUS_STOCK_TRANSFER_APPROVED = 7;
+
     /**
      * The database table used by the model.
      *
@@ -746,6 +754,25 @@ class Inventory extends Inspectable
         }
 
         return $query;
+    }
+
+    /**
+     * Scope a query to only include out of stock items.
+     *
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeStockTransfer($query)
+    {
+        // dd($query->toSql());
+        return $query
+        ->join('stock_transfer_items', function($join) {
+            $join->on('inventories.id', '=', 'stock_transfer_items.from_inventory_id')
+                 ->orOn('inventories.id', '=', 'stock_transfer_items.to_inventory_id');
+        })
+        ->join('stock_transfers', 'stock_transfer_items.stock_transfer_id', '=', 'stock_transfers.id')
+        ->join('shops as shop_from', 'stock_transfers.shop_depature_id', '=', 'shop_from.id')
+        ->join('shops as shop_to', 'stock_transfers.shop_arrival_id', '=', 'shop_to.id')
+        ->select('inventories.*','stock_transfers.id as stock_transfer_id','stock_transfer_items.transfer_qty', 'stock_transfers.movement_number', 'stock_transfers.shop_depature_id', 'stock_transfers.shop_arrival_id', 'shop_from.name as shop_from', 'shop_to.name as shop_to', 'stock_transfers.transfer_date', 'stock_transfers.status', 'stock_transfers.received_by as approve_by', 'stock_transfers.received_time as approve_date', 'stock_transfers.updated_by as updated_by', 'stock_transfers.updated_at as updated_date');
     }
 
     /**
