@@ -24,6 +24,8 @@
                                     title="{{ trans('app.select_all') }}"></i>
                             </button>
                         </th>
+                        <th>{{ trans('app.form.month') }}</th>
+                        <th>{{ trans('app.form.year') }}</th>
                         <th>{{ trans('app.form.full_name') }}</th>
                         <th>{{ trans('app.form.job_position') }}</th>
                         <th>{{ trans('app.form.organization') }}</th>

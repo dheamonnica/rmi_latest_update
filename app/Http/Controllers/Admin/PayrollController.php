@@ -121,6 +121,12 @@ class PayrollController extends Controller
             ->addColumn('checkbox', function ($payroll) {
                 return '<td><input id="' . $payroll->id . '" type="checkbox" class="massCheck"></td>';
             })
+            ->addColumn('month_name', function ($payroll) {
+                return $payroll->month_name;
+            })
+            ->addColumn('year', function ($payroll) {
+                return $payroll->year;
+            })
             ->addColumn('full_name', function ($payroll) {
                 return $payroll->full_name;
             })
@@ -159,9 +165,6 @@ class PayrollController extends Controller
             })
             ->addColumn('reimburse_pengobatan_sakit', function ($payroll) {
                 return number_format($payroll->reimburse_pengobatan_sakit, 0, '.', '.');
-            })
-            ->addColumn('total_allowance', function ($payroll) {
-                return number_format($payroll->total_allowance, 0, '.', '.');
             })
             ->addColumn('total_allowance', function ($payroll) {
                 return number_format($payroll->total_allowance, 0, '.', '.');
@@ -207,31 +210,33 @@ class PayrollController extends Controller
                 'checkbox',
                 'full_name',
                 'position',
-                'organization',
+                'grade',
+                'sub_grade',
+                'level',
+                'take_home_pay',
                 'basic_sallary',
                 'position_allowance',
                 'transportation',
-                'operational_allowance',
+                'uang_oprational_harian',
                 'child_education_allowance',
-                'sales_bonus',
+                'bonus_penjualan',
                 'bonus',
                 'overtime',
-                'reimburse_e_toll_gasoline',
-                'medical_reimbursement',
-                'tax_allowance',
+                'reimburse_etoll_bensin',
+                'reimburse_pengobatan_sakit',
                 'total_allowance',
-                'lateness_deduction',
-                'alpha_deduction',
-                'absence_deduction',
-                'loan',
-                'installment',
-                'employee_pension_security',
-                'employee_jht',
-                'pph_21',
+                'potongan_keterlambatan',
+                'potongan_alpha',
+                'potongan_absensi',
+                'pinjaman',
+                'cicilan',
+                'jaminan_pensiun_employee',
+                'JHT_employee',
+                'PPH21',
                 'total_deduction',
-                'pph_21_payment',
+                'PPH21_payment',
                 'take_home_pay',
-                'telecommunication_allowance'
+                'telekomunikasi',
             ])
             ->make(true);
     }

@@ -671,6 +671,14 @@
                     'printable': false
                 },
                 {
+                    'data': 'month_name',
+                    'name': 'month_name'
+                },
+                {
+                    'data': 'year',
+                    'name': 'year'
+                },
+                {
                     'data': 'full_name',
                     'name': 'full_name'
                 },
