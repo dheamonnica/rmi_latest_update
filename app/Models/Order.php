@@ -152,7 +152,11 @@ class Order extends BaseModel
         'partial_status_id',
         'due_date_payment',
         'doc_SI',
+        'doc_si_uploaded_at',
         'doc_faktur_pajak',
+        'doc_faktur_pajak_uploaded_at',
+        'doc_faktur_pajak_terbayar',
+        'doc_faktur_pajak_terbayar_uploaded_at'
     ];
 
     /**

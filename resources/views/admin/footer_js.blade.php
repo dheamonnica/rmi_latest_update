@@ -1052,7 +1052,7 @@
         var tableOrdePaymentDocReport = $('#payment-doc-table').DataTable($.extend({}, dataTableOptions, {
             "ajax": "{{ route('admin.order.getOrderPaymentDocReport') }}",
             scrollCollapse: true,
-            // scrollX: true,
+            scrollX: true,
             "columns": [{
                     'data': 'created_at',
                     'name': 'created_at',
@@ -1078,12 +1078,24 @@
                     'name': 'doc_SI',
                 },
                 {
+                    'data': 'doc_si_uploaded_at',
+                    'name': 'doc_si_uploaded_at',
+                },
+                {
                     'data': 'doc_faktur_pajak',
                     'name': 'doc_faktur_pajak',
                 },
                 {
+                    'data': 'doc_faktur_pajak_uploaded_at',
+                    'name': 'doc_faktur_pajak_uploaded_at',
+                },
+                {
                     'data': 'doc_faktur_pajak_terbayar',
                     'name': 'doc_faktur_pajak_terbayar',
+                },
+                {
+                    'data': 'doc_faktur_pajak_terbayar_uploaded_at',
+                    'name': 'doc_faktur_pajak_terbayar_uploaded_at',
                 },
                 {
                     'data': 'payment_status',
