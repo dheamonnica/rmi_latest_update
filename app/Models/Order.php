@@ -155,7 +155,7 @@ class Order extends BaseModel
         'doc_faktur_pajak',
         'doc_faktur_pajak_uploaded_at',
         'doc_faktur_pajak_terbayar',
-        'doc_faktur_pajak_terbayar_uploaded_at'
+        'doc_faktur_pajak_terbayar_uploaded_at',
         'created_at',
         'updated_at',
         'is_backdate',
