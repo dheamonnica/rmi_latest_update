@@ -71,6 +71,7 @@ return [
         'payroll' => 'Payroll',
         'department' => 'Department',
         'overtime' => 'Overtime',
+        'loan' => 'Loan',
     ],
 
     // Application Levels
@@ -1444,6 +1445,10 @@ return [
         'transfer_stock' => 'Transfer Stock',
         'transfer_type' => 'Transfer Type',
         
+        // loan
+        'create_loan' => 'Create Loan',
+        'amount' => 'Amount',
+        'reason' => 'Reason',
 
         'backdate' => 'Back Date',
     ],

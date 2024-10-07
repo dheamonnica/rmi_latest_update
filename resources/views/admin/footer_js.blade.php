@@ -782,6 +782,65 @@
         }));
         // END OVERTIME TABLE
 
+        // LOAN TABLE
+        $('#loan-tables').DataTable($.extend({}, dataTableOptions, {
+            "ajax": "{{ route('admin.admin.loan.getLoans') }}",
+            "columns": [{
+                    'data': 'checkbox',
+                    'name': 'checkbox',
+                    'orderable': false,
+                    'searchable': false,
+                    'exportable': false,
+                    'printable': false
+                },
+                {
+                    'data': 'created_at',
+                    'name': 'created_at'
+                },
+                {
+                    'data': 'created_by',
+                    'name': 'created_by'
+                },
+                {
+                    'data': 'status',
+                    'name': 'status'
+                },
+                {
+                    'data': 'amount',
+                    'name': 'amount'
+                },
+                {
+                    'data': 'reason',
+                    'name': 'reason'
+                },
+                {
+                    'data': 'approved_by',
+                    'name': 'approved_by'
+                },
+                {
+                    'data': 'approved_at',
+                    'name': 'approved_at'
+                },
+                {
+                    'data': 'updated_by',
+                    'name': 'updated_by'
+                },
+                {
+                    'data': 'updated_at',
+                    'name': 'updated_at'
+                },
+                {
+                    'data': 'option',
+                    'name': 'option',
+                    'orderable': false,
+                    'searchable': false,
+                    'exportable': false,
+                    'printable': false
+                }
+            ]
+        }));
+        // END LOAN TABLE
+
         // PAYROLL REPORT TABLE
         $('#payroll-report-tables').DataTable($.extend({}, dataTableOptions, {
             "ajax": "{{ route('admin.admin.payroll.getReportPayroll') }}",

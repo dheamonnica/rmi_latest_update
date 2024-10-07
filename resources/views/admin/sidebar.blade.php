@@ -638,6 +638,21 @@
                         </li>
                     </ul>
                 </li>
+                <li class="treeview {{ Request::is('admin/loan*') }}">
+                    <a href="javascript:void(0)">
+                        <i class="fa fa-money"></i>
+                        <span>Loan</span>
+                        <i class="fa fa-angle-left pull-right"></i>
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </a>
+                    <ul class="treeview-menu">
+                        <li class="{{ Request::is('admin/loan*') ? 'active' : '' }}">
+                            <a href="{{ route('admin.loan.index') }}">
+                                Loan
+                            </a>
+                        </li>
+                    </ul>
+                </li>
                 <li
                     class="treeview {{ Request::is('admin/report*') || Request::is('admin/shop/report*') ? 'active' : '' }}">
                     <a href="javascript:void(0)">
