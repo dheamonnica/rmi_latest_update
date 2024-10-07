@@ -174,7 +174,7 @@
                             @if (Auth::user()->role_id === 10 || Auth::user()->role_id === 1)
                                 <li class="{{ Request::is('admin/order/order-payment-document') ? 'active' : '' }}">
                                     <a href="{{ url('admin/order/order-payment-document') }}">
-                                        Payment Document
+                                        Payment Doc
                                     </a>
                                 </li>
                             @endif
@@ -734,13 +734,13 @@
 
                         <li class="{{ Request::is('admin/budget*') ? 'active' : '' }}">
                             <a href="{{ route('admin.budget.reportAdministrator') }}">
-                                Budget Report
+                                Budget
                             </a>
                         </li>
 
                         <li class="{{ Request::is('admin/visit*') ? 'active' : '' }}">
                             <a href="{{ route('admin.visit.index') }}">
-                                Visit Plan Report
+                                Visit Plan
                             </a>
                         </li>
 

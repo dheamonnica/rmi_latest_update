@@ -31,6 +31,7 @@
                         <th>{{ trans('app.form.name') }}</th>
                         <th>{{ trans('app.form.start_time') }}</th>
                         <th>{{ trans('app.form.end_time') }}</th>
+                        <th>{{ trans('app.form.spend_time') }}</th>
                         <th>{{ trans('app.form.status') }}</th>
 
                         <th>{{ trans('app.form.approved_by') }}</th>

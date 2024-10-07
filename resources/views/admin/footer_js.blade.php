@@ -739,6 +739,10 @@
                     'name': 'end_time'
                 },
                 {
+                    'data': 'spend_time',
+                    'name': 'spend_time'
+                },
+                {
                     'data': 'status',
                     'name': 'status'
                 },

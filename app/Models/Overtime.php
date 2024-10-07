@@ -29,6 +29,7 @@ class Overtime extends BaseModel
         'user_id',
         'start_time',
         'end_time',
+        'spend_time',
         'status',
         'approved_at',
         'approved_by',

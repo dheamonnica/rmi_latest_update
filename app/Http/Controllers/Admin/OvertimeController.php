@@ -65,6 +65,14 @@ class OvertimeController extends Controller
             ->addColumn('end_time', function ($overtime) {
                 return $overtime->end_time;
             })
+            ->addColumn('spend_time', function ($overtime) {
+                // Assuming $overtime->spend_time is in minutes, convert to hours
+                $hours = floor($overtime->spend_time / 60); // Get the full hours
+                $minutes = $overtime->spend_time % 60; // Get the remaining minutes
+
+                // Format it as 'X hours Y minutes'
+                return "{$hours} hrs {$minutes} minutes";
+            })
             ->addColumn('status', function ($overtime) {
                 return $overtime->status == 0 ? 
                 '<span class="label label-danger">NOT APPROVED</span>' : '<span class="label label-primary">APPROVED</span>';
@@ -114,6 +122,10 @@ class OvertimeController extends Controller
     {
         date_default_timezone_set('Asia/Jakarta');
         $request['created_at'] = date('Y-m-d G:i:s');
+        // Calculate the difference in minutes
+        $minutesSpent = $request->end_time->diffInMinutes($request->start_time);
+        $request['spend_time'] = $minutesSpent;
+
         $this->overtime->store($request);
         return back()->with('success', trans('messages.created', ['model' => $this->model_name]));
     }
@@ -141,6 +153,14 @@ class OvertimeController extends Controller
     {
         date_default_timezone_set('Asia/Jakarta');
         $request['updated_at'] = date('Y-m-d G:i:s');
+
+        // Calculate the difference in minutes
+        $start_time = Carbon::parse($request->start_time)->format('Y-m-d G:i:s');
+        $end_time = Carbon::parse($request->end_time)->format('Y-m-d G:i:s');
+
+        $minutesSpent = Carbon::parse($end_time)->diffInMinutes(Carbon::parse($start_time));
+        $request['spend_time'] = $minutesSpent;
+
         $this->overtime->update($request, $id);
 
         return back()->with('success', trans('messages.updated', ['model' => $this->model_name]));

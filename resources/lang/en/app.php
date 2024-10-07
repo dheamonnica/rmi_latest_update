@@ -1436,6 +1436,7 @@ return [
         'create_overtime' => 'Create Overtime',
         'start_time' => 'Start Time',
         'end_time' => 'End Time',
+        'spend_time' => 'Spend Time',
 
         //stock transfer
         'stock_transfer' => 'Stock Transfer',
