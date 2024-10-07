@@ -215,7 +215,7 @@
             <i class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="{{ trans('help.backdate') }}"></i>
             <div class="input-group">
               <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-              {!! Form::text('backdate', null, ['class' => 'datepicker form-control', 'placeholder' => trans('app.form.backdate'), '']) !!}
+              {!! Form::text('backdate', null, ['class' => 'datetimepicker form-control', 'placeholder' => trans('app.form.backdate'), '']) !!}
             </div>
           </div>
         </div>
