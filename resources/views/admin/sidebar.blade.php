@@ -174,7 +174,7 @@
                             @if (Auth::user()->role_id === 10 || Auth::user()->role_id === 1)
                                 <li class="{{ Request::is('admin/order/order-payment-document') ? 'active' : '' }}">
                                     <a href="{{ url('admin/order/order-payment-document') }}">
-                                        Payment Document
+                                        Payment Doc
                                     </a>
                                 </li>
                             @endif
@@ -638,6 +638,26 @@
                         </li>
                     </ul>
                 </li>
+                <li class="treeview {{ Request::is('admin/loan*') }}">
+                    <a href="javascript:void(0)">
+                        <i class="fa fa-money"></i>
+                        <span>Loan</span>
+                        <i class="fa fa-angle-left pull-right"></i>
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </a>
+                    <ul class="treeview-menu">
+                        <li class="{{ Request::is('admin/loan') ? 'active' : '' }}">
+                            <a href="{{ route('admin.loan.index') }}">
+                                Data
+                            </a>
+                        </li>
+                        <li class="{{ Request::is('admin/loan-payment') ? 'active' : '' }}">
+                            <a href="{{ route('admin.admin.loan.payment') }}">
+                                Payment
+                            </a>
+                        </li>
+                    </ul>
+                </li>
                 <li
                     class="treeview {{ Request::is('admin/report*') || Request::is('admin/shop/report*') ? 'active' : '' }}">
                     <a href="javascript:void(0)">
@@ -734,13 +754,13 @@
 
                         <li class="{{ Request::is('admin/budget*') ? 'active' : '' }}">
                             <a href="{{ route('admin.budget.reportAdministrator') }}">
-                                Budget Report
+                                Budget
                             </a>
                         </li>
 
                         <li class="{{ Request::is('admin/visit*') ? 'active' : '' }}">
                             <a href="{{ route('admin.visit.index') }}">
-                                Visit Plan Report
+                                Visit Plan
                             </a>
                         </li>
 

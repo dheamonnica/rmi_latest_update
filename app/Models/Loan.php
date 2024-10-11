@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 
-class Overtime extends BaseModel
+class Loan extends BaseModel
 {
     use HasFactory, SoftDeletes, Imageable;
 
@@ -17,7 +17,7 @@ class Overtime extends BaseModel
      *
      * @var string
      */
-    protected $table = 'overtime_users';
+    protected $table = 'loan_users';
 
     /**
      * The attributes that are mass assignable.
@@ -25,25 +25,16 @@ class Overtime extends BaseModel
      * @var array
      */
     protected $fillable = [
-        'id',
-        'user_id',
-        'start_time',
-        'end_time',
-        'spend_time',
-        'status',
-        'approved_at',
-        'approved_by',
         'created_at',
         'created_by',
+        'status',
+        'amount',
+        'reason',
+        'approved_at',
+        'approved_by',
         'updated_at',
-        'updated_by'
-
+        'updated_by',
     ];
-
-    public function getCreatedBy()
-    {
-        return $this->belongsTo(User::class, 'user_id');
-    }
 
     public function getCreatedUsername()
     {
@@ -54,20 +45,25 @@ class Overtime extends BaseModel
     {
         return $this->belongsTo(User::class, 'updated_by');
     }
-
     public function getApprovedUsername()
     {
         return $this->belongsTo(User::class, 'approved_by');
     }
-
-    public function updateStatusApprove(Request $request, $overtime)
+    public function creator()
     {
-        $overtime->approved_at = date("Y-m-d G:i:s");
-        $overtime->approved_by = Auth::user()->id;
-        $overtime->updated_at = date("Y-m-d G:i:s");
-        $overtime->updated_by = Auth::user()->id;
-        $overtime->status = 1;
+        return $this->belongsTo(User::class, 'created_by');
+    }
 
-        return $overtime->save();
+    public static function getLoanAndPaymentData($id) {
+        $query = "SELECT 
+            loan_users.created_by, 
+            SUM(loan_users.amount) AS sum_amount_loan, 
+            SUM(loan_payment_users.amount) over (PARTITION by loan_payment_users.created_by ) AS sum_amount_loan_payment
+        FROM `loan_users` left JOIN `loan_payment_users` 
+        ON `loan_users`.`created_by` = `loan_payment_users`.`user_id`
+        AND loan_payment_users.deleted_at IS NULL
+        WHERE loan_users.deleted_at IS NULL AND loan_users.status = 1 AND loan_users.created_by = $id";
+
+        return DB::select(DB::raw($query));
     }
 }

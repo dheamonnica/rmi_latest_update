@@ -71,6 +71,7 @@ return [
         'payroll' => 'Payroll',
         'department' => 'Department',
         'overtime' => 'Overtime',
+        'loan' => 'Loan',
     ],
 
     // Application Levels
@@ -1436,6 +1437,7 @@ return [
         'create_overtime' => 'Create Overtime',
         'start_time' => 'Start Time',
         'end_time' => 'End Time',
+        'spend_time' => 'Spend Time',
 
         //stock transfer
         'stock_transfer' => 'Stock Transfer',
@@ -1443,6 +1445,15 @@ return [
         'transfer_stock' => 'Transfer Stock',
         'transfer_type' => 'Transfer Type',
         
+        // loan
+        'create_loan' => 'Create Loan',
+        'amount' => 'Amount',
+        'reason' => 'Reason',
+        'loan_id' => 'Loan ID',
+        'outstanding_balance' => 'Outstanding Balance',
+        'create_loan_payment' => 'Create Loan Payment',
+        'select_user' => 'Select User',
+        'total_loan' => 'Total Loan',
 
         'backdate' => 'Back Date',
     ],

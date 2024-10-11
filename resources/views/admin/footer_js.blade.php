@@ -739,6 +739,10 @@
                     'name': 'end_time'
                 },
                 {
+                    'data': 'spend_time',
+                    'name': 'spend_time'
+                },
+                {
                     'data': 'status',
                     'name': 'status'
                 },
@@ -777,6 +781,124 @@
             ]
         }));
         // END OVERTIME TABLE
+
+        // LOAN TABLE
+        $('#loan-tables').DataTable($.extend({}, dataTableOptions, {
+            "ajax": "{{ route('admin.admin.loan.getLoans') }}",
+            "columns": [{
+                    'data': 'checkbox',
+                    'name': 'checkbox',
+                    'orderable': false,
+                    'searchable': false,
+                    'exportable': false,
+                    'printable': false
+                },
+                {
+                    'data': 'id',
+                    'name': 'id'
+                },
+                {
+                    'data': 'created_at',
+                    'name': 'created_at'
+                },
+                {
+                    'data': 'created_by',
+                    'name': 'created_by'
+                },
+                {
+                    'data': 'status',
+                    'name': 'status'
+                },
+                {
+                    'data': 'amount',
+                    'name': 'amount'
+                },
+                {
+                    'data': 'reason',
+                    'name': 'reason'
+                },
+                {
+                    'data': 'approved_by',
+                    'name': 'approved_by'
+                },
+                {
+                    'data': 'approved_at',
+                    'name': 'approved_at'
+                },
+                {
+                    'data': 'updated_by',
+                    'name': 'updated_by'
+                },
+                {
+                    'data': 'updated_at',
+                    'name': 'updated_at'
+                },
+                {
+                    'data': 'option',
+                    'name': 'option',
+                    'orderable': false,
+                    'searchable': false,
+                    'exportable': false,
+                    'printable': false
+                }
+            ]
+        }));
+        // END LOAN TABLE
+
+        // LOAN PAYMENT TABLE
+        $('#loan-payment-tables').DataTable($.extend({}, dataTableOptions, {
+            "ajax": "{{ route('admin.admin.loan.getLoanPayments') }}",
+            "columns": [{
+                    'data': 'checkbox',
+                    'name': 'checkbox',
+                    'orderable': false,
+                    'searchable': false,
+                    'exportable': false,
+                    'printable': false
+                },
+                {
+                    'data': 'user_id',
+                    'name': 'user_id'
+                },
+                {
+                    'data': 'total_loan',
+                    'name': 'total_loan'
+                },
+                {
+                    'data': 'amount',
+                    'name': 'amount'
+                },
+                {
+                    'data': 'outstanding_balance',
+                    'name': 'outstanding_balance'
+                },
+                {
+                    'data': 'created_at',
+                    'name': 'created_at'
+                },
+                {
+                    'data': 'created_by',
+                    'name': 'created_by'
+                },
+                {
+                    'data': 'updated_by',
+                    'name': 'updated_by'
+                },
+                {
+                    'data': 'updated_at',
+                    'name': 'updated_at'
+                },
+                {
+                    'data': 'option',
+                    'name': 'option',
+                    'orderable': false,
+                    'searchable': false,
+                    'exportable': false,
+                    'printable': false
+                }
+            ]
+        }));
+        // END LOAN TABLE
 
         // PAYROLL REPORT TABLE
         $('#payroll-report-tables').DataTable($.extend({}, dataTableOptions, {

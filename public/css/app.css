@@ -3792,7 +3792,7 @@ a:focus {
   padding: 5px;
   border-radius: 0 0 10px 10px;
   height: 90vh;
-  overflow: scroll;
+  overflow-y: scroll;
   /* margin: 7px 0px;
   background: white;
   border-radius: 10px;

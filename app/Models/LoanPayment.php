@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 
-class Overtime extends BaseModel
+class LoanPayment extends BaseModel
 {
     use HasFactory, SoftDeletes, Imageable;
 
@@ -17,7 +17,7 @@ class Overtime extends BaseModel
      *
      * @var string
      */
-    protected $table = 'overtime_users';
+    protected $table = 'loan_payment_users';
 
     /**
      * The attributes that are mass assignable.
@@ -25,22 +25,17 @@ class Overtime extends BaseModel
      * @var array
      */
     protected $fillable = [
-        'id',
         'user_id',
-        'start_time',
-        'end_time',
-        'spend_time',
-        'status',
-        'approved_at',
-        'approved_by',
         'created_at',
         'created_by',
+        'total_loan',
+        'amount',
+        'outstanding_balance',
         'updated_at',
-        'updated_by'
-
+        'updated_by',
     ];
 
-    public function getCreatedBy()
+    public function getName()
     {
         return $this->belongsTo(User::class, 'user_id');
     }
@@ -53,21 +48,5 @@ class Overtime extends BaseModel
     public function getUpdatedUsername()
     {
         return $this->belongsTo(User::class, 'updated_by');
-    }
-
-    public function getApprovedUsername()
-    {
-        return $this->belongsTo(User::class, 'approved_by');
-    }
-
-    public function updateStatusApprove(Request $request, $overtime)
-    {
-        $overtime->approved_at = date("Y-m-d G:i:s");
-        $overtime->approved_by = Auth::user()->id;
-        $overtime->updated_at = date("Y-m-d G:i:s");
-        $overtime->updated_by = Auth::user()->id;
-        $overtime->status = 1;
-
-        return $overtime->save();
     }
 }
