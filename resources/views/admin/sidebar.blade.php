@@ -646,9 +646,14 @@
                         <i class="fa fa-angle-left pull-right"></i>
                     </a>
                     <ul class="treeview-menu">
-                        <li class="{{ Request::is('admin/loan*') ? 'active' : '' }}">
+                        <li class="{{ Request::is('admin/loan') ? 'active' : '' }}">
                             <a href="{{ route('admin.loan.index') }}">
-                                Loan
+                                Data
+                            </a>
+                        </li>
+                        <li class="{{ Request::is('admin/loan-payment') ? 'active' : '' }}">
+                            <a href="{{ route('admin.admin.loan.payment') }}">
+                                Payment
                             </a>
                         </li>
                     </ul>

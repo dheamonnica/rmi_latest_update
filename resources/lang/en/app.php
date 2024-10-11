@@ -1449,6 +1449,11 @@ return [
         'create_loan' => 'Create Loan',
         'amount' => 'Amount',
         'reason' => 'Reason',
+        'loan_id' => 'Loan ID',
+        'outstanding_balance' => 'Outstanding Balance',
+        'create_loan_payment' => 'Create Loan Payment',
+        'select_user' => 'Select User',
+        'total_loan' => 'Total Loan',
 
         'backdate' => 'Back Date',
     ],

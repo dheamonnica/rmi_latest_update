@@ -7,19 +7,19 @@
 @section('content')
     <div class="box border-small p-2">
         <div class="box-header with-border">
-            <h3 class="box-title">LOAN DATA</h3>
+            <h3 class="box-title">LOAN PAYMENT DATA</h3>
             <div class="box-tools pull-right p-2">
             </div>
             <div class="pull-right">
                 @if (Auth::user()->isAdmin())
-                    <a href="javascript:void(0)" data-link="{{ route('admin.loan.create') }}"
-                        class="ajax-modal-btn btn btn-new btn-flat ml-5">{{ trans('app.form.create_loan') }}</a>
+                    <a href="javascript:void(0)" data-link="{{ route('admin.loan.payment.create') }}"
+                        class="ajax-modal-btn btn btn-new btn-flat ml-5">{{ trans('app.form.create_loan_payment') }}</a>
                 @endif
             </div>
         </div>
 
         <div class="table-responsive">
-            <table class="table table-hover" id="loan-tables">
+            <table class="table table-hover" id="loan-payment-tables">
                 <thead>
                     <tr>
                         <th class="massActionWrapper">
@@ -28,15 +28,13 @@
                                     title="{{ trans('app.select_all') }}"></i>
                             </button>
                         </th>
-                        <th>{{ trans('app.form.loan_id') }}</th>
-                        <th>{{ trans('app.form.created_at') }}</th>
                         <th>{{ trans('app.form.name') }}</th>
-                        <th>{{ trans('app.form.status') }}</th>
+                        <th>{{ trans('app.form.total_loan') }}</th>
                         <th>{{ trans('app.form.amount') }}</th>
-                        <th>{{ trans('app.form.reason') }}</th>
+                        <th>{{ trans('app.form.outstanding_balance') }}</th>
 
-                        <th>{{ trans('app.form.approved_by') }}</th>
-                        <th>{{ trans('app.form.approved_at') }}</th>
+                        <th>{{ trans('app.form.created_by') }}</th>
+                        <th>{{ trans('app.form.created_at') }}</th>
                         <th>{{ trans('app.form.updated_by') }}</th>
                         <th>{{ trans('app.form.updated_at') }}</th>
                         <th>{{ trans('app.form.option') }}</th>

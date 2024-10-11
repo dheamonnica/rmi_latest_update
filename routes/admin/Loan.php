@@ -2,6 +2,7 @@
 use App\Http\Controllers\Admin\LoanController;
 use Illuminate\Support\Facades\Route;
 
+// LOAN
 Route::get('loan', [
     LoanController::class,
     'index'
@@ -23,4 +24,32 @@ Route::put('loan/{loan}/setApprove', [LoanController::class, 'setApprove'])->nam
 Route::get('edit/{loan}', [LoanController::class, 'edit'])->name('admin.loan.edit');
 Route::delete('loan/{loan}/trash', [LoanController::class, 'trash'])
     ->name('admin.loan.trash');
+Route::resource('loan', LoanController::class);
+
+// LOAN PAYMENT
+Route::get('loan-payment', [
+    LoanController::class,
+    'payment'
+])->name('admin.loan.payment');
+Route::get('getLoanPayments', [
+    LoanController::class,
+    'getLoanPayments'
+])->name('admin.loan.getLoanPayments')->middleware('ajax');
+Route::get('create-loan-payment', [
+    LoanController::class,
+    'createLoanPayment'
+])->name('loan.payment.create');
+Route::post('store-payment', [LoanController::class, 'storeLoanPayment'])->name('loan.payment.store');
+Route::put('update-payment/{loan}', [LoanController::class, 'updatePaymentLoan'])->name('loan.payment.update');
+Route::put('loan-payment/{loan}/setApprove', [LoanController::class, 'setApprovePaymentLoan'])->name('loan.payment.setApprove');
+Route::get('edit-payment/{loan}', [LoanController::class, 'editPaymentLoan'])->name('loan.payment.edit');
+Route::delete('loan-payment/{loan}/trash', [LoanController::class, 'trashPaymentLoan'])
+    ->name('admin.loan.payment.trash');
+
+// API
+Route::get('getLoanAndPaymentData', [
+    LoanController::class,
+    'getLoanAndPaymentData'
+])->name('admin.loan.getLoanAndPaymentData')->middleware('ajax');
+    
 Route::resource('loan', LoanController::class);

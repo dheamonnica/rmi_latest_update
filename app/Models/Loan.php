@@ -49,4 +49,21 @@ class Loan extends BaseModel
     {
         return $this->belongsTo(User::class, 'approved_by');
     }
+    public function creator()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public static function getLoanAndPaymentData($id) {
+        $query = "SELECT 
+            loan_users.created_by, 
+            SUM(loan_users.amount) AS sum_amount_loan, 
+            SUM(loan_payment_users.amount) over (PARTITION by loan_payment_users.created_by ) AS sum_amount_loan_payment
+        FROM `loan_users` left JOIN `loan_payment_users` 
+        ON `loan_users`.`created_by` = `loan_payment_users`.`user_id`
+        AND loan_payment_users.deleted_at IS NULL
+        WHERE loan_users.deleted_at IS NULL AND loan_users.status = 1 AND loan_users.created_by = $id";
+
+        return DB::select(DB::raw($query));
+    }
 }
