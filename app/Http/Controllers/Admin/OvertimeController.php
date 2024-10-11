@@ -57,7 +57,7 @@ class OvertimeController extends Controller
                 return '<td><input id="' . $overtime->id . '" type="checkbox" class="massCheck"></td>';
             })
             ->addColumn('user_id', function ($overtime) {
-                return $overtime->getCreatedBy->name;
+                return $overtime->user_id ? $overtime->getCreatedBy->name : '';
             })
             ->addColumn('start_time', function ($overtime) {
                 return $overtime->start_time;
@@ -81,7 +81,7 @@ class OvertimeController extends Controller
                 return $overtime->created_at;
             })
             ->addColumn('created_by', function ($overtime) {
-                return $overtime->getCreatedUsername->name;
+                return $overtime->created_by ? $overtime->getCreatedUsername->name : '';
             })
             ->addColumn('approved_at', function ($overtime) {
                 return $overtime->approved_at;
@@ -93,7 +93,7 @@ class OvertimeController extends Controller
                 return $overtime->updated_at;
             })
             ->addColumn('updated_by', function ($overtime) {
-                return $overtime->updated_at ? $overtime->getUpdatedUsername->name : '';
+                return $overtime->updated_by ? $overtime->getUpdatedUsername->name : '';
             })
             ->addColumn('option', function ($overtime) {
                 return view('admin.overtime.partials.options', compact('overtime'));
@@ -121,9 +121,13 @@ class OvertimeController extends Controller
     public function store(Request $request)
     {
         date_default_timezone_set('Asia/Jakarta');
-        $request['created_at'] = date('Y-m-d G:i:s');
+        $request['updated_at'] = date('Y-m-d G:i:s');
+
         // Calculate the difference in minutes
-        $minutesSpent = $request->end_time->diffInMinutes($request->start_time);
+        $start_time = Carbon::parse($request->start_time)->format('Y-m-d G:i:s');
+        $end_time = Carbon::parse($request->end_time)->format('Y-m-d G:i:s');
+
+        $minutesSpent = Carbon::parse($end_time)->diffInMinutes(Carbon::parse($start_time));
         $request['spend_time'] = $minutesSpent;
 
         $this->overtime->store($request);
