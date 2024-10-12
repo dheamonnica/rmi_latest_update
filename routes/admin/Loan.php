@@ -46,10 +46,22 @@ Route::get('edit-payment/{loan}', [LoanController::class, 'editPaymentLoan'])->n
 Route::delete('loan-payment/{loan}/trash', [LoanController::class, 'trashPaymentLoan'])
     ->name('admin.loan.payment.trash');
 
+
+Route::get('loan-report', [
+    LoanController::class,
+    'report'
+])->name('admin.loan.report');
 // API
 Route::get('getLoanAndPaymentData', [
     LoanController::class,
     'getLoanAndPaymentData'
 ])->name('admin.loan.getLoanAndPaymentData')->middleware('ajax');
-    
+Route::get('getDataLoanReportFirst', [
+    LoanController::class,
+    'getDataLoanReportFirst'
+])->name('admin.loan.getDataLoanReportFirst')->middleware('ajax');
+Route::get('getDataLoanReportSecond', [
+    LoanController::class,
+    'getDataLoanReportSecond'
+])->name('admin.loan.getDataLoanReportSecond')->middleware('ajax');
 Route::resource('loan', LoanController::class);

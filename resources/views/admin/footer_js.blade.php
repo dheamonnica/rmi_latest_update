@@ -783,7 +783,7 @@
         // END OVERTIME TABLE
 
         // LOAN TABLE
-        $('#loan-tables').DataTable($.extend({}, dataTableOptions, {
+        var loanTable = $('#loan-tables').DataTable($.extend({}, dataTableOptions, {
             "ajax": "{{ route('admin.admin.loan.getLoans') }}",
             "columns": [{
                     'data': 'checkbox',
@@ -843,7 +843,155 @@
                 }
             ]
         }));
+
+        // if isFromPlatform
+        @if (!Auth::user()->isFromPlatform())
+            loanTable.column('created_by:name').search('{{ Auth::user()->name }}').draw();
+        @endif
         // END LOAN TABLE
+
+        // LOAN REPORT TABLE
+        var loanReportTable = $('#loan-report-tables').DataTable($.extend({}, dataTableOptions, {
+            "ajax": "{{ route('admin.admin.loan.getDataLoanReportFirst') }}",
+            "columns": [{
+
+                    className: 'dt-control',
+                    orderable: false,
+                    data: null,
+                    defaultContent: ''
+                },
+                {
+                    'data': 'created_by',
+                    'name': 'created_by',
+                    visible: false
+                },
+                {
+                    'data': 'name',
+                    'name': 'name'
+                },
+                {
+                    'data': 'sum_amount_loan',
+                    'name': 'sum_amount_loan'
+                },
+                {
+                    'data': 'sum_amount_loan_payment',
+                    'name': 'sum_amount_loan_payment'
+                },
+                {
+                    'data': 'total_outstanding_balance',
+                    'name': 'total_outstanding_balance'
+                },
+                {
+                    'data': 'status',
+                    'name': 'status'
+                }
+            ]
+        }));
+
+        // Filter functions
+        // function filterByMonthTarget() {
+        //     var selectedMonth = $('#monthFilterTarget').val();
+        //     loanReportTable.column('month:name').search(selectedMonth).draw();
+        // }
+
+        // function filterByWarehouseTarget() {
+        //     var selectedMerchant = $('#merchantFilterTarget').val();
+        //     tableTargetsReportAdministrator.column('warehouse:name').search(selectedMerchant).draw();
+        // }
+
+        // function filterByYearTarget() {
+        //     var selectedMerchant = $('#yearFilterTarget').val();
+        //     tableTargetsReportAdministrator.column('year:name').search(selectedMerchant).draw();
+        // }
+
+        // // Bind filter functions to the change event of filter dropdowns
+        // $('#monthFilterLoan').on('change', filterByMonthLoan);
+        // $('#merchantFilterLoan').on('change', filterByWarehouseLoan);
+        // $('#yearFilterLoan').on('change', filterByYearLoan);
+
+
+        let additionalDataLoanReportSecond = [];
+        $.ajax({
+            url: "{{ route('admin.admin.loan.getDataLoanReportSecond') }}",
+            method: 'GET',
+            success: function(data) {
+                additionalDataLoanReportSecond = data.data;
+            },
+            error: function(xhr, status, error) {
+                console.error('Error fetching additionalDataLoanReportSecond:', error);
+            }
+        });
+
+        // First-level row formatting function
+        function formatFirstLevelLoan(dataItem) {
+            console.log(dataItem, 'dataItem')
+            console.log(additionalDataLoanReportSecond, 'additionalDataLoanReportSecond')
+            let relatedDataLoanReportSecond = additionalDataLoanReportSecond.filter(item =>
+                item.name == dataItem.user_name && item.user_id == dataItem.created_by_id);
+
+            let formattedDataLoanReportFirst = `
+                <div class="table-responsive" >
+                    <table class="table table-hover table-bordered">
+                        <thead>
+                            <tr>
+                                <th>{{ trans('app.form.created_at') }}</th>
+                                <th>{{ trans('app.form.total_loan') }}</th>
+                                <th>{{ trans('app.form.amount') }}</th>
+                                <th>{{ trans('app.form.outstanding_balance') }}</th>
+                                <th>{{ trans('app.form.paid_by') }}</th>
+                                <th>{{ trans('app.form.updated_by') }}</th>
+                                <th>{{ trans('app.form.updated_at') }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+
+            const formatter = new Intl.NumberFormat('id-ID', {
+                style: 'currency',
+                currency: 'IDR',
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0,
+            });
+
+            relatedDataLoanReportSecond.forEach(function(row, index) {
+                formattedDataLoanReportFirst += `
+                    <tr style="${ row.outstanding_balance == 0 ? 'background: cadetblue; color: white;' : '' }">
+                        <td>${row.created_at}</td>
+                        <td>${formatter.format(row.total_loan)}</td>
+                        <td>${formatter.format(row.amount)}</td>
+                        <td>${formatter.format(row.outstanding_balance)}</td>
+                        <td>${row.created_by_name}</td>
+                        <td>${row.updated_by_name ?? ''}</td>
+                        <td>${row.updated_at ?? ''}</td>
+                    </tr>
+                `;
+            });
+
+            formattedDataLoanReportFirst += `
+                    </tbody>
+                </table>
+            </div>
+        `;
+
+            return formattedDataLoanReportFirst;
+        }
+
+        // Handle first-level row expansion
+        $('#loan-report-tables tbody').on('click', 'td.dt-control', function(e) {
+            let tr = e.target.closest('tr');
+            let row = loanReportTable.row(tr);
+
+            if (row.child.isShown()) {
+                row.child.hide();
+                $(tr).removeClass('dt-hasChild');
+            } else {
+                console.log(row.data(), 'row.data()')
+                row.child(formatFirstLevelLoan(row.data())).show();
+                $(tr).addClass('dt-hasChild');
+            }
+        });
+
+        // END LOAN REPORT TABLE
 
         // LOAN PAYMENT TABLE
         $('#loan-payment-tables').DataTable($.extend({}, dataTableOptions, {

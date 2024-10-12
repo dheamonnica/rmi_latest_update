@@ -31,6 +31,7 @@ class LoanPayment extends BaseModel
         'total_loan',
         'amount',
         'outstanding_balance',
+        'is_paid',
         'updated_at',
         'updated_by',
     ];
