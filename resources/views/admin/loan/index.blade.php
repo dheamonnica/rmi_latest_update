@@ -11,10 +11,8 @@
             <div class="box-tools pull-right p-2">
             </div>
             <div class="pull-right">
-                @if (Auth::user()->isAdmin())
-                    <a href="javascript:void(0)" data-link="{{ route('admin.loan.create') }}"
-                        class="ajax-modal-btn btn btn-new btn-flat ml-5">{{ trans('app.form.create_loan') }}</a>
-                @endif
+                <a href="javascript:void(0)" data-link="{{ route('admin.loan.create') }}"
+                    class="ajax-modal-btn btn btn-new btn-flat ml-5">{{ trans('app.form.create_loan') }}</a>
             </div>
         </div>
 

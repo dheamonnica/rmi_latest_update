@@ -58,6 +58,15 @@ class LoanController extends Controller
         return view('admin.loan.payment.index', compact('loans'));
     }
 
+    public function report()
+    {
+        $loans = $this->loan->all();
+
+        $trashes = $this->loan->trashOnly();
+
+        return view('admin.loan.report', compact('loans'));
+    }
+
 
     public function getLoans(Request $request)
     {
@@ -152,6 +161,42 @@ class LoanController extends Controller
         return response()->json(['data' => $results]);
     }
 
+    public function getDataLoanReportSecond(Request $request)
+    {
+        $results = Loan::getDataLoanReportSecond();
+
+        return response()->json(['data' => $results]);
+    }
+
+    public function getDataLoanReportFirst(Request $request)
+    {
+        $loans = Loan::getDataLoanReportFirst();
+
+        return Datatables::of($loans)
+            ->addColumn('created_by', function ($loan) {
+                return $loan->name;
+            })
+            ->addColumn('sum_amount_loan', function ($loan) {
+                return 'Rp. ' . number_format($loan->sum_amount_loan, 0, '.', '.');
+            })
+            ->addColumn('sum_amount_loan_payment', function ($loan) {
+                return 'Rp. ' . number_format($loan->sum_amount_loan_payment, 0, '.', '.');
+            })
+            ->addColumn('total_outstanding_balance', function ($loan) {
+                $total_outstanding_balance = $loan->sum_amount_loan - $loan->sum_amount_loan_payment;
+                return 'Rp. ' . number_format($total_outstanding_balance, 0, '.', '.');
+            })
+            ->addColumn('status', function ($loan) {
+                if ($loan->sum_amount_loan_payment == $loan->sum_amount_loan) {
+                    return '<span class="label label-primary">PAID</span>';
+                } else {
+                    return '<span class="label label-danger">UNPAID</span>';
+                }
+            })
+            ->rawColumns(['created_by', 'sum_amount_loan', 'sum_amount_loan_payment', 'total_outstanding_balance', 'status'])
+            ->make(true);
+    }
+
     /**
      * Show the form for creating a new resource.
      *
@@ -164,7 +209,7 @@ class LoanController extends Controller
 
     public function createLoanPayment()
     {
-        $loans = Loan::with('creator')->get();
+        $loans = Loan::with('creator')->whereNull('deleted_at')->where('status', 1)->get();
         $users = $loans->pluck('creator')->unique('id')->pluck('full_name', 'id')->toArray();
         return view('admin.loan.payment._create', compact('users'));
     }
@@ -190,6 +235,7 @@ class LoanController extends Controller
         $loanPayment->amount = $request->input('amount');
         $loanPayment->total_loan = $request->input('total_loan');
         $loanPayment->outstanding_balance = $request->input('outstanding_balance');
+        $loanPayment->is_paid = $request->input('outstanding_balance') == 0 ? 1 : 0;
         $loanPayment->user_id = $request->input('user_id'); 
         $loanPayment->created_at = now(); 
         $loanPayment->created_by = $request->input('created_by');
@@ -228,7 +274,7 @@ class LoanController extends Controller
     {
         $loan = LoanPayment::find($id);
         
-        $loans = Loan::with('creator')->get();
+        $loans = Loan::with('creator')->whereNull('deleted_at')->where('status', 1)->get();
         $users = $loans->pluck('creator')->unique('id')->pluck('full_name', 'id')->toArray();
 
         return view('admin.loan.payment._edit', compact('loan', 'users'));
@@ -257,6 +303,7 @@ class LoanController extends Controller
         $loanPayment->amount = $request->input('amount');
         $loanPayment->total_loan = $request->input('total_loan');
         $loanPayment->outstanding_balance = $request->input('outstanding_balance');
+        $loanPayment->is_paid = $request->input('outstanding_balance') == 0 ? 1 : 0;
         $loanPayment->user_id = $request->input('user_id'); 
         $loanPayment->updated_by = $request->input('updated_by');
         $loanPayment->updated_at = $request->input('updated_at');

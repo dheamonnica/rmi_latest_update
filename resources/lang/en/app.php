@@ -1454,6 +1454,8 @@ return [
         'create_loan_payment' => 'Create Loan Payment',
         'select_user' => 'Select User',
         'total_loan' => 'Total Loan',
+        'total_payment' => 'Total Payment',
+        'total_outstanding_balance' => 'Total Outstanding Balance',
 
         'backdate' => 'Back Date',
     ],

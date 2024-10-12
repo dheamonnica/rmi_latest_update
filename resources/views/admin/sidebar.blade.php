@@ -651,11 +651,18 @@
                                 Data
                             </a>
                         </li>
-                        <li class="{{ Request::is('admin/loan-payment') ? 'active' : '' }}">
-                            <a href="{{ route('admin.admin.loan.payment') }}">
-                                Payment
-                            </a>
-                        </li>
+                        @if (Auth::user()->isAdmin())
+                            <li class="{{ Request::is('admin/loan-payment') ? 'active' : '' }}">
+                                <a href="{{ route('admin.admin.loan.payment') }}">
+                                    Payment
+                                </a>
+                            </li>
+                            <li class="{{ Request::is('admin/loan-report') ? 'active' : '' }}">
+                                <a href="{{ route('admin.admin.loan.report') }}">
+                                    Report
+                                </a>
+                            </li>
+                        @endif
                     </ul>
                 </li>
                 <li

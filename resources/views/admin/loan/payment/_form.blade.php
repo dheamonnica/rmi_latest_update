@@ -62,7 +62,7 @@
                     id: id
                 },
                 success: function(response) {
-                    totalLoan.val(response.data[0].sum_amount_loan);
+                    totalLoan.val(response.data[0].sum_amount_loan - response.data[0].sum_amount_loan_payment);
                 },
                 error: function(xhr) {
                     console.error('AJAX Error:', xhr.responseText);

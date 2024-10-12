@@ -54,15 +54,57 @@ class Loan extends BaseModel
         return $this->belongsTo(User::class, 'created_by');
     }
 
-    public static function getLoanAndPaymentData($id) {
+    public static function getLoanAndPaymentData($id)
+    {
         $query = "SELECT 
-            loan_users.created_by, 
-            SUM(loan_users.amount) AS sum_amount_loan, 
-            SUM(loan_payment_users.amount) over (PARTITION by loan_payment_users.created_by ) AS sum_amount_loan_payment
-        FROM `loan_users` left JOIN `loan_payment_users` 
-        ON `loan_users`.`created_by` = `loan_payment_users`.`user_id`
-        AND loan_payment_users.deleted_at IS NULL
-        WHERE loan_users.deleted_at IS NULL AND loan_users.status = 1 AND loan_users.created_by = $id";
+            users.name,
+            loan_users.created_by,
+            COALESCE(SUM(loan_users.amount), 0) AS sum_amount_loan,
+            COALESCE((SELECT SUM(loan_payment_users.amount) 
+                    FROM loan_payment_users 
+                    WHERE loan_payment_users.user_id = $id 
+                    AND loan_payment_users.deleted_at IS NULL), 0) AS sum_amount_loan_payment
+        FROM loan_users
+        LEFT JOIN users ON loan_users.created_by = users.id
+        WHERE loan_users.created_by = $id 
+        AND loan_users.status = 1;";
+
+        return DB::select(DB::raw($query));
+    }
+
+    public static function getDataLoanReportFirst()
+    {
+        $query = "SELECT 
+            users.name,
+            loan_users.created_by as created_by_id,
+            COALESCE((SELECT SUM(loan_users.amount) 
+                      FROM loan_users 
+                      WHERE loan_users.deleted_at IS NULL
+                      AND loan_users.status = 1
+                      AND loan_users.created_by = loan_payment_users.user_id), 0) 
+                      AS sum_amount_loan,
+            COALESCE((SELECT SUM(loan_payment_users.amount) 
+                      FROM loan_payment_users 
+                      WHERE loan_payment_users.deleted_at IS NULL
+                      AND loan_payment_users.user_id = loan_users.created_by), 0) 
+                      AS sum_amount_loan_payment
+          FROM loan_users
+          LEFT JOIN users ON loan_users.created_by = users.id
+          LEFT JOIN loan_payment_users ON loan_payment_users.user_id = loan_users.created_by
+          GROUP BY loan_users.created_by, users.name, loan_payment_users.user_id;";
+
+        return DB::select(DB::raw($query));
+    }
+
+    public static function getDataLoanReportSecond()
+    {
+        $query = "SELECT loan_payment_users.*, 
+        created_by_user.name as created_by_name, 
+        updated_by_user.name as updated_by_name
+        FROM loan_payment_users 
+        LEFT JOIN users as created_by_user ON loan_payment_users.created_by = created_by_user.id
+        LEFT JOIN users as updated_by_user ON loan_payment_users.updated_by = updated_by_user.id
+        WHERE loan_payment_users.deleted_at IS NULL";
 
         return DB::select(DB::raw($query));
     }
