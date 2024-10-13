@@ -1467,8 +1467,8 @@
                     'name': 'doc_SI',
                 },
                 {
-                    'data': 'doc_si_uploaded_at',
-                    'name': 'doc_si_uploaded_at',
+                    'data': 'paid_date',
+                    'name': 'paid_date',
                 },
                 {
                     'data': 'doc_faktur_pajak',
@@ -1479,12 +1479,20 @@
                     'name': 'doc_faktur_pajak_uploaded_at',
                 },
                 {
+                    'data': 'sla_faktur_pajak',
+                    'name': 'sla_faktur_pajak',
+                },
+                {
                     'data': 'doc_faktur_pajak_terbayar',
                     'name': 'doc_faktur_pajak_terbayar',
                 },
                 {
                     'data': 'doc_faktur_pajak_terbayar_uploaded_at',
                     'name': 'doc_faktur_pajak_terbayar_uploaded_at',
+                },
+                {
+                    'data': 'sla_faktur_pajak_terbayar',
+                    'name': 'sla_faktur_pajak_terbayar',
                 },
                 {
                     'data': 'payment_status',

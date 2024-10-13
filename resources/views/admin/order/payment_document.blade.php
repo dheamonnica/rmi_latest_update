@@ -62,12 +62,14 @@
                         <th>{{ trans('app.form.po_number_ref') }}</th>
                         <th>{{ trans('app.form.business_unit') }}</th>
                         <th>{{ trans('app.form.client') }}</th>
-                        <th>{{ trans('app.form.doc_SI') }}</th>
-                        <th>{{ trans('app.form.doc_SI') }} - {{ trans('app.form.uploaded_at') }}</th>
+                        <th>{{ trans('app.form.invoice') }}</th>
+                        <th>{{ trans('app.form.paid_date') }}</th>
                         <th>{{ trans('app.form.doc_faktur_pajak') }}</th>
                         <th>{{ trans('app.form.doc_faktur_pajak') }} - {{ trans('app.form.uploaded_at') }}</th>
+                        <th>{{ trans('app.form.sla_faktur_pajak') }} (min)</th>
                         <th>{{ trans('app.form.doc_faktur_pajak_terbayar') }}</th>
                         <th>{{ trans('app.form.doc_faktur_pajak_terbayar') }} - {{ trans('app.form.uploaded_at') }}</th>
+                        <th>{{ trans('app.form.sla_faktur_pajak_terbayar') }} (days)</th>
                         <th>{{ trans('app.form.payment_status') }}</th>
                         <th>{{ trans('app.form.order_status') }}</th>
                         <th>{{ trans('app.options') }}</th>

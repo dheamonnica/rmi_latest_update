@@ -1301,11 +1301,18 @@ return [
         'doc_SI' => 'Document SI',
         'upload_document_faktur_pajak' => 'Upload Document Faktur Pajak',
         'doc_faktur_pajak' => 'Document Faktur Pajak',
+        'doc_tukar_faktur_pajak' => 'Document Tukar Faktur Pajak',
         'upload_document_faktur_terbayar' => 'Upload Document Faktur Terbayar',
+        'upload_document_tukar_faktur_pajak' => 'Upload Document Tukar Faktur Pajak',
         'doc_faktur_pajak_terbayar' => 'Document Faktur Pajak Terbayar',
         'from' => 'From',
         'to' => 'To',
         'uploaded_at' => 'Uploaded At',
+        'invoice' => 'Invoice',
+        'sla_faktur_pajak' => 'SLA Faktur Pajak',
+        'tukar_faktur_pajak' => 'Tukar Faktur Pajak',
+        'sla_tukar_faktur_pajak' => 'SLA Tukar Faktur Pajak',
+        'sla_faktur_pajak_terbayar' => 'SLA Faktur Pajak Terbayar',
 
         // manufacture
         'manufacture_pic_name' => 'Manufacture PIC Name',
