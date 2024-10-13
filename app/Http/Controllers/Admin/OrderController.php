@@ -22,6 +22,7 @@ use Illuminate\Support\Facades\Route;
 use Yajra\Datatables\Datatables;
 use Illuminate\Support\Facades\URL;
 use ZipArchive;
+use Carbon\Carbon;
 
 // use App\Services\PdfInvoice;
 // use Konekt\PdfInvoice\InvoicePrinter;
@@ -929,14 +930,13 @@ class OrderController extends Controller
                 return $order->getCustomer->name;
             })
             ->addColumn('doc_SI', function ($order) {
-                if (empty($order->doc_SI)) {
-                    "";
-                } else {
-                    return "<a href='" . asset('storage/' . $order->doc_SI) . "' target='_blank'>Dokumen SI</a>";
-                }
+                $url = route('admin.order.order.invoice', $order->id);
+                return "<a href='{$url}'>
+                            <i data-toggle='tooltip' data-placement='top' title='Download Invoice' class='fa fa-download'></i>
+                        </a>";
             })
-            ->addColumn('doc_si_uploaded_at', function ($order) {
-                return $order->doc_si_uploaded_at;
+            ->addColumn('paid_date', function ($order) {
+                return $order->paid_date;
             })
             ->addColumn('doc_faktur_pajak', function ($order) {
                 if (empty($order->doc_faktur_pajak)) {
@@ -948,15 +948,35 @@ class OrderController extends Controller
             ->addColumn('doc_faktur_pajak_uploaded_at', function ($order) {
                 return $order->doc_faktur_pajak_uploaded_at;
             })
+            ->addColumn('sla_faktur_pajak', function ($order) {
+                $start = Carbon::parse($order->paid_date);
+                $end = Carbon::parse($order->doc_faktur_pajak_uploaded_at);
+
+                // Get the difference in minutes
+                $diffInMinutes = $start->diffInMinutes($end);
+
+                $class = $diffInMinutes >= 15 ? 'label label-danger' : 'label label-info';
+                return "<span class='$class'>{$diffInMinutes}</span>";
+            })
             ->addColumn('doc_faktur_pajak_terbayar', function ($order) {
                 if (empty($order->doc_faktur_pajak_terbayar)) {
                     "";
                 } else {
-                    return "<a href='" . asset('storage/' . $order->doc_faktur_pajak_terbayar) . "' target='_blank'>Dokumen Faktur Pajak Terbayar</a>";
+                    return "<a href='" . asset('storage/' . $order->doc_faktur_pajak_terbayar) . "' target='_blank'>Dokumen Tukar Faktur Pajak Terbayar</a>";
                 }
             })
             ->addColumn('doc_faktur_pajak_terbayar_uploaded_at', function ($order) {
                 return $order->doc_faktur_pajak_terbayar_uploaded_at;
+            })
+            ->addColumn('sla_faktur_pajak_terbayar', function ($order) {
+                $start = Carbon::parse($order->doc_faktur_pajak_uploaded_at);
+                $end = Carbon::parse($order->doc_faktur_pajak_terbayar_uploaded_at);
+
+                // Get the difference in days
+                $diffInDays = $start->diffInDays($end);
+
+                $class = $diffInDays >= 3 ? 'label label-danger' : 'label label-info';
+                return "<span class='$class'>{$diffInDays}</span>";
             })
             ->addColumn('payment_status', function ($order) {
                 // payment status:
@@ -1018,7 +1038,7 @@ class OrderController extends Controller
                 return view('admin.partials.actions.order.option_payment', compact('order'));
             })
 
-            ->rawColumns(['created_at', 'order_number', 'po_number_ref', 'shop_id', 'customer_id', 'doc_SI', 'doc_si_uploaded_at', 'doc_faktur_pajak', 'doc_faktur_pajak_uploaded_at', 'doc_faktur_pajak_terbayar', 'doc_faktur_pajak_terbayar_uploaded_at', 'payment_status', 'order_status_id', 'options'])
+            ->rawColumns(['created_at', 'order_number', 'po_number_ref', 'shop_id', 'customer_id', 'doc_SI', 'doc_si_uploaded_at', 'doc_faktur_pajak', 'doc_faktur_pajak_uploaded_at', 'sla_faktur_pajak', 'doc_faktur_pajak_terbayar', 'doc_faktur_pajak_terbayar_uploaded_at', 'sla_faktur_pajak_terbayar', 'payment_status', 'order_status_id', 'options'])
             ->make(true);
     }
 
@@ -1034,14 +1054,7 @@ class OrderController extends Controller
         $orderId = $request->input('id');
         $orderData = Order::find($orderId);
 
-        if ($request->hasFile('doc_SI') && $request->file('doc_faktur_pajak') && $request->file('doc_faktur_pajak_terbayar')) {
-            // DOC SI
-            $pdfFileSI = $request->file('doc_SI');
-            $originalFilenameSI = now()->format('d-m-Y') . '/PoNumberRef_' . str_replace('/', '_', $orderData->po_number_ref) . '/' . 'SI_' . $pdfFileSI->getClientOriginalName(); // Add a timestamp to the original filename
-            $pdfFileSI->storeAs('payment_documents', $originalFilenameSI, 'public');
-            $orderData->doc_SI = 'payment_documents/' . $originalFilenameSI;
-            $orderData->doc_si_uploaded_at = $request->input('doc_si_uploaded_at');
-
+        if ($request->file('doc_faktur_pajak') && $request->file('doc_faktur_pajak_terbayar')) {
             // DOC FAKTUR PAJAK
             $pdfFileFP = $request->file('doc_faktur_pajak');
             $originalFilenameFP = now()->format('d-m-Y') . '/PoNumberRef_' . str_replace('/', '_', $orderData->po_number_ref) . '/' . 'FP_' . $pdfFileFP->getClientOriginalName(); // Add a timestamp to the original filename
@@ -1055,15 +1068,6 @@ class OrderController extends Controller
             $pdfFileFPT->storeAs('payment_documents', $originalFilenameFPT, 'public');
             $orderData->doc_faktur_pajak_terbayar = 'payment_documents/' . $originalFilenameFPT;
             $orderData->doc_faktur_pajak_terbayar_uploaded_at = $request->input('doc_faktur_pajak_terbayar_uploaded_at');
-
-            $orderData->save();
-        } else if ($request->hasFile('doc_SI')) {
-            // DOC SI
-            $pdfFileSI = $request->file('doc_SI');
-            $originalFilenameSI = now()->format('d-m-Y') . '/PoNumberRef_' . str_replace('/', '_', $orderData->po_number_ref) . '/' . 'SI_' . $pdfFileSI->getClientOriginalName(); // Add a timestamp to the original filename
-            $pdfFileSI->storeAs('payment_documents', $originalFilenameSI, 'public');
-            $orderData->doc_SI = 'payment_documents/' . $originalFilenameSI;
-            $orderData->doc_si_uploaded_at = $request->input('doc_si_uploaded_at');
 
             $orderData->save();
         } else if ($request->file('doc_faktur_pajak')) {

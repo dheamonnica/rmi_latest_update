@@ -401,41 +401,14 @@ class OrderController extends Controller
         $orderId = $request->input('id');
         $orderData = Order::find($orderId);
 
-        if ($request->hasFile('doc_SI') && $request->file('doc_faktur_pajak')) {
-            // DOC SI
-            $pdfFileSI = $request->file('doc_SI');
-            $originalFilenameSI = now()->format('d-m-Y') . '/PoNumberRef_' . str_replace('/', '_', $orderData->po_number_ref) . '/' . 'SI_' . $pdfFileSI->getClientOriginalName(); // Add a timestamp to the original filename
-            $pdfFileSI->storeAs('payment_documents', $originalFilenameSI, 'public');
-            $orderData->doc_SI = 'payment_documents/' . $originalFilenameSI;
-            $orderData->doc_si_uploaded_at = now();
+        // DOC FAKTUR PAJAK
+        $pdfFileFP = $request->file('doc_faktur_pajak');
+        $originalFilenameFP = now()->format('d-m-Y') . '/PoNumberRef_' . str_replace('/', '_', $orderData->po_number_ref) . '/' . 'FP_' . $pdfFileFP->getClientOriginalName(); // Add a timestamp to the original filename
+        $pdfFileFP->storeAs('payment_documents', $originalFilenameFP, 'public');
+        $orderData->doc_faktur_pajak = 'payment_documents/' . $originalFilenameFP;
+        $orderData->doc_faktur_pajak_uploaded_at = now();
 
-            // DOC FAKTUR PAJAK
-            $pdfFileFP = $request->file('doc_faktur_pajak');
-            $originalFilenameFP = now()->format('d-m-Y') . '/PoNumberRef_' . str_replace('/', '_', $orderData->po_number_ref) . '/' . 'FP_' . $pdfFileFP->getClientOriginalName(); // Add a timestamp to the original filename
-            $pdfFileFP->storeAs('payment_documents', $originalFilenameFP, 'public');
-            $orderData->doc_faktur_pajak = 'payment_documents/' . $originalFilenameFP;
-            $orderData->doc_faktur_pajak_uploaded_at = now();
-
-            $orderData->save();
-        } else if ($request->hasFile('doc_SI')) {
-            // DOC SI
-            $pdfFileSI = $request->file('doc_SI');
-            $originalFilenameSI = now()->format('d-m-Y') . '/PoNumberRef_' . str_replace('/', '_', $orderData->po_number_ref) . '/' . 'SI_' . $pdfFileSI->getClientOriginalName(); // Add a timestamp to the original filename
-            $pdfFileSI->storeAs('payment_documents', $originalFilenameSI, 'public');
-            $orderData->doc_SI = 'payment_documents/' . $originalFilenameSI;
-            $orderData->doc_si_uploaded_at = now();
-
-            $orderData->save();
-        } else if ($request->file('doc_faktur_pajak')) {
-            // DOC FAKTUR PAJAK
-            $pdfFileFP = $request->file('doc_faktur_pajak');
-            $originalFilenameFP = now()->format('d-m-Y') . '/PoNumberRef_' . str_replace('/', '_', $orderData->po_number_ref) . '/' . 'FP_' . $pdfFileFP->getClientOriginalName(); // Add a timestamp to the original filename
-            $pdfFileFP->storeAs('payment_documents', $originalFilenameFP, 'public');
-            $orderData->doc_faktur_pajak = 'payment_documents/' . $originalFilenameFP;
-            $orderData->doc_faktur_pajak_uploaded_at = now();
-
-            $orderData->save();
-        }
+        $orderData->save();
 
         return back()->with('success', trans('theme.notify.info_updated'));
     }
