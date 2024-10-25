@@ -32,6 +32,8 @@ use App\Repositories\Overtime\EloquentOvertime;
 use App\Repositories\Overtime\OvertimeRepository;
 use App\Repositories\Loan\EloquentLoan;
 use App\Repositories\Loan\LoanRepository;
+use App\Repositories\TimeOff\EloquentTimeOff;
+use App\Repositories\TimeOff\TimeOffRepository;
 use App\Contracts\PaymentServiceContract;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Database\Eloquent\Collection;
@@ -116,6 +118,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(DepartmentRepository::class, EloquentDepartment::class);
         $this->app->bind(OvertimeRepository::class, EloquentOvertime::class);
         $this->app->bind(LoanRepository::class, EloquentLoan::class);
+        $this->app->bind(TimeOffRepository::class, EloquentTimeOff::class);
 
         // Ondemand Img manupulation
         $this->app->singleton(

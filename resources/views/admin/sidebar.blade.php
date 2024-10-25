@@ -637,6 +637,13 @@
                             </a>
                         </li>
                     </ul>
+                    <ul class="treeview-menu">
+                        <li class="{{ Request::is('admin/timeoff*') ? 'active' : '' }}">
+                            <a href="{{ route('admin.timeoff.index') }}">
+                                Request Time Off
+                            </a>
+                        </li>
+                    </ul>
                 </li>
                 <li class="treeview {{ Request::is('admin/loan*') }}">
                     <a href="javascript:void(0)">

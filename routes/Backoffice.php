@@ -92,6 +92,8 @@ Route::middleware('auth')->name('admin.')->prefix('admin')->group(function () {
         include 'admin/Overtime.php';
         // Loan
         include 'admin/Loan.php';
+        // Time Off
+        include 'admin/TimeOff.php';
 
         Route::get('secretLogin/{user}', [
             Admin\DashboardController::class,

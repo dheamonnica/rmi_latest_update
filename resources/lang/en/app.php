@@ -72,6 +72,7 @@ return [
         'department' => 'Department',
         'overtime' => 'Overtime',
         'loan' => 'Loan',
+        'timeoff' => 'Time Off',
     ],
 
     // Application Levels
@@ -1465,6 +1466,16 @@ return [
         'total_outstanding_balance' => 'Total Outstanding Balance',
 
         'backdate' => 'Back Date',
+
+        // timeoff
+        'create_timeoff' => 'Create Timeoff',
+        'start_date' => 'Start Date',
+        'end_date' => 'End Date',
+        'notes' => 'Notes',
+        'leave_type' => 'Leave Type',
+        'total_leave' => 'Total Leave',
+        'total_date' => 'Total Date',
+        'total_days' => 'Total Days',
     ],
 
     'placeholder' => [
