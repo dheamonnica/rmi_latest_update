@@ -1049,7 +1049,7 @@
         // END LOAN TABLE
 
         // TIMEOFF TABLE
-        $('#timeoff-tables').DataTable($.extend({}, dataTableOptions, {
+        const timeoffTable = $('#timeoff-tables').DataTable($.extend({}, dataTableOptions, {
             "ajax": "{{ route('admin.admin.timeoff.getTimeOff') }}",
             "columns": [{
                     'data': 'checkbox',
@@ -1068,12 +1068,28 @@
                     'name': 'created_by'
                 },
                 {
+                    'data': 'month',
+                    'name': 'month'
+                },
+                {
+                    'data': 'year',
+                    'name': 'year'
+                },
+                {
                     'data': 'start_date',
                     'name': 'start_date'
                 },
                 {
                     'data': 'end_date',
                     'name': 'end_date'
+                },
+                {
+                    'data': 'total_days',
+                    'name': 'total_days'
+                },
+                {
+                    'data': 'category',
+                    'name': 'category'
                 },
                 {
                     'data': 'type',
@@ -1086,6 +1102,10 @@
                 {
                     'data': 'status',
                     'name': 'status'
+                },
+                {
+                    'data': 'picture',
+                    'name': 'picture'
                 },
                 {
                     'data': 'approved_by',
@@ -1113,6 +1133,37 @@
                 }
             ]
         }));
+
+
+        // if isFromPlatform
+        @if (!Auth::user()->isFromPlatform())
+            timeoffTable.column('created_by:name').search('{{ Auth::user()->name }}').draw();
+        @endif
+
+        function filterByMonthTimeoff() {
+            var selectedMonth = $('#monthFilterTimeoff').val()
+            // Apply the month filter to the 'month' column
+            timeoffTable.column('month:name').search(selectedMonth).draw();
+        }
+
+        function filterByYearTimeoff() {
+            var selectedYear = $('#yearFilterTimeoff').val();
+
+            // Apply the year filter to the 'year' column (assume the column name is 'year')
+            timeoffTable.column('year:name').search(selectedYear).draw();
+        }
+        
+        function filterByStatusTimeoff() {
+            var selectedStatus = $('#statusFilterTimeoff').val();
+
+            // Apply the status filter to the 'Status' column (assume the column name is 'Status')
+            timeoffTable.column('status:name').search(selectedStatus).draw();
+        }
+
+        // Bind the filter and calculation function to the month dropdown change event
+        $('#monthFilterTimeoff').on('change', filterByMonthTimeoff);
+        $('#yearFilterTimeoff').on('change', filterByYearTimeoff);
+        $('#statusFilterTimeoff').on('change', filterByStatusTimeoff);
         // END TIMEOFF TABLE
 
         // PAYROLL REPORT TABLE

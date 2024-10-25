@@ -1473,6 +1473,9 @@ return [
         'end_date' => 'End Date',
         'notes' => 'Notes',
         'leave_type' => 'Leave Type',
+        'total_leave' => 'Total Leave',
+        'total_date' => 'Total Date',
+        'total_days' => 'Total Days',
     ],
 
     'placeholder' => [

@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class TimeOff extends BaseModel
 {
@@ -29,6 +30,8 @@ class TimeOff extends BaseModel
         'created_by',
         'start_date',
         'end_date',
+        'category',
+        'total_days',
         'type',
         'notes',
         'status',
@@ -50,5 +53,25 @@ class TimeOff extends BaseModel
     public function getApprovedUsername()
     {
         return $this->belongsTo(User::class, 'approved_by');
+    }
+
+    public static function getUserTimeOffAnnualLeave($user_id) {
+        return DB::table('timeoffs')
+        ->selectRaw('*, SUM(total_days) as sum_total_days')
+        ->where('created_by', $user_id)
+        ->where('category', 'annual_leave')
+        ->whereYear('created_at', Carbon::now()->year)
+        ->whereNull('deleted_at')
+        ->first();
+    }
+
+    public static function getUserTimeOffSickLeave($user_id) {
+        return DB::table('timeoffs')
+        ->selectRaw('*, SUM(total_days) as sum_total_days')
+        ->where('created_by', $user_id)
+        ->where('category', 'sick_leave')
+        ->whereYear('created_at', Carbon::now()->year)
+        ->whereNull('deleted_at')
+        ->first();
     }
 }
