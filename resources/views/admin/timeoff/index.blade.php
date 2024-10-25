@@ -94,10 +94,8 @@
                     <option value="Approved">Approved</option>
                     <option value="Pending">Pending</option>
                 </select>
-                @if (Auth::user()->isAdmin())
-                    <a href="javascript:void(0)" data-link="{{ route('admin.timeoff.create') }}"
-                        class="ajax-modal-btn btn btn-new btn-flat ml-5">{{ trans('app.form.create_timeoff') }}</a>
-                @endif
+                <a href="javascript:void(0)" data-link="{{ route('admin.timeoff.create') }}"
+                    class="ajax-modal-btn btn btn-new btn-flat ml-5">{{ trans('app.form.create_timeoff') }}</a>
             </div>
         </div>
 
