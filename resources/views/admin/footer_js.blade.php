@@ -1140,7 +1140,7 @@
 
 
         // if not isFromPlatform and HRD
-        @if (!Auth::user()->isAdmin() || !Auth::user()->role_id == 17)
+        @if(Auth::user()->role_id !== 17 || Auth::user()->isAdmin())
             timeoffTable.column('created_by:name').search('{{ Auth::user()->name }}').draw();
         @endif
 
