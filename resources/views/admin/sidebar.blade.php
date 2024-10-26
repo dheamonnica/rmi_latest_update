@@ -6,11 +6,10 @@
             <li class="{{ Request::is('admin/dashboard*') ? 'active' : '' }}">
                 <a href="{{ url('admin/dashboard') }}">
                     <i class="fa fa-dashboard"></i> <span>
-                        @if (Auth::user()->isAdmin() || Auth::user()->isMerchant() || Auth::user()->role_id === 13)
-                            {{ trans('nav.dashboard') }}
-                            {{-- vendor manufacturing --}}
-                        @elseif(Auth::user()->role_id === 16)
+                        @if (Auth::user()->role_id === 16)
                             Offering Status
+                        @else
+                            {{ trans('nav.dashboard') }}
                         @endif
                     </span>
                 </a>
@@ -625,8 +624,8 @@
             @if (Auth::user()->role_id !== 16)
                 <li class="treeview {{ Request::is('admin/approval*') }}">
                     <a href="javascript:void(0)">
-                        <i class="fa fa-check"></i>
-                        <span>Approval</span>
+                        <i class="fa fa-hourglass"></i>
+                        <span>Time Management</span>
                         <i class="fa fa-angle-left pull-right"></i>
                         <i class="fa fa-angle-left pull-right"></i>
                     </a>

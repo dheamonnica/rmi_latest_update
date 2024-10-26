@@ -1,4 +1,6 @@
 <div class="row">
+    {!! Form::hidden('warehouse_id', Auth::user()->merchantId()) !!}
+    {!! Form::hidden('sum_total_days', $timeoff_user_annual_leave->sum_total_days, ['id' => 'sumTotalDays']) !!}
     <div class="col-md-2 nopadding-right">
         <div class="form-group">
             {!! Form::label('category', trans('app.form.category')) !!}
@@ -58,7 +60,7 @@
                 'id' => 'end-date',
                 'required',
             ]) !!}
-            <div class="help-block with-errors"></div>
+            <div class="help-block with-errors end-date"></div>
         </div>
     </div>
     <div class="col-md-2 nopadding-left nopadding-right">
@@ -103,6 +105,12 @@
 </div>
 
 <script>
+    $('.datepicker').datepicker({
+        format: 'yyyy-mm-dd', // Set the format you need
+        startDate: '0d', // Disable past dates
+        todayHighlight: true // Highlight today
+    });
+
     $(document).ready(function() {
         const category = $('#category');
         const type = $('#type');
@@ -120,8 +128,8 @@
 
                 while (currentDate <= endDate) {
                     const dayOfWeek = currentDate.getUTCDay();
-                    // Skip Saturdays (6) and Sundays (0)
-                    if (dayOfWeek !== 6 && dayOfWeek !== 0) {
+                    // Skip only Sundays (0)
+                    if (dayOfWeek !== 0) {
                         weekdays++;
                     }
                     currentDate.setUTCDate(currentDate.getUTCDate() + 1); // Move to next day
@@ -133,9 +141,24 @@
             }
         }
 
-        // Add event listener for changes in the end_date dropdown
+        const sumTotalDays = parseInt(document.getElementById('sumTotalDays').value, 10);
+        const sumTotalDaysUsed = sumTotalDays - 12;
+        const sumTotalDaysRemaining = 12 - sumTotalDays;
+
         end_date.on('change', async function() {
             await calculateDays();
+
+            if (total_days.val() > sumTotalDaysRemaining) {
+                console.log('gabisa');
+                $('#submit-button').prop('disabled', true); // Disable submit button
+                $('.help-block.with-errors.end-date').css('color', 'red').text(
+                    `Warning: Remaining days exceed allowed limit of ${sumTotalDaysRemaining} days.`
+                ); // Add warning message for end_date only with red color
+            } else {
+                $('#submit-button').prop('disabled', false); // Enable submit button
+                $('.help-block.with-errors.end-date').text(
+                    ''); // Clear warning message if condition is not met
+            }
         });
 
         category.on('change', function() {
@@ -149,3 +172,21 @@
         })
     });
 </script>
+
+<style>
+    .datepicker table tr td.disabled,
+    .datepicker table tr td.disabled:hover {
+        background: #eae5e5;
+        color: #444;
+        cursor: default;
+    }
+
+    .datepicker table tr td.today,
+    .datepicker table tr td.today:hover,
+    .datepicker table tr td.today.disabled,
+    .datepicker table tr td.today.disabled:hover {
+        color: green;
+        background: #bdd3bd;
+        /* border-color: #ffb733; */
+    }
+</style>

@@ -1,5 +1,5 @@
-@if (Auth::user()->isAdmin())
-    @if ($timeoff->status == 0 && Auth::user()->isFromPlatform())
+@if ($timeoff->status == 0)
+    @if (Auth::user()->isAdmin())
         {!! Form::open(['route' => ['admin.timeoff.setApprove', $timeoff], 'method' => 'put', 'class' => 'inline']) !!}
         <a href="javascript:void(0)"><i class="confirm ajax-silent fa fa-check"></i></a>
         {!! Form::close() !!}

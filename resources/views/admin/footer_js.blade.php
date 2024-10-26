@@ -1064,6 +1064,10 @@
                     'name': 'created_at'
                 },
                 {
+                    'data': 'warehouse_id',
+                    'name': 'warehouse_id'
+                },
+                {
                     'data': 'created_by',
                     'name': 'created_by'
                 },
@@ -1135,8 +1139,8 @@
         }));
 
 
-        // if isFromPlatform
-        @if (!Auth::user()->isFromPlatform())
+        // if not isFromPlatform and HRD
+        @if (!Auth::user()->isAdmin() || !Auth::user()->role_id == 17)
             timeoffTable.column('created_by:name').search('{{ Auth::user()->name }}').draw();
         @endif
 
@@ -1160,10 +1164,18 @@
             timeoffTable.column('status:name').search(selectedStatus).draw();
         }
 
+        function filterByMerchantTimeoff() {
+            var selectedMerchant = $('#merchantFilterTimeoff').val();
+
+            // Apply the status filter to the 'Status' column (assume the column name is 'Status')
+            timeoffTable.column('warehouse_id:name').search(selectedMerchant).draw();
+        }
+
         // Bind the filter and calculation function to the month dropdown change event
         $('#monthFilterTimeoff').on('change', filterByMonthTimeoff);
         $('#yearFilterTimeoff').on('change', filterByYearTimeoff);
         $('#statusFilterTimeoff').on('change', filterByStatusTimeoff);
+        $('#merchantFilterTimeoff').on('change', filterByMerchantTimeoff);
         // END TIMEOFF TABLE
 
         // PAYROLL REPORT TABLE
