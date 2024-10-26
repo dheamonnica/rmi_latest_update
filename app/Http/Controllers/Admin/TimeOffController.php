@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Admin\DB;
 use App\Models\User;
+use App\Models\Merchant;
 use Illuminate\Support\Str;
 
 class TimeOffController extends Controller
@@ -48,11 +49,24 @@ class TimeOffController extends Controller
 
         $years = range(2024, 2100);
 
+        $merchants = Merchant::whereNotNull('warehouse_name')
+            ->where('active', 1)
+            ->whereNull('deleted_at')
+            ->where('warehouse_name', 'like', '%warehouse%')
+            ->get()
+            ->pluck('warehouse_name', 'id')
+            ->toArray();
+
+        // Add the 'management' object to the array
+        $merchants['management'] = 'Management';
+
         $timeoff_user_annual_leave = Timeoff::getUserTimeOffAnnualLeave(Auth::user()->id);
 
         $timeoff_user_sick_leave = Timeoff::getUserTimeOffSickLeave(Auth::user()->id);
 
-        return view('admin.timeoff.index', compact('timeoffs', 'trashes', 'years', 'timeoff_user_annual_leave', 'timeoff_user_sick_leave'));
+        $timeoff_user_special_leave = Timeoff::getUserTimeOffSpecialLeave(Auth::user()->id);
+
+        return view('admin.timeoff.index', compact('timeoffs', 'trashes', 'years', 'timeoff_user_annual_leave', 'timeoff_user_sick_leave', 'timeoff_user_special_leave', 'merchants'));
     }
 
     public function getTimeOff(Request $request)
@@ -80,6 +94,12 @@ class TimeOffController extends Controller
             ->addColumn('created_at', function ($timeoff) {
                 return $timeoff->created_at;
             })
+            ->addColumn('name', function ($timeoff) {
+                return $timeoff->name;
+            })
+            ->addColumn('warehouse_id', function ($timeoff) {
+                return $timeoff->warehouse_id ? $timeoff->getWarehouseName->name : 'Management';
+            })
             ->addColumn('month', function ($timeoff) {
                 return Carbon::parse($timeoff->start_date)->format('F');
             })
@@ -103,7 +123,7 @@ class TimeOffController extends Controller
             })
             ->addColumn('type', function ($timeoff) use ($leaveTypes) {
                 return $leaveTypes[$timeoff->type] ?? $timeoff->type; // Fallback to the raw type if not found in the array
-            })            
+            })
             ->addColumn('notes', function ($timeoff) {
                 return $timeoff->notes;
             })
@@ -129,7 +149,7 @@ class TimeOffController extends Controller
             ->addColumn('option', function ($timeoff) {
                 return view('admin.timeoff.partials.options', compact('timeoff'));
             })
-            ->rawColumns(['checkbox', 'created_at', 'created_by', 'month', 'year', 'start_date', 'end_date', 'total_days', 'category', 'type', 'notes', 'status', 'approved_at', 'approved_by', 'updated_at', 'updated_by', 'option'])
+            ->rawColumns(['checkbox', 'created_at', 'created_by', 'name', 'warehouse_id', 'month', 'year', 'start_date', 'end_date', 'total_days', 'category', 'type', 'notes', 'status', 'approved_at', 'approved_by', 'updated_at', 'updated_by', 'option'])
             ->make(true);
     }
 
@@ -145,7 +165,9 @@ class TimeOffController extends Controller
             ->pluck('name', 'id')
             ->toArray();
 
-        return view('admin.timeoff._create', compact('users'));
+        $timeoff_user_annual_leave = Timeoff::getUserTimeOffAnnualLeave(Auth::user()->id);
+
+        return view('admin.timeoff._create', compact('users', 'timeoff_user_annual_leave'));
     }
 
     /**

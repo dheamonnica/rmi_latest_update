@@ -27,6 +27,7 @@ class TimeOff extends BaseModel
      */
     protected $fillable = [
         'created_at',
+        'warehouse_id',
         'created_by',
         'start_date',
         'end_date',
@@ -55,23 +56,44 @@ class TimeOff extends BaseModel
         return $this->belongsTo(User::class, 'approved_by');
     }
 
-    public static function getUserTimeOffAnnualLeave($user_id) {
-        return DB::table('timeoffs')
-        ->selectRaw('*, SUM(total_days) as sum_total_days')
-        ->where('created_by', $user_id)
-        ->where('category', 'annual_leave')
-        ->whereYear('created_at', Carbon::now()->year)
-        ->whereNull('deleted_at')
-        ->first();
+    public function getWarehouseName()
+    {
+        return $this->belongsTo(Shop::class, 'warehouse_id');
     }
 
-    public static function getUserTimeOffSickLeave($user_id) {
+    public static function getUserTimeOffAnnualLeave($user_id)
+    {
         return DB::table('timeoffs')
-        ->selectRaw('*, SUM(total_days) as sum_total_days')
-        ->where('created_by', $user_id)
-        ->where('category', 'sick_leave')
-        ->whereYear('created_at', Carbon::now()->year)
-        ->whereNull('deleted_at')
-        ->first();
+            ->selectRaw('*, SUM(total_days) as sum_total_days')
+            ->where('created_by', $user_id)
+            ->where('category', 'annual_leave')
+            ->where('status', 1)
+            ->whereYear('created_at', Carbon::now()->year)
+            ->whereNull('deleted_at')
+            ->first();
+    }
+
+    public static function getUserTimeOffSickLeave($user_id)
+    {
+        return DB::table('timeoffs')
+            ->selectRaw('*, SUM(total_days) as sum_total_days')
+            ->where('created_by', $user_id)
+            ->where('category', 'sick_leave')
+            ->where('status', 1)
+            ->whereYear('created_at', Carbon::now()->year)
+            ->whereNull('deleted_at')
+            ->first();
+    }
+
+    public static function getUserTimeOffSpecialLeave($user_id)
+    {
+        return DB::table('timeoffs')
+            ->selectRaw('*, SUM(total_days) as sum_total_days')
+            ->where('created_by', $user_id)
+            ->where('category', 'special_leave')
+            ->where('status', 1)
+            ->whereYear('created_at', Carbon::now()->year)
+            ->whereNull('deleted_at')
+            ->first();
     }
 }

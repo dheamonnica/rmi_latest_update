@@ -3308,7 +3308,7 @@ body.hold-transition .main-header .logo {
 /* Content */
 .content {
   min-height: 250px;
-  padding: 10px 0px 10px 20px;
+  padding: 10px 0px 10px 30px;
   /* margin-right: auto; */
   /* margin-left: auto; */
   /* padding-left: 15px; */
@@ -3365,7 +3365,7 @@ a:focus {
   -o-transition: margin-left 0.3s ease-in-out;
   transition: margin-left 0.3s ease-in-out;
   margin-bottom: 0;
-  margin-left: 200px;
+  margin-left: 210px;
   border: none;
   min-height: 50px;
   border-radius: 0;
@@ -3459,7 +3459,7 @@ a:focus {
   font-size: 20px;
   line-height: 50px;
   text-align: center;
-  width: 180px;
+  width: 195px;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   padding: 0 15px;
   font-weight: 300;
@@ -3616,7 +3616,7 @@ a:focus {
   letter-spacing: 0.5px;
   /* padding-top: 50px; */
   min-height: 100%;
-  width: 180px;
+  width: 195px;
   /* text-transform: uppercase; */
   z-index: 810;
   -webkit-transition: -webkit-transform 0.3s ease-in-out, width 0.3s ease-in-out;
