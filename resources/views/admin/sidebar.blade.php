@@ -60,7 +60,8 @@
             @endif
 
             @if ((new \App\Helpers\Authorize(Auth::user(), 'view_budget'))->check())
-                <li class="treeview {{ Request::is('admin/budget*') ? 'active' : '' }} {{ Request::is('admin/requirement*') ? 'active' : '' }}">
+                <li
+                    class="treeview {{ Request::is('admin/budget*') ? 'active' : '' }} {{ Request::is('admin/requirement*') ? 'active' : '' }}">
                     <a href="javascript:void(0)">
                         <i class="fa fa-file-text-o"></i>
                         <span>Budget</span>
@@ -85,6 +86,39 @@
                             <li class="{{ Request::is('admin/budget/report-administrator') ? 'active' : '' }}">
                                 <a href="{{ route('admin.budget.reportAdministrator') }}">
                                     Budget Report
+                                </a>
+                            </li>
+                        @endif
+                    </ul>
+                </li>
+            @endif
+
+            @if ((new \App\Helpers\Authorize(Auth::user(), 'view_target'))->check())
+                <li class="treeview {{ Request::is('admin/target*') ? 'active' : '' }}">
+                    <a href="javascript:void(0)">
+                        <i class="fa fa-bullseye"></i>
+                        <span>Target</span>
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </a>
+                    <ul class="treeview-menu">
+                        @if ((new \App\Helpers\Authorize(Auth::user(), 'report_target'))->check())
+                            @if (Auth::user()->isAdmin())
+                                <li class="{{ Request::is('admin/target/report-administrator') ? 'active' : '' }}">
+                                    <a href="{{ route('admin.target.reportAdministrator') }}">
+                                        Target Report Admin
+                                    </a>
+                                </li>
+                            @else
+                                <li class="{{ Request::is('admin/target/report') ? 'active' : '' }}">
+                                    <a href="{{ route('admin.target.report') }}">
+                                        Target Report
+                                    </a>
+                                </li>
+                            @endif
+
+                            <li class="{{ Request::is('admin/target') ? 'active' : '' }}">
+                                <a href="{{ route('admin.target.index') }}">
+                                    Target Data
                                 </a>
                             </li>
                         @endif
@@ -766,43 +800,7 @@
                             @endcan
                         @endif
 
-                        {{-- superadmin, marketing, leader and warehouse area leader --}}
-                        @if (Auth::user()->role_id === 1 ||
-                                Auth::user()->role_id === 8 ||
-                                Auth::user()->role_id === 13 ||
-                                Auth::user()->role_id === 3)
 
-
-
-                            <li class="treeview {{ Request::is('admin/target*') }}">
-                                <a href="javascript:void(0)">
-                                    <span>Target</span>
-                                    <i class="fa fa-angle-left pull-right"></i>
-                                </a>
-                                <ul class="treeview-menu">
-                                    @if (Auth::user()->role_id === 1)
-                                        <li class="{{ Request::is('admin/target*') ? 'active' : '' }}">
-                                            <a href="{{ route('admin.target.reportAdministrator') }}">
-                                                Target Report
-                                            </a>
-                                        </li>
-                                    @else
-                                        <li class="{{ Request::is('admin/target*') ? 'active' : '' }}">
-                                            <a href="{{ route('admin.target.report') }}">
-                                                Target Report
-                                            </a>
-                                        </li>
-                                    @endif
-
-
-                                    <li class="{{ Request::is('admin/target*') ? 'active' : '' }}">
-                                        <a href="{{ route('admin.target.index') }}">
-                                            Target Data
-                                        </a>
-                                    </li>
-                                </ul>
-                            </li>
-                        @endif
 
 
 

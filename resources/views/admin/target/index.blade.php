@@ -39,8 +39,7 @@
                         @endforeach
                     </select>
                 @endif
-                {{-- Leader and Warehouse Area Leader --}}
-                @if (Auth::user()->role_id === 13 || Auth::user()->role_id === 3)
+                @if ((new \App\Helpers\Authorize(Auth::user(), 'add_target'))->check())
                     <a href="javascript:void(0)" data-link="{{ route('admin.target.create') }}"
                         class="ajax-modal-btn btn btn-new btn-flat ml-5">{{ trans('app.form.create_target') }}</a>
                 @endif
