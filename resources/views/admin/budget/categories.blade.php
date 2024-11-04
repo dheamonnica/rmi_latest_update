@@ -11,8 +11,7 @@
             <div class="box-tools pull-right p-2">
             </div>
             <div class="pull-right">
-               {{-- SUPERADMIN --}}
-                @if (Auth::user()->role_id === 1)
+                @if ((new \App\Helpers\Authorize(Auth::user(), 'category_budget'))->check())
                     <a href="javascript:void(0)" data-link="{{ route('admin.requirement.create') }}"
                         class="ajax-modal-btn btn btn-new btn-flat ml-5">{{ trans('app.form.create_category') }}</a>
                 @endif
