@@ -39,4 +39,19 @@ class EloquentOffering extends EloquentRepository implements BaseRepository, Off
     {
         return DB::table('offering')->where('created_by', $user_id)->get();
     }
+
+    public function updateStatusApprove(Request $request, $offering)
+    {
+        if (!$offering instanceof Offering) {
+            $offering = $this->model->find($offering);
+        }
+
+        $offering->approved_at = date("Y-m-d G:i:s");
+        $offering->approved_by = Auth::user()->id;
+        $offering->updated_at = date("Y-m-d G:i:s");
+        $offering->updated_by = Auth::user()->id;
+        $offering->status = 1;
+
+        return $offering->save();
+    }
 }

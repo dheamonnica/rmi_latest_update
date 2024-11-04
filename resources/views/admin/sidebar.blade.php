@@ -19,7 +19,7 @@
             @if ((new \App\Helpers\Authorize(Auth::user(), 'view_crm'))->check())
                 <li class="treeview {{ Request::is('admin/crm*') }}">
                     <a href="javascript:void(0)">
-                        <i class="fa fa-handshake-o"></i>
+                        <i class="fa fa-file-o"></i>
                         <span>CRM</span>
                         <i class="fa fa-angle-left pull-right"></i>
                     </a>
@@ -38,6 +38,15 @@
                             </a>
                         </li>
                     </ul>
+                </li>
+            @endif
+
+            @if ((new \App\Helpers\Authorize(Auth::user(), 'view_offering'))->check())
+                <li class="{{ Request::is('admin/offering*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.offering.index') }}">
+                        <i class="fa fa-handshake-o"></i>
+                        Offering Approval
+                    </a>
                 </li>
             @endif
 
@@ -827,12 +836,6 @@
                             <li class="{{ Request::is('admin/report/visitors*') ? 'active' : '' }}">
                                 <a href="{{ route('admin.report.visitors') }}">
                                     {{ trans('nav.visitors') }}
-                                </a>
-                            </li>
-
-                            <li class="{{ Request::is('admin/offering*') ? 'active' : '' }}">
-                                <a href="{{ route('admin.offering.index') }}">
-                                    Offering Approval
                                 </a>
                             </li>
                         @elseif(Auth::user()->isMerchant())
