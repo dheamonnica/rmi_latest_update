@@ -1,13 +1,15 @@
-@if (!$crm->verified_by && Auth::user()->role_id === 13)
+@if (!$crm->verified_by && (new \App\Helpers\Authorize(Auth::user(), 'approve_crm'))->check())
     {!! Form::open(['route' => ['admin.crm.setApprove', $crm], 'method' => 'put', 'class' => 'inline']) !!}
     <a href="javascript:void(0)"><i class="confirm ajax-silent fa fa-check"></i></a>
     {!! Form::close() !!}
 @endif
 
-<a href="javascript:void(0)" data-link="{{ route('admin.crm.edit', $crm->id) }}" class="ajax-modal-btn"><i
-        data-toggle="tooltip" data-placement="top" title="{{ trans('app.edit') }}" class="fa fa-edit"></i></a>&nbsp;
+@if ((new \App\Helpers\Authorize(Auth::user(), 'edit_crm'))->check())
+    <a href="javascript:void(0)" data-link="{{ route('admin.crm.edit', $crm->id) }}" class="ajax-modal-btn"><i
+            data-toggle="tooltip" data-placement="top" title="{{ trans('app.edit') }}" class="fa fa-edit"></i></a>&nbsp;
+@endif
 
-@if (Auth::user()->isAdmin() || Auth::user()->isMerchant() || Auth::user()->isFromPlatform())
+@if ((new \App\Helpers\Authorize(Auth::user(), 'delete_crm'))->check())
     {!! Form::open([
         'route' => ['admin.admin.crm.trash', $crm->id],
         'method' => 'delete',

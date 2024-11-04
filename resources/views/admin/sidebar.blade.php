@@ -6,6 +6,7 @@
             <li class="{{ Request::is('admin/dashboard*') ? 'active' : '' }}">
                 <a href="{{ url('admin/dashboard') }}">
                     <i class="fa fa-dashboard"></i> <span>
+                        {{-- VENDOR MANUFACTURING --}}
                         @if (Auth::user()->role_id === 16)
                             Offering Status
                         @else
@@ -14,6 +15,31 @@
                     </span>
                 </a>
             </li>
+
+            @if ((new \App\Helpers\Authorize(Auth::user(), 'view_crm'))->check())
+                <li class="treeview {{ Request::is('admin/crm*') }}">
+                    <a href="javascript:void(0)">
+                        <i class="fa fa-handshake-o"></i>
+                        <span>CRM</span>
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </a>
+                    <ul class="treeview-menu">
+                        @if ((new \App\Helpers\Authorize(Auth::user(), 'report_crm'))->check())
+                            <li class="{{ Request::is('admin/crm*') ? 'active' : '' }}">
+                                <a href="{{ route('admin.crm.index') }}">
+                                    CRM Report
+                                </a>
+                            </li>
+                        @endif
+
+                        <li class="{{ Request::is('admin/crm*') ? 'active' : '' }}">
+                            <a href="{{ route('admin.crm.data') }}">
+                                CRM Data
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            @endif
 
             @if (Gate::allows('index', \App\Models\Category::class) ||
                     Gate::allows('index', \App\Models\Attribute::class) ||
@@ -694,25 +720,6 @@
                                 Auth::user()->role_id === 8 ||
                                 Auth::user()->role_id === 13 ||
                                 Auth::user()->role_id === 3)
-                            <li class="treeview {{ Request::is('admin/crm*') }}">
-                                <a href="javascript:void(0)">
-                                    <span>CRM</span>
-                                    <i class="fa fa-angle-left pull-right"></i>
-                                </a>
-                                <ul class="treeview-menu">
-                                    <li class="{{ Request::is('admin/crm*') ? 'active' : '' }}">
-                                        <a href="{{ route('admin.crm.index') }}">
-                                            CRM Report
-                                        </a>
-                                    </li>
-
-                                    <li class="{{ Request::is('admin/crm*') ? 'active' : '' }}">
-                                        <a href="{{ route('admin.crm.data') }}">
-                                            CRM Data
-                                        </a>
-                                    </li>
-                                </ul>
-                            </li>
 
                             @if (Auth::user()->id === 1)
                                 <li class="treeview {{ Request::is('admin/approval*') }}">
