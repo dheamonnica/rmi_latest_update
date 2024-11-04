@@ -50,6 +50,15 @@
                 </li>
             @endif
 
+            @if ((new \App\Helpers\Authorize(Auth::user(), 'view_visit'))->check())
+                <li class="{{ Request::is('admin/visit*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.visit.index') }}">
+                        <i class="fa fa-street-view"></i>
+                        Visit Plan
+                    </a>
+                </li>
+            @endif
+
             @if (Gate::allows('index', \App\Models\Category::class) ||
                     Gate::allows('index', \App\Models\Attribute::class) ||
                     Gate::allows('index', \App\Models\Product::class) ||
