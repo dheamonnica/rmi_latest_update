@@ -42,7 +42,7 @@
                     </select>
                 @endif
 
-                @if ((new \App\Helpers\Authorize(Auth::user(), 'add_budget'))->check())
+                @if ((new \App\Helpers\Authorize(Auth::user(), 'add_reimburse'))->check())
                     <a href="javascript:void(0)" data-link="{{ route('admin.budget.create') }}"
                         class="ajax-modal-btn btn btn-new btn-flat ml-5">{{ trans('app.form.create_budget') }}</a>
                 @endif

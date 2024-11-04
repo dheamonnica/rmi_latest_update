@@ -67,14 +67,14 @@
                         <i class="fa fa-angle-left pull-right"></i>
                     </a>
                     <ul class="treeview-menu">
-                        @if ((new \App\Helpers\Authorize(Auth::user(), 'add_budget'))->check())
+                        @if ((new \App\Helpers\Authorize(Auth::user(), 'add_reimburse'))->check())
                             <li class="{{ Request::is('admin/budget') ? 'active' : '' }}">
                                 <a href="{{ route('admin.budget.index') }}">
                                     Reimburse Data
                                 </a>
                             </li>
                         @endif
-                        @if ((new \App\Helpers\Authorize(Auth::user(), 'category_budget'))->check())
+                        @if ((new \App\Helpers\Authorize(Auth::user(), 'add_reimburse'))->check())
                             <li class="{{ Request::is('admin/requirement') ? 'active' : '' }}">
                                 <a href="{{ route('admin.requirement.index') }}">
                                     Reimburse Category
