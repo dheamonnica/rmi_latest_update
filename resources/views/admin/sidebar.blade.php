@@ -19,7 +19,7 @@
             @if ((new \App\Helpers\Authorize(Auth::user(), 'view_crm'))->check())
                 <li class="treeview {{ Request::is('admin/crm*') }}">
                     <a href="javascript:void(0)">
-                        <i class="fa fa-file-o"></i>
+                        <i class="fa fa-file-text-o"></i>
                         <span>CRM</span>
                         <i class="fa fa-angle-left pull-right"></i>
                     </a>
@@ -56,6 +56,39 @@
                         <i class="fa fa-street-view"></i>
                         Visit Plan
                     </a>
+                </li>
+            @endif
+
+            @if ((new \App\Helpers\Authorize(Auth::user(), 'view_budget'))->check())
+                <li class="treeview {{ Request::is('admin/approval*') }}">
+                    <a href="javascript:void(0)">
+                        <i class="fa fa-file-text-o"></i>
+                        <span>Budget</span>
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </a>
+                    <ul class="treeview-menu">
+                        @if ((new \App\Helpers\Authorize(Auth::user(), 'add_budget'))->check())
+                            <li class="{{ Request::is('admin/budget*') ? 'active' : '' }}">
+                                <a href="{{ route('admin.budget.index') }}">
+                                    Reimburse Data
+                                </a>
+                            </li>
+                        @endif
+                        @if ((new \App\Helpers\Authorize(Auth::user(), 'category_budget'))->check())
+                            <li class="{{ Request::is('admin/requirement*') ? 'active' : '' }}">
+                                <a href="{{ route('admin.requirement.index') }}">
+                                    Reimburse Category
+                                </a>
+                            </li>
+                        @endif
+                        @if ((new \App\Helpers\Authorize(Auth::user(), 'report_budget'))->check())
+                            <li class="{{ Request::is('admin/budget*') ? 'active' : '' }}">
+                                <a href="{{ route('admin.budget.reportAdministrator') }}">
+                                    Budget Report
+                                </a>
+                            </li>
+                        @endif
+                    </ul>
                 </li>
             @endif
 
@@ -739,26 +772,7 @@
                                 Auth::user()->role_id === 13 ||
                                 Auth::user()->role_id === 3)
 
-                            @if (Auth::user()->id === 1)
-                                <li class="treeview {{ Request::is('admin/approval*') }}">
-                                    <a href="javascript:void(0)">
-                                        <span>Reimburse</span>
-                                        <i class="fa fa-angle-left pull-right"></i>
-                                    </a>
-                                    <ul class="treeview-menu">
-                                        <li class="{{ Request::is('admin/budget*') ? 'active' : '' }}">
-                                            <a href="{{ route('admin.budget.index') }}">
-                                                Data
-                                            </a>
-                                        </li>
-                                        <li class="{{ Request::is('admin/requirement*') ? 'active' : '' }}">
-                                            <a href="{{ route('admin.requirement.index') }}">
-                                                Category
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </li>
-                            @endif
+
 
                             <li class="treeview {{ Request::is('admin/target*') }}">
                                 <a href="javascript:void(0)">
@@ -790,11 +804,7 @@
                             </li>
                         @endif
 
-                        <li class="{{ Request::is('admin/budget*') ? 'active' : '' }}">
-                            <a href="{{ route('admin.budget.reportAdministrator') }}">
-                                Budget
-                            </a>
-                        </li>
+
 
                         <li class="{{ Request::is('admin/visit*') ? 'active' : '' }}">
                             <a href="{{ route('admin.visit.index') }}">
