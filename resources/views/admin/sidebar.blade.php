@@ -431,7 +431,7 @@
                     </ul>
                 </li>
 
-                @if (Auth::user()->isAdmin())
+                @if ((new \App\Helpers\Authorize(Auth::user(), 'view_payroll'))->check())
                     <li class="treeview {{ Request::is('admin/payroll*') ? 'active' : '' }}">
                         <a href="javascript:void(0)">
                             <i class="fa fa-list"></i>
@@ -444,11 +444,13 @@
                                     {{ trans('nav.payroll_data') }}
                                 </a>
                             </li>
-                            <li class="{{ Request::is('admin/payroll-report') ? 'active' : '' }}">
-                                <a href="{{ url('admin/payroll-report') }}">
-                                    {{ trans('nav.payroll_reports') }}
-                                </a>
-                            </li>
+                            @if ((new \App\Helpers\Authorize(Auth::user(), 'report_payroll'))->check())
+                                <li class="{{ Request::is('admin/payroll-report') ? 'active' : '' }}">
+                                    <a href="{{ url('admin/payroll-report') }}">
+                                        {{ trans('nav.payroll_reports') }}
+                                    </a>
+                                </li>
+                            @endif
                         </ul>
                     </li>
                 @endif
@@ -564,7 +566,7 @@
                 @endif
             @endif
 
-            @if (Auth::user()->role_id === 3 || Auth::user()->isAdmin())
+            @if (Auth::user()->isAdmin())
                 <li class="treeview {{ Request::is('admin/setting*') ? 'active' : '' }}">
                     <a href="javascript:void(0)">
                         <i class="fa fa-gears"></i>
@@ -572,16 +574,6 @@
                         <i class="fa fa-angle-left pull-right"></i>
                     </a>
                     <ul class="treeview-menu">
-                        @if (is_subscription_enabled())
-                            @can('index', \App\Models\SubscriptionPlan::class)
-                                <li class="{{ Request::is('admin/setting/subscriptionPlan*') ? 'active' : '' }}">
-                                    <a href="{{ url('admin/setting/subscriptionPlan') }}">
-                                        {{ trans('nav.subscription_plans') }}
-                                    </a>
-                                </li>
-                            @endcan
-                        @endif
-
                         @can('index', \App\Models\Role::class)
                             <li class="{{ Request::is('admin/setting/role*') ? 'active' : '' }}">
                                 <a href="{{ url('admin/setting/role') }}">
@@ -645,35 +637,6 @@
                                     </a>
                                 </li>
                             @endcan
-
-                            @if (is_incevio_package_loaded('announcement') && Auth::user()->isAdmin())
-                                <li class="{{ Request::is('admin/setting/announcement*') ? 'active' : '' }}">
-                                    <a href="{{ url('admin/setting/announcement') }}">
-                                        {{ trans('nav.announcements') }}
-                                        @include('partials._addon_badge')
-                                    </a>
-                                </li>
-                            @endif
-
-                            @if (Auth::user()->isAdmin())
-                                <li class="{{ Request::is('admin/setting/country*') ? 'active' : '' }}">
-                                    <a href="{{ url('admin/setting/country') }}">
-                                        {{ trans('nav.countries') }}
-                                    </a>
-                                </li>
-
-                                <li class="{{ Request::is('admin/setting/currency*') ? 'active' : '' }}">
-                                    <a href="{{ url('admin/setting/currency') }}">
-                                        {{ trans('nav.currencies') }}
-                                    </a>
-                                </li>
-
-                                <li class="{{ Request::is('admin/setting/language*') ? 'active' : '' }}">
-                                    <a href="{{ url('admin/setting/language') }}">
-                                        {{ trans('app.languages') }}
-                                    </a>
-                                </li>
-                            @endif
                         @endif
 
                         @if (is_incevio_package_loaded('wallet'))
