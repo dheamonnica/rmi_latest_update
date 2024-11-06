@@ -376,7 +376,7 @@
                     Gate::allows('index', \App\Models\Customer::class) ||
                     Gate::allows('index', \Incevio\Package\Inspector\Models\InspectorModel::class))
                 <li
-                    class="treeview {{ Request::is('admin/admin*') || Request::is('address/addresses/customer*') || Request::is('admin/inspector*') ? 'active' : '' }}">
+                    class="treeview {{ Request::is('admin/admin*') || Request::is('address/addresses/customer*') || Request::is('admin/department*') || Request::is('admin/inspector*') ? 'active' : '' }}">
                     <a href="javascript:void(0)">
                         <i class="fa fa-user-secret"></i>
                         <span>Administrator</span>
@@ -384,20 +384,20 @@
                     </a>
                     <ul class="treeview-menu">
                         @can('index', \App\Models\User::class)
-                            <li class="{{ Request::is('admin/admin/user*') ? 'active' : '' }}">
+                            <li class="{{ Request::is('admin/admin/user') ? 'active' : '' }}">
                                 <a href="{{ url('admin/admin/user') }}">
                                     {{ trans('nav.users') }}
                                 </a>
                             </li>
                         @endcan
 
-                        @can('index', \App\Models\User::class)
-                            <li class="{{ Request::is('admin/admin/department*') ? 'active' : '' }}">
+                        @if ((new \App\Helpers\Authorize(Auth::user(), 'view_department'))->check())
+                            <li class="{{ Request::is('admin/department') ? 'active' : '' }}">
                                 <a href="{{ url('admin/department') }}">
                                     {{ trans('nav.departments') }}
                                 </a>
                             </li>
-                        @endcan
+                        @endif
 
                         @if (Auth::user()->isMerchant())
                             <li class="{{ Request::is('admin/admin/deliveryboys*') ? 'active' : '' }}">

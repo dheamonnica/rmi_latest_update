@@ -11,7 +11,7 @@
             <div class="box-tools pull-right p-2">
             </div>
             <div class="pull-right">
-                @if (Auth::user()->isAdmin())
+                @if ((new \App\Helpers\Authorize(Auth::user(), 'add_department'))->check())
                     <a href="javascript:void(0)" data-link="{{ route('admin.department.create') }}"
                         class="ajax-modal-btn btn btn-new btn-flat ml-5">{{ trans('app.form.create_department') }}</a>
                 @endif
