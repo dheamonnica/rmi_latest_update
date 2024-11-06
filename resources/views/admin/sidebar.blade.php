@@ -16,6 +16,75 @@
                 </a>
             </li>
 
+            @if (Gate::allows('index', \App\Models\Category::class) ||
+                    Gate::allows('index', \App\Models\Attribute::class) ||
+                    Gate::allows('index', \App\Models\Product::class) ||
+                    Gate::allows('index', \App\Models\Manufacturer::class) ||
+                    Gate::allows('index', \App\Models\CategoryGroup::class) ||
+                    Gate::allows('index', \App\Models\CategorySubGroup::class))
+                <li class="treeview {{ Request::is('admin/catalog*') ? 'active' : '' }}">
+                    <a href="javascript:void(0)">
+                        <i class="fa fa-tags"></i>
+                        <span>{{ trans('nav.catalog') }}</span>
+                    </a>
+                    <ul class="treeview-menu">
+                        @if (Gate::allows('index', \App\Models\Category::class) ||
+                                Gate::allows('index', \App\Models\CategoryGroup::class) ||
+                                Gate::allows('index', \App\Models\CategorySubGroup::class))
+                            <li class="{{ Request::is('admin/catalog/category*') ? 'active' : '' }}">
+                                <a href="javascript:void(0)">
+                                    {{ trans('nav.categories') }}
+                                    <i class="fa fa-angle-left pull-right"></i>
+                                </a>
+                                <ul class="treeview-menu">
+                                    @can('index', \App\Models\CategoryGroup::class)
+                                        <li class="{{ Request::is('admin/catalog/categoryGroup*') ? 'active' : '' }}">
+                                            <a href="{{ route('admin.catalog.categoryGroup.index') }}">
+                                                {{ trans('nav.groups') }}
+                                            </a>
+                                        </li>
+                                    @endcan
+
+                                    @can('index', \App\Models\CategorySubGroup::class)
+                                        <li class="{{ Request::is('admin/catalog/categorySubGroup*') ? 'active' : '' }}">
+                                            <a href="{{ route('admin.catalog.categorySubGroup.index') }}">
+                                                {{ trans('nav.sub-groups') }}
+                                            </a>
+                                        </li>
+                                    @endcan
+
+                                    @can('index', \App\Models\Category::class)
+                                        <li class="{{ Request::is('admin/catalog/category') ? 'active' : '' }}">
+                                            <a href="{{ url('admin/catalog/category') }}">
+                                                {{ trans('nav.categories') }}
+                                            </a>
+                                        </li>
+                                    @endcan
+                                </ul>
+                            </li>
+                        @endif
+
+                        @if (is_catalog_enabled())
+                            @can('index', \App\Models\Product::class)
+                                <li class="{{ Request::is('admin/catalog/product*') ? 'active' : '' }}">
+                                    <a href="{{ url('admin/catalog/product') }}">
+                                        {{ trans('nav.products') }}
+                                    </a>
+                                </li>
+                            @endcan
+                        @endif
+
+                        @can('index', \App\Models\Manufacturer::class)
+                            <li class="{{ Request::is('admin/catalog/manufacturer*') ? 'active' : '' }}">
+                                <a href="{{ url('admin/catalog/manufacturer') }}">
+                                    {{ trans('nav.manufacturers') }}
+                                </a>
+                            </li>
+                        @endcan
+                    </ul>
+                </li>
+            @endif
+
             @if ((new \App\Helpers\Authorize(Auth::user(), 'view_crm'))->check())
                 <li class="treeview {{ Request::is('admin/crm*') ? 'active' : '' }}">
                     <a href="javascript:void(0)">
@@ -126,71 +195,88 @@
                 </li>
             @endif
 
-            @if (Gate::allows('index', \App\Models\Category::class) ||
-                    Gate::allows('index', \App\Models\Attribute::class) ||
-                    Gate::allows('index', \App\Models\Product::class) ||
-                    Gate::allows('index', \App\Models\Manufacturer::class) ||
-                    Gate::allows('index', \App\Models\CategoryGroup::class) ||
-                    Gate::allows('index', \App\Models\CategorySubGroup::class))
-                <li class="treeview {{ Request::is('admin/catalog*') ? 'active' : '' }}">
+            @if ((new \App\Helpers\Authorize(Auth::user(), 'view_loan'))->check())
+                <li class="treeview {{ Request::is('admin/loan*') ? 'active' : '' }}">
                     <a href="javascript:void(0)">
-                        <i class="fa fa-tags"></i>
-                        <span>{{ trans('nav.catalog') }}</span>
+                        <i class="fa fa-credit-card"></i>
+                        <span>Loan</span>
+                        <i class="fa fa-angle-left pull-right"></i>
+                        <i class="fa fa-angle-left pull-right"></i>
                     </a>
                     <ul class="treeview-menu">
-                        @if (Gate::allows('index', \App\Models\Category::class) ||
-                                Gate::allows('index', \App\Models\CategoryGroup::class) ||
-                                Gate::allows('index', \App\Models\CategorySubGroup::class))
-                            <li class="{{ Request::is('admin/catalog/category*') ? 'active' : '' }}">
-                                <a href="javascript:void(0)">
-                                    {{ trans('nav.categories') }}
-                                    <i class="fa fa-angle-left pull-right"></i>
-                                </a>
-                                <ul class="treeview-menu">
-                                    @can('index', \App\Models\CategoryGroup::class)
-                                        <li class="{{ Request::is('admin/catalog/categoryGroup*') ? 'active' : '' }}">
-                                            <a href="{{ route('admin.catalog.categoryGroup.index') }}">
-                                                {{ trans('nav.groups') }}
-                                            </a>
-                                        </li>
-                                    @endcan
-
-                                    @can('index', \App\Models\CategorySubGroup::class)
-                                        <li class="{{ Request::is('admin/catalog/categorySubGroup*') ? 'active' : '' }}">
-                                            <a href="{{ route('admin.catalog.categorySubGroup.index') }}">
-                                                {{ trans('nav.sub-groups') }}
-                                            </a>
-                                        </li>
-                                    @endcan
-
-                                    @can('index', \App\Models\Category::class)
-                                        <li class="{{ Request::is('admin/catalog/category') ? 'active' : '' }}">
-                                            <a href="{{ url('admin/catalog/category') }}">
-                                                {{ trans('nav.categories') }}
-                                            </a>
-                                        </li>
-                                    @endcan
-                                </ul>
-                            </li>
-                        @endif
-
-                        @if (is_catalog_enabled())
-                            @can('index', \App\Models\Product::class)
-                                <li class="{{ Request::is('admin/catalog/product*') ? 'active' : '' }}">
-                                    <a href="{{ url('admin/catalog/product') }}">
-                                        {{ trans('nav.products') }}
-                                    </a>
-                                </li>
-                            @endcan
-                        @endif
-
-                        @can('index', \App\Models\Manufacturer::class)
-                            <li class="{{ Request::is('admin/catalog/manufacturer*') ? 'active' : '' }}">
-                                <a href="{{ url('admin/catalog/manufacturer') }}">
-                                    {{ trans('nav.manufacturers') }}
+                        <li class="{{ Request::is('admin/loan') ? 'active' : '' }}">
+                            <a href="{{ route('admin.loan.index') }}">
+                                Data
+                            </a>
+                        </li>
+                        @if ((new \App\Helpers\Authorize(Auth::user(), 'view_loan'))->check())
+                            <li class="{{ Request::is('admin/loan-payment') ? 'active' : '' }}">
+                                <a href="{{ route('admin.admin.loan.payment') }}">
+                                    Payment
                                 </a>
                             </li>
-                        @endcan
+                        @endif
+                        @if ((new \App\Helpers\Authorize(Auth::user(), 'report_loan'))->check())
+                            <li class="{{ Request::is('admin/loan-report') ? 'active' : '' }}">
+                                <a href="{{ route('admin.admin.loan.report') }}">
+                                    Report
+                                </a>
+                            </li>
+                        @endif
+                    </ul>
+                </li>
+            @endif
+
+            @if (
+                (new \App\Helpers\Authorize(Auth::user(), 'view_overtime'))->check() ||
+                    (new \App\Helpers\Authorize(Auth::user(), 'view_timeoff'))->check())
+                <li class="treeview {{ Request::is('admin/approval*') }}">
+                    <a href="javascript:void(0)">
+                        <i class="fa fa-hourglass"></i>
+                        <span>Time Management</span>
+                        <i class="fa fa-angle-left pull-right"></i>
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </a>
+                    @if ((new \App\Helpers\Authorize(Auth::user(), 'view_overtime'))->check())
+                        <ul class="treeview-menu">
+                            <li class="{{ Request::is('admin/overtime*') ? 'active' : '' }}">
+                                <a href="{{ route('admin.overtime.index') }}">
+                                    Overtime
+                                </a>
+                            </li>
+                        </ul>
+                    @endif
+                    @if ((new \App\Helpers\Authorize(Auth::user(), 'view_timeoff'))->check())
+                        <ul class="treeview-menu">
+                            <li class="{{ Request::is('admin/timeoff*') ? 'active' : '' }}">
+                                <a href="{{ route('admin.timeoff.index') }}">
+                                    Request Time Off
+                                </a>
+                            </li>
+                        </ul>
+                    @endif
+                </li>
+            @endif
+
+            @if ((new \App\Helpers\Authorize(Auth::user(), 'customize_appearance'))->check())
+                <li class="treeview {{ Request::is('admin/appearance*') ? 'active' : '' }}">
+                    <a href="javascript:void(0)">
+                        <i class="fa fa-paint-brush"></i>
+                        <span>{{ trans('nav.appearance') }}</span>
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </a>
+                    <ul class="treeview-menu">
+                        <li class="{{ Request::is('admin/appearance/banner*') ? 'active' : '' }}">
+                            <a href="{{ url('admin/appearance/banner') }}">
+                                {{ trans('nav.banners') }}
+                            </a>
+                        </li>
+
+                        <li class="{{ Request::is('admin/appearance/slider*') ? 'active' : '' }}">
+                            <a href="{{ url('admin/appearance/slider') }}">
+                                {{ trans('nav.sliders') }}
+                            </a>
+                        </li>
                     </ul>
                 </li>
             @endif
@@ -249,14 +335,6 @@
                                 @endif
                             @endcan
                         @endif
-
-                        {{-- @can('index', \App\Models\Supplier::class)
-                            <li class="{{ Request::is('admin/stock/supplier*') ? 'active' : '' }}">
-                                <a href="{{ url('admin/stock/supplier') }}">
-                                    {{ trans('nav.suppliers') }}
-                                </a>
-                            </li>
-                        @endcan --}}
                     </ul>
                 </li>
             @endif
@@ -275,13 +353,14 @@
                                     {{ trans('nav.orders') }}
                                 </a>
                             </li>
-                            <li class="{{ Request::is('admin/order/order-report') ? 'active' : '' }}">
-                                <a href="{{ url('admin/order/order-report') }}">
-                                    Order Report
-                                </a>
-                            </li>
-                            {{-- FINANCE --}}
-                            @if (Auth::user()->role_id === 10 || Auth::user()->role_id === 1)
+                            @if ((new \App\Helpers\Authorize(Auth::user(), 'view_order_report'))->check())
+                                <li class="{{ Request::is('admin/order/order-report') ? 'active' : '' }}">
+                                    <a href="{{ url('admin/order/order-report') }}">
+                                        Order Report
+                                    </a>
+                                </li>
+                            @endif
+                            @if ((new \App\Helpers\Authorize(Auth::user(), 'view_order_report'))->check())
                                 <li class="{{ Request::is('admin/order/order-payment-document') ? 'active' : '' }}">
                                     <a href="{{ url('admin/order/order-payment-document') }}">
                                         Payment Doc
@@ -656,132 +735,12 @@
                 </li>
             @endif
 
-            {{-- IF SUPERADMIN OR ADMIN CONTENT --}}
-            @if (
-                (new \App\Helpers\Authorize(Auth::user(), 'customize_appearance'))->check() ||
-                    Auth::user()->role_id === 15 ||
-                    Auth::user()->isAdmin())
-                <li class="treeview {{ Request::is('admin/appearance*') ? 'active' : '' }}">
-                    <a href="javascript:void(0)">
-                        <i class="fa fa-paint-brush"></i>
-                        <span>{{ trans('nav.appearance') }}</span>
-                        <i class="fa fa-angle-left pull-right"></i>
-                    </a>
-                    <ul class="treeview-menu">
-                        @unless (Auth::user()->isMerchant())
-                            @if (is_incevio_package_loaded('dynamic-popup'))
-                                <li class="{{ Request::is('admin/appearance/popup*') ? 'active' : '' }}">
-                                    <a href="{{ route('admin.appearance.popup') }}">
-                                        <i class="fa fa-angle-double-right"></i>
-                                        {{ trans('DynamicPopup::lang.dynamic_popups') }}
-                                    </a>
-                                </li>
-                            @endif
-                        @endunless
 
-                        <li class="{{ Request::is('admin/appearance/banner*') ? 'active' : '' }}">
-                            <a href="{{ url('admin/appearance/banner') }}">
-                                <i class="fa fa-angle-double-right"></i> {{ trans('nav.banners') }}
-                            </a>
-                        </li>
-
-                        <li class="{{ Request::is('admin/appearance/slider*') ? 'active' : '' }}">
-                            <a href="{{ url('admin/appearance/slider') }}">
-                                <i class="fa fa-angle-double-right"></i> {{ trans('nav.sliders') }}
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-
-                {{-- <li
-                    class="treeview {{ Request::is('admin/promotions*') || Request::is('admin/flashdeal*') ? 'active' : '' }}">
-                    <a href="javascript:void(0)">
-                        <i class="fa fa-bullhorn"></i>
-                        <span>{{ trans('nav.promotions') }}</span>
-                        <i class="fa fa-angle-left pull-right"></i>
-                    </a>
-                    <ul class="treeview-menu">
-                        @if (Auth::user()->isAdmin())
-                            <li class="{{ Request::is('admin/promotions*') ? 'active' : '' }}">
-                                <a href="{{ url('admin/promotions') }}">
-                                    <i class="fa fa-angle-double-right"></i>
-                                    <span>{{ trans('nav.promotions') }}</span>
-                                </a>
-                            </li>
-                        @endif
-
-                        @if (Auth::user()->isAdmin() && is_incevio_package_loaded('trendingKeywords'))
-                            <li class="{{ Request::is('admin/promotions/trendingKeywords*') ? 'active' : '' }}">
-                                <a href="{{ route('admin.promotion.trendingKeywords') }}">
-                                    <i class="fa fa-angle-double-right"></i>
-                                    {{ trans('trendingKeywords::lang.trending_keywords') }}
-                                    @include('partials._addon_badge')
-                                </a>
-                            </li>
-                        @endif
-
-                        @if ((new \App\Helpers\Authorize(Auth::user(), 'manage_flash_deal'))->check())
-                            <li class="{{ Request::is('admin/flashdeal*') ? 'active' : '' }}">
-                                <a href="{{ route('admin.flashdeal') }}">
-                                    <i class="fa fa-angle-double-right"></i> {{ trans('theme.flash_deal') }}
-                                </a>
-                            </li>
-                        @endif
-                    </ul>
-                </li> --}}
-            @endif
 
             {{-- Except vendor manufacturing --}}
             @if (Auth::user()->role_id !== 16)
-                <li class="treeview {{ Request::is('admin/approval*') }}">
-                    <a href="javascript:void(0)">
-                        <i class="fa fa-hourglass"></i>
-                        <span>Time Management</span>
-                        <i class="fa fa-angle-left pull-right"></i>
-                        <i class="fa fa-angle-left pull-right"></i>
-                    </a>
-                    <ul class="treeview-menu">
-                        <li class="{{ Request::is('admin/overtime*') ? 'active' : '' }}">
-                            <a href="{{ route('admin.overtime.index') }}">
-                                Overtime
-                            </a>
-                        </li>
-                    </ul>
-                    <ul class="treeview-menu">
-                        <li class="{{ Request::is('admin/timeoff*') ? 'active' : '' }}">
-                            <a href="{{ route('admin.timeoff.index') }}">
-                                Request Time Off
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-                <li class="treeview {{ Request::is('admin/loan*') }}">
-                    <a href="javascript:void(0)">
-                        <i class="fa fa-money"></i>
-                        <span>Loan</span>
-                        <i class="fa fa-angle-left pull-right"></i>
-                        <i class="fa fa-angle-left pull-right"></i>
-                    </a>
-                    <ul class="treeview-menu">
-                        <li class="{{ Request::is('admin/loan') ? 'active' : '' }}">
-                            <a href="{{ route('admin.loan.index') }}">
-                                Data
-                            </a>
-                        </li>
-                        @if (Auth::user()->isAdmin())
-                            <li class="{{ Request::is('admin/loan-payment') ? 'active' : '' }}">
-                                <a href="{{ route('admin.admin.loan.payment') }}">
-                                    Payment
-                                </a>
-                            </li>
-                            <li class="{{ Request::is('admin/loan-report') ? 'active' : '' }}">
-                                <a href="{{ route('admin.admin.loan.report') }}">
-                                    Report
-                                </a>
-                            </li>
-                        @endif
-                    </ul>
-                </li>
+
+
                 <li
                     class="treeview {{ Request::is('admin/report*') || Request::is('admin/shop/report*') ? 'active' : '' }}">
                     <a href="javascript:void(0)">
