@@ -698,26 +698,27 @@
                 </li>
             @endif
 
-            <li
-                class="treeview {{ Request::is('admin/report*') || Request::is('admin/shop/report*') ? 'active' : '' }}">
-                <a href="javascript:void(0)">
-                    <i class="fa fa-bar-chart"></i>
-                    <span>{{ trans('nav.reports') }}</span>
-                    <i class="fa fa-angle-left pull-right"></i>
-                </a>
-                <ul class="treeview-menu">
-                    @if (is_incevio_package_loaded('wallet'))
-                        @can('report', \Incevio\Package\Wallet\Models\Wallet::class)
-                            <li class="{{ Request::is('admin/report/payout*') ? 'active' : '' }}">
-                                <a href="{{ route('admin.wallet.payout.report') }}">
-                                    {{ trans('nav.payout') }}
-                                </a>
-                            </li>
-                        @endcan
-                    @endif
-                </ul>
-            </li>
-            @endif
+            @can('report', \Incevio\Package\Wallet\Models\Wallet::class)
+                <li
+                    class="treeview {{ Request::is('admin/report*') || Request::is('admin/shop/report*') ? 'active' : '' }}">
+                    <a href="javascript:void(0)">
+                        <i class="fa fa-bar-chart"></i>
+                        <span>{{ trans('nav.reports') }}</span>
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </a>
+                    <ul class="treeview-menu">
+                        @if (is_incevio_package_loaded('wallet'))
+                            @can('report', \Incevio\Package\Wallet\Models\Wallet::class)
+                                <li class="{{ Request::is('admin/report/payout*') ? 'active' : '' }}">
+                                    <a href="{{ route('admin.wallet.payout.report') }}">
+                                        {{ trans('nav.payout') }}
+                                    </a>
+                                </li>
+                            @endcan
+                        @endif
+                    </ul>
+                </li>
+            @endcan
         </ul>
     </section> <!-- /.sidebar -->
 </aside>
