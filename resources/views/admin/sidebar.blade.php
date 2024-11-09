@@ -6,6 +6,7 @@
             <li class="{{ Request::is('admin/dashboard*') ? 'active' : '' }}">
                 <a href="{{ url('admin/dashboard') }}">
                     <i class="fa fa-dashboard"></i> <span>
+                        {{-- VENDOR MANUFACTURING --}}
                         @if (Auth::user()->role_id === 16)
                             Offering Status
                         @else
@@ -84,6 +85,202 @@
                 </li>
             @endif
 
+            @if ((new \App\Helpers\Authorize(Auth::user(), 'view_crm'))->check())
+                <li class="treeview {{ Request::is('admin/crm*') ? 'active' : '' }}">
+                    <a href="javascript:void(0)">
+                        <i class="fa fa-file-text-o"></i>
+                        <span>CRM</span>
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </a>
+                    <ul class="treeview-menu">
+                        @if ((new \App\Helpers\Authorize(Auth::user(), 'report_crm'))->check())
+                            <li class="{{ Request::is('admin/crm') ? 'active' : '' }}">
+                                <a href="{{ route('admin.crm.index') }}">
+                                    CRM Report
+                                </a>
+                            </li>
+                        @endif
+
+                        <li class="{{ Request::is('admin/crm/data') ? 'active' : '' }}">
+                            <a href="{{ route('admin.crm.data') }}">
+                                CRM Data
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            @endif
+
+            @if ((new \App\Helpers\Authorize(Auth::user(), 'view_offering'))->check())
+                <li class="{{ Request::is('admin/offering*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.offering.index') }}">
+                        <i class="fa fa-handshake-o"></i>
+                        Offering Approval
+                    </a>
+                </li>
+            @endif
+
+            @if ((new \App\Helpers\Authorize(Auth::user(), 'view_visit'))->check())
+                <li class="{{ Request::is('admin/visit*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.visit.index') }}">
+                        <i class="fa fa-street-view"></i>
+                        Visit Plan
+                    </a>
+                </li>
+            @endif
+
+            @if ((new \App\Helpers\Authorize(Auth::user(), 'view_budget'))->check())
+                <li
+                    class="treeview {{ Request::is('admin/budget*') ? 'active' : '' }} {{ Request::is('admin/requirement*') ? 'active' : '' }}">
+                    <a href="javascript:void(0)">
+                        <i class="fa fa-file-text-o"></i>
+                        <span>Budget</span>
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </a>
+                    <ul class="treeview-menu">
+                        @if ((new \App\Helpers\Authorize(Auth::user(), 'add_reimburse'))->check())
+                            <li class="{{ Request::is('admin/budget') ? 'active' : '' }}">
+                                <a href="{{ route('admin.budget.index') }}">
+                                    Reimburse Data
+                                </a>
+                            </li>
+                        @endif
+                        @if ((new \App\Helpers\Authorize(Auth::user(), 'add_reimburse'))->check())
+                            <li class="{{ Request::is('admin/requirement') ? 'active' : '' }}">
+                                <a href="{{ route('admin.requirement.index') }}">
+                                    Reimburse Category
+                                </a>
+                            </li>
+                        @endif
+                        @if ((new \App\Helpers\Authorize(Auth::user(), 'report_budget'))->check())
+                            <li class="{{ Request::is('admin/budget/report-administrator') ? 'active' : '' }}">
+                                <a href="{{ route('admin.budget.reportAdministrator') }}">
+                                    Budget Report
+                                </a>
+                            </li>
+                        @endif
+                    </ul>
+                </li>
+            @endif
+
+            @if ((new \App\Helpers\Authorize(Auth::user(), 'view_target'))->check())
+                <li class="treeview {{ Request::is('admin/target*') ? 'active' : '' }}">
+                    <a href="javascript:void(0)">
+                        <i class="fa fa-bullseye"></i>
+                        <span>Target</span>
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </a>
+                    <ul class="treeview-menu">
+                        @if ((new \App\Helpers\Authorize(Auth::user(), 'report_target'))->check())
+                            @if (Auth::user()->isAdmin())
+                                <li class="{{ Request::is('admin/target/report-administrator') ? 'active' : '' }}">
+                                    <a href="{{ route('admin.target.reportAdministrator') }}">
+                                        Target Report Admin
+                                    </a>
+                                </li>
+                            @else
+                                <li class="{{ Request::is('admin/target/report') ? 'active' : '' }}">
+                                    <a href="{{ route('admin.target.report') }}">
+                                        Target Report
+                                    </a>
+                                </li>
+                            @endif
+
+                            <li class="{{ Request::is('admin/target') ? 'active' : '' }}">
+                                <a href="{{ route('admin.target.index') }}">
+                                    Target Data
+                                </a>
+                            </li>
+                        @endif
+                    </ul>
+                </li>
+            @endif
+
+            @if ((new \App\Helpers\Authorize(Auth::user(), 'view_loan'))->check())
+                <li class="treeview {{ Request::is('admin/loan*') ? 'active' : '' }}">
+                    <a href="javascript:void(0)">
+                        <i class="fa fa-credit-card"></i>
+                        <span>Loan</span>
+                        <i class="fa fa-angle-left pull-right"></i>
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </a>
+                    <ul class="treeview-menu">
+                        <li class="{{ Request::is('admin/loan') ? 'active' : '' }}">
+                            <a href="{{ route('admin.loan.index') }}">
+                                Data
+                            </a>
+                        </li>
+                        @if ((new \App\Helpers\Authorize(Auth::user(), 'view_loan'))->check())
+                            <li class="{{ Request::is('admin/loan-payment') ? 'active' : '' }}">
+                                <a href="{{ route('admin.admin.loan.payment') }}">
+                                    Payment
+                                </a>
+                            </li>
+                        @endif
+                        @if ((new \App\Helpers\Authorize(Auth::user(), 'report_loan'))->check())
+                            <li class="{{ Request::is('admin/loan-report') ? 'active' : '' }}">
+                                <a href="{{ route('admin.admin.loan.report') }}">
+                                    Report
+                                </a>
+                            </li>
+                        @endif
+                    </ul>
+                </li>
+            @endif
+
+            @if (
+                (new \App\Helpers\Authorize(Auth::user(), 'view_overtime'))->check() ||
+                    (new \App\Helpers\Authorize(Auth::user(), 'view_timeoff'))->check())
+                <li class="treeview {{ Request::is('admin/approval*') }}">
+                    <a href="javascript:void(0)">
+                        <i class="fa fa-hourglass"></i>
+                        <span>Time Management</span>
+                        <i class="fa fa-angle-left pull-right"></i>
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </a>
+                    @if ((new \App\Helpers\Authorize(Auth::user(), 'view_overtime'))->check())
+                        <ul class="treeview-menu">
+                            <li class="{{ Request::is('admin/overtime*') ? 'active' : '' }}">
+                                <a href="{{ route('admin.overtime.index') }}">
+                                    Overtime
+                                </a>
+                            </li>
+                        </ul>
+                    @endif
+                    @if ((new \App\Helpers\Authorize(Auth::user(), 'view_timeoff'))->check())
+                        <ul class="treeview-menu">
+                            <li class="{{ Request::is('admin/timeoff*') ? 'active' : '' }}">
+                                <a href="{{ route('admin.timeoff.index') }}">
+                                    Request Time Off
+                                </a>
+                            </li>
+                        </ul>
+                    @endif
+                </li>
+            @endif
+
+            @if ((new \App\Helpers\Authorize(Auth::user(), 'customize_appearance'))->check())
+                <li class="treeview {{ Request::is('admin/appearance*') ? 'active' : '' }}">
+                    <a href="javascript:void(0)">
+                        <i class="fa fa-paint-brush"></i>
+                        <span>{{ trans('nav.appearance') }}</span>
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </a>
+                    <ul class="treeview-menu">
+                        <li class="{{ Request::is('admin/appearance/banner*') ? 'active' : '' }}">
+                            <a href="{{ url('admin/appearance/banner') }}">
+                                {{ trans('nav.banners') }}
+                            </a>
+                        </li>
+
+                        <li class="{{ Request::is('admin/appearance/slider*') ? 'active' : '' }}">
+                            <a href="{{ url('admin/appearance/slider') }}">
+                                {{ trans('nav.sliders') }}
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            @endif
+
             @if (Gate::allows('index', \App\Models\Inventory::class) ||
                     Gate::allows('index', \App\Models\Warehouse::class) ||
                     Gate::allows('index', \App\Models\Supplier::class))
@@ -138,14 +335,6 @@
                                 @endif
                             @endcan
                         @endif
-
-                        {{-- @can('index', \App\Models\Supplier::class)
-                            <li class="{{ Request::is('admin/stock/supplier*') ? 'active' : '' }}">
-                                <a href="{{ url('admin/stock/supplier') }}">
-                                    {{ trans('nav.suppliers') }}
-                                </a>
-                            </li>
-                        @endcan --}}
                     </ul>
                 </li>
             @endif
@@ -164,13 +353,14 @@
                                     {{ trans('nav.orders') }}
                                 </a>
                             </li>
-                            <li class="{{ Request::is('admin/order/order-report') ? 'active' : '' }}">
-                                <a href="{{ url('admin/order/order-report') }}">
-                                    Order Report
-                                </a>
-                            </li>
-                            {{-- FINANCE --}}
-                            @if (Auth::user()->role_id === 10 || Auth::user()->role_id === 1)
+                            @if ((new \App\Helpers\Authorize(Auth::user(), 'view_order_report'))->check())
+                                <li class="{{ Request::is('admin/order/order-report') ? 'active' : '' }}">
+                                    <a href="{{ url('admin/order/order-report') }}">
+                                        Order Report
+                                    </a>
+                                </li>
+                            @endif
+                            @if ((new \App\Helpers\Authorize(Auth::user(), 'view_order_report'))->check())
                                 <li class="{{ Request::is('admin/order/order-payment-document') ? 'active' : '' }}">
                                     <a href="{{ url('admin/order/order-payment-document') }}">
                                         Payment Doc
@@ -186,7 +376,7 @@
                     Gate::allows('index', \App\Models\Customer::class) ||
                     Gate::allows('index', \Incevio\Package\Inspector\Models\InspectorModel::class))
                 <li
-                    class="treeview {{ Request::is('admin/admin*') || Request::is('address/addresses/customer*') || Request::is('admin/inspector*') ? 'active' : '' }}">
+                    class="treeview {{ Request::is('admin/admin*') || Request::is('address/addresses/customer*') || Request::is('admin/department*') || Request::is('admin/inspector*') ? 'active' : '' }}">
                     <a href="javascript:void(0)">
                         <i class="fa fa-user-secret"></i>
                         <span>Administrator</span>
@@ -194,20 +384,20 @@
                     </a>
                     <ul class="treeview-menu">
                         @can('index', \App\Models\User::class)
-                            <li class="{{ Request::is('admin/admin/user*') ? 'active' : '' }}">
+                            <li class="{{ Request::is('admin/admin/user') ? 'active' : '' }}">
                                 <a href="{{ url('admin/admin/user') }}">
                                     {{ trans('nav.users') }}
                                 </a>
                             </li>
                         @endcan
 
-                        @can('index', \App\Models\User::class)
-                            <li class="{{ Request::is('admin/admin/department*') ? 'active' : '' }}">
+                        @if ((new \App\Helpers\Authorize(Auth::user(), 'view_department'))->check())
+                            <li class="{{ Request::is('admin/department') ? 'active' : '' }}">
                                 <a href="{{ url('admin/department') }}">
                                     {{ trans('nav.departments') }}
                                 </a>
                             </li>
-                        @endcan
+                        @endif
 
                         @if (Auth::user()->isMerchant())
                             <li class="{{ Request::is('admin/admin/deliveryboys*') ? 'active' : '' }}">
@@ -241,7 +431,7 @@
                     </ul>
                 </li>
 
-                @if (Auth::user()->isAdmin())
+                @if ((new \App\Helpers\Authorize(Auth::user(), 'view_payroll'))->check())
                     <li class="treeview {{ Request::is('admin/payroll*') ? 'active' : '' }}">
                         <a href="javascript:void(0)">
                             <i class="fa fa-list"></i>
@@ -254,11 +444,13 @@
                                     {{ trans('nav.payroll_data') }}
                                 </a>
                             </li>
-                            <li class="{{ Request::is('admin/payroll-report') ? 'active' : '' }}">
-                                <a href="{{ url('admin/payroll-report') }}">
-                                    {{ trans('nav.payroll_reports') }}
-                                </a>
-                            </li>
+                            @if ((new \App\Helpers\Authorize(Auth::user(), 'report_payroll'))->check())
+                                <li class="{{ Request::is('admin/payroll-report') ? 'active' : '' }}">
+                                    <a href="{{ url('admin/payroll-report') }}">
+                                        {{ trans('nav.payroll_reports') }}
+                                    </a>
+                                </li>
+                            @endif
                         </ul>
                     </li>
                 @endif
@@ -374,7 +566,7 @@
                 @endif
             @endif
 
-            @if (Auth::user()->role_id === 3 || Auth::user()->isAdmin())
+            @if (Auth::user()->isAdmin())
                 <li class="treeview {{ Request::is('admin/setting*') ? 'active' : '' }}">
                     <a href="javascript:void(0)">
                         <i class="fa fa-gears"></i>
@@ -382,16 +574,6 @@
                         <i class="fa fa-angle-left pull-right"></i>
                     </a>
                     <ul class="treeview-menu">
-                        @if (is_subscription_enabled())
-                            @can('index', \App\Models\SubscriptionPlan::class)
-                                <li class="{{ Request::is('admin/setting/subscriptionPlan*') ? 'active' : '' }}">
-                                    <a href="{{ url('admin/setting/subscriptionPlan') }}">
-                                        {{ trans('nav.subscription_plans') }}
-                                    </a>
-                                </li>
-                            @endcan
-                        @endif
-
                         @can('index', \App\Models\Role::class)
                             <li class="{{ Request::is('admin/setting/role*') ? 'active' : '' }}">
                                 <a href="{{ url('admin/setting/role') }}">
@@ -455,35 +637,6 @@
                                     </a>
                                 </li>
                             @endcan
-
-                            @if (is_incevio_package_loaded('announcement') && Auth::user()->isAdmin())
-                                <li class="{{ Request::is('admin/setting/announcement*') ? 'active' : '' }}">
-                                    <a href="{{ url('admin/setting/announcement') }}">
-                                        {{ trans('nav.announcements') }}
-                                        @include('partials._addon_badge')
-                                    </a>
-                                </li>
-                            @endif
-
-                            @if (Auth::user()->isAdmin())
-                                <li class="{{ Request::is('admin/setting/country*') ? 'active' : '' }}">
-                                    <a href="{{ url('admin/setting/country') }}">
-                                        {{ trans('nav.countries') }}
-                                    </a>
-                                </li>
-
-                                <li class="{{ Request::is('admin/setting/currency*') ? 'active' : '' }}">
-                                    <a href="{{ url('admin/setting/currency') }}">
-                                        {{ trans('nav.currencies') }}
-                                    </a>
-                                </li>
-
-                                <li class="{{ Request::is('admin/setting/language*') ? 'active' : '' }}">
-                                    <a href="{{ url('admin/setting/language') }}">
-                                        {{ trans('app.languages') }}
-                                    </a>
-                                </li>
-                            @endif
                         @endif
 
                         @if (is_incevio_package_loaded('wallet'))
@@ -545,132 +698,12 @@
                 </li>
             @endif
 
-            {{-- IF SUPERADMIN OR ADMIN CONTENT --}}
-            @if (
-                (new \App\Helpers\Authorize(Auth::user(), 'customize_appearance'))->check() ||
-                    Auth::user()->role_id === 15 ||
-                    Auth::user()->isAdmin())
-                <li class="treeview {{ Request::is('admin/appearance*') ? 'active' : '' }}">
-                    <a href="javascript:void(0)">
-                        <i class="fa fa-paint-brush"></i>
-                        <span>{{ trans('nav.appearance') }}</span>
-                        <i class="fa fa-angle-left pull-right"></i>
-                    </a>
-                    <ul class="treeview-menu">
-                        @unless (Auth::user()->isMerchant())
-                            @if (is_incevio_package_loaded('dynamic-popup'))
-                                <li class="{{ Request::is('admin/appearance/popup*') ? 'active' : '' }}">
-                                    <a href="{{ route('admin.appearance.popup') }}">
-                                        <i class="fa fa-angle-double-right"></i>
-                                        {{ trans('DynamicPopup::lang.dynamic_popups') }}
-                                    </a>
-                                </li>
-                            @endif
-                        @endunless
 
-                        <li class="{{ Request::is('admin/appearance/banner*') ? 'active' : '' }}">
-                            <a href="{{ url('admin/appearance/banner') }}">
-                                <i class="fa fa-angle-double-right"></i> {{ trans('nav.banners') }}
-                            </a>
-                        </li>
-
-                        <li class="{{ Request::is('admin/appearance/slider*') ? 'active' : '' }}">
-                            <a href="{{ url('admin/appearance/slider') }}">
-                                <i class="fa fa-angle-double-right"></i> {{ trans('nav.sliders') }}
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-
-                {{-- <li
-                    class="treeview {{ Request::is('admin/promotions*') || Request::is('admin/flashdeal*') ? 'active' : '' }}">
-                    <a href="javascript:void(0)">
-                        <i class="fa fa-bullhorn"></i>
-                        <span>{{ trans('nav.promotions') }}</span>
-                        <i class="fa fa-angle-left pull-right"></i>
-                    </a>
-                    <ul class="treeview-menu">
-                        @if (Auth::user()->isAdmin())
-                            <li class="{{ Request::is('admin/promotions*') ? 'active' : '' }}">
-                                <a href="{{ url('admin/promotions') }}">
-                                    <i class="fa fa-angle-double-right"></i>
-                                    <span>{{ trans('nav.promotions') }}</span>
-                                </a>
-                            </li>
-                        @endif
-
-                        @if (Auth::user()->isAdmin() && is_incevio_package_loaded('trendingKeywords'))
-                            <li class="{{ Request::is('admin/promotions/trendingKeywords*') ? 'active' : '' }}">
-                                <a href="{{ route('admin.promotion.trendingKeywords') }}">
-                                    <i class="fa fa-angle-double-right"></i>
-                                    {{ trans('trendingKeywords::lang.trending_keywords') }}
-                                    @include('partials._addon_badge')
-                                </a>
-                            </li>
-                        @endif
-
-                        @if ((new \App\Helpers\Authorize(Auth::user(), 'manage_flash_deal'))->check())
-                            <li class="{{ Request::is('admin/flashdeal*') ? 'active' : '' }}">
-                                <a href="{{ route('admin.flashdeal') }}">
-                                    <i class="fa fa-angle-double-right"></i> {{ trans('theme.flash_deal') }}
-                                </a>
-                            </li>
-                        @endif
-                    </ul>
-                </li> --}}
-            @endif
 
             {{-- Except vendor manufacturing --}}
             @if (Auth::user()->role_id !== 16)
-                <li class="treeview {{ Request::is('admin/approval*') }}">
-                    <a href="javascript:void(0)">
-                        <i class="fa fa-hourglass"></i>
-                        <span>Time Management</span>
-                        <i class="fa fa-angle-left pull-right"></i>
-                        <i class="fa fa-angle-left pull-right"></i>
-                    </a>
-                    <ul class="treeview-menu">
-                        <li class="{{ Request::is('admin/overtime*') ? 'active' : '' }}">
-                            <a href="{{ route('admin.overtime.index') }}">
-                                Overtime
-                            </a>
-                        </li>
-                    </ul>
-                    <ul class="treeview-menu">
-                        <li class="{{ Request::is('admin/timeoff*') ? 'active' : '' }}">
-                            <a href="{{ route('admin.timeoff.index') }}">
-                                Request Time Off
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-                <li class="treeview {{ Request::is('admin/loan*') }}">
-                    <a href="javascript:void(0)">
-                        <i class="fa fa-money"></i>
-                        <span>Loan</span>
-                        <i class="fa fa-angle-left pull-right"></i>
-                        <i class="fa fa-angle-left pull-right"></i>
-                    </a>
-                    <ul class="treeview-menu">
-                        <li class="{{ Request::is('admin/loan') ? 'active' : '' }}">
-                            <a href="{{ route('admin.loan.index') }}">
-                                Data
-                            </a>
-                        </li>
-                        @if (Auth::user()->isAdmin())
-                            <li class="{{ Request::is('admin/loan-payment') ? 'active' : '' }}">
-                                <a href="{{ route('admin.admin.loan.payment') }}">
-                                    Payment
-                                </a>
-                            </li>
-                            <li class="{{ Request::is('admin/loan-report') ? 'active' : '' }}">
-                                <a href="{{ route('admin.admin.loan.report') }}">
-                                    Report
-                                </a>
-                            </li>
-                        @endif
-                    </ul>
-                </li>
+
+
                 <li
                     class="treeview {{ Request::is('admin/report*') || Request::is('admin/shop/report*') ? 'active' : '' }}">
                     <a href="javascript:void(0)">
@@ -689,87 +722,9 @@
                             @endcan
                         @endif
 
-                        {{-- superadmin, marketing, leader and warehouse area leader --}}
-                        @if (Auth::user()->role_id === 1 ||
-                                Auth::user()->role_id === 8 ||
-                                Auth::user()->role_id === 13 ||
-                                Auth::user()->role_id === 3)
-                            <li class="treeview {{ Request::is('admin/crm*') }}">
-                                <a href="javascript:void(0)">
-                                    <span>CRM</span>
-                                    <i class="fa fa-angle-left pull-right"></i>
-                                </a>
-                                <ul class="treeview-menu">
-                                    <li class="{{ Request::is('admin/crm*') ? 'active' : '' }}">
-                                        <a href="{{ route('admin.crm.index') }}">
-                                            CRM Report
-                                        </a>
-                                    </li>
-
-                                    <li class="{{ Request::is('admin/crm*') ? 'active' : '' }}">
-                                        <a href="{{ route('admin.crm.data') }}">
-                                            CRM Data
-                                        </a>
-                                    </li>
-                                </ul>
-                            </li>
-
-                            @if (Auth::user()->id === 1)
-                                <li class="treeview {{ Request::is('admin/approval*') }}">
-                                    <a href="javascript:void(0)">
-                                        <span>Reimburse</span>
-                                        <i class="fa fa-angle-left pull-right"></i>
-                                    </a>
-                                    <ul class="treeview-menu">
-                                        <li class="{{ Request::is('admin/budget*') ? 'active' : '' }}">
-                                            <a href="{{ route('admin.budget.index') }}">
-                                                Data
-                                            </a>
-                                        </li>
-                                        <li class="{{ Request::is('admin/requirement*') ? 'active' : '' }}">
-                                            <a href="{{ route('admin.requirement.index') }}">
-                                                Category
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </li>
-                            @endif
-
-                            <li class="treeview {{ Request::is('admin/target*') }}">
-                                <a href="javascript:void(0)">
-                                    <span>Target</span>
-                                    <i class="fa fa-angle-left pull-right"></i>
-                                </a>
-                                <ul class="treeview-menu">
-                                    @if (Auth::user()->role_id === 1)
-                                        <li class="{{ Request::is('admin/target*') ? 'active' : '' }}">
-                                            <a href="{{ route('admin.target.reportAdministrator') }}">
-                                                Target Report
-                                            </a>
-                                        </li>
-                                    @else
-                                        <li class="{{ Request::is('admin/target*') ? 'active' : '' }}">
-                                            <a href="{{ route('admin.target.report') }}">
-                                                Target Report
-                                            </a>
-                                        </li>
-                                    @endif
 
 
-                                    <li class="{{ Request::is('admin/target*') ? 'active' : '' }}">
-                                        <a href="{{ route('admin.target.index') }}">
-                                            Target Data
-                                        </a>
-                                    </li>
-                                </ul>
-                            </li>
-                        @endif
 
-                        <li class="{{ Request::is('admin/budget*') ? 'active' : '' }}">
-                            <a href="{{ route('admin.budget.reportAdministrator') }}">
-                                Budget
-                            </a>
-                        </li>
 
                         <li class="{{ Request::is('admin/visit*') ? 'active' : '' }}">
                             <a href="{{ route('admin.visit.index') }}">
@@ -820,12 +775,6 @@
                             <li class="{{ Request::is('admin/report/visitors*') ? 'active' : '' }}">
                                 <a href="{{ route('admin.report.visitors') }}">
                                     {{ trans('nav.visitors') }}
-                                </a>
-                            </li>
-
-                            <li class="{{ Request::is('admin/offering*') ? 'active' : '' }}">
-                                <a href="{{ route('admin.offering.index') }}">
-                                    Offering Approval
                                 </a>
                             </li>
                         @elseif(Auth::user()->isMerchant())

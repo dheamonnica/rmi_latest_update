@@ -75,6 +75,9 @@ trait Authorizable
         'secretLogin'       => 'login',
         'assign'            => 'assign',
         'user'             => 'view',
+        'report'           => 'report',
+        'category'         => 'category',
+        'data'             => 'data',
     ];
 
     /**

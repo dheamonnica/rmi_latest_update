@@ -10,7 +10,7 @@
         <div class="box border-small p-2">
             <div class="box-header with-border">
                 <div class="box-tools pull-right p-2">
-                    @if (!Auth::user()->isAdmin() || !Auth::user()->isMerchant())
+                    @if ((new \App\Helpers\Authorize(Auth::user(), 'add_offering'))->check())
                         <a href="javascript:void(0)" data-link="{{ route('admin.offering.create') }}"
                             class="ajax-modal-btn btn btn-new btn-flat">{{ trans('app.form.create_offering') }}</a>
                     @endif

@@ -33,7 +33,7 @@
                     @endforeach
 
                 </select>
-                @if (Auth::user()->isAdmin())
+                @if ((new \App\Helpers\Authorize(Auth::user(), 'add_crm'))->check())
                     <select id="merchantFilterCRM" class="btn btn-sm btn-default">
                         <option value="" selected>Select Business Unit</option>
                         @foreach ($merchants as $merchant)

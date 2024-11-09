@@ -30,4 +30,6 @@ Route::get('getOfferings', [
     'getOfferings'
 ])->name('admin.offering.getOfferings')->middleware('ajax');
 
+Route::put('offering/{offering}/setApprove', [OfferingController::class, 'setApprove'])->name('offering.setApprove');
+
 Route::resource('offering', OfferingController::class);

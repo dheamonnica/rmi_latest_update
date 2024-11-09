@@ -1,7 +1,9 @@
-{{-- superadmin --}}
-@if (Auth::user()->role_id === 1)
-    <a href="javascript:void(0)" data-link="{{ route('admin.requirement.edit', $requirement->id) }}" class="ajax-modal-btn"><i
-            data-toggle="tooltip" data-placement="top" title="{{ trans('app.edit') }}" class="fa fa-edit"></i></a>&nbsp;
+@if ((new \App\Helpers\Authorize(Auth::user(), 'edit_reimburse'))->check())
+    <a href="javascript:void(0)" data-link="{{ route('admin.requirement.edit', $requirement->id) }}"
+        class="ajax-modal-btn"><i data-toggle="tooltip" data-placement="top" title="{{ trans('app.edit') }}"
+            class="fa fa-edit"></i></a>&nbsp;
+@endif
+@if ((new \App\Helpers\Authorize(Auth::user(), 'delete_reimburse'))->check())
     {!! Form::open([
         'route' => ['admin.admin.requirement.trash', $requirement->id],
         'method' => 'delete',

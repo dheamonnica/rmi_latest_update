@@ -271,4 +271,14 @@ class OfferingController extends Controller
 
         return back()->with('success', trans('messages.deleted', ['model' => $this->model_name]));
     }
+
+    public function setApprove(Request $request, $id)
+    {
+
+        $offering = $this->offering->find($id);
+
+        $this->offering->updateStatusApprove($request, $offering);
+
+        return back()->with('success', trans('messages.updated', ['model' => $this->model_name]));
+    }
 }
