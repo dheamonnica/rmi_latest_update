@@ -722,11 +722,7 @@
                             @endcan
                         @endif
 
-
-
-
-
-                        <li class="{{ Request::is('admin/visit*') ? 'active' : '' }}">
+                        {{-- <li class="{{ Request::is('admin/visit*') ? 'active' : '' }}">
                             <a href="{{ route('admin.visit.index') }}">
                                 Visit Plan
                             </a>
@@ -783,7 +779,7 @@
                                     {{ trans('nav.performance') }}
                                 </a>
                             </li>
-                        @endif
+                        @endif --}}
                     </ul>
                 </li>
             @endif
