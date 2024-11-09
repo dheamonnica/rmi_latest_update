@@ -698,93 +698,26 @@
                 </li>
             @endif
 
-
-
-            {{-- Except vendor manufacturing --}}
-            @if (Auth::user()->role_id !== 16)
-
-
-                <li
-                    class="treeview {{ Request::is('admin/report*') || Request::is('admin/shop/report*') ? 'active' : '' }}">
-                    <a href="javascript:void(0)">
-                        <i class="fa fa-bar-chart"></i>
-                        <span>{{ trans('nav.reports') }}</span>
-                        <i class="fa fa-angle-left pull-right"></i>
-                    </a>
-                    <ul class="treeview-menu">
-                        @if (is_incevio_package_loaded('wallet'))
-                            @can('report', \Incevio\Package\Wallet\Models\Wallet::class)
-                                <li class="{{ Request::is('admin/report/payout*') ? 'active' : '' }}">
-                                    <a href="{{ route('admin.wallet.payout.report') }}">
-                                        {{ trans('nav.payout') }}
-                                    </a>
-                                </li>
-                            @endcan
-                        @endif
-
-                        {{-- <li class="{{ Request::is('admin/visit*') ? 'active' : '' }}">
-                            <a href="{{ route('admin.visit.index') }}">
-                                Visit Plan
-                            </a>
-                        </li>
-
-                        @if (Auth::user()->isAdmin())
-                            <li class="{{ Request::is('admin/report/kpi*') ? 'active' : '' }}">
-                                <a href="{{ route('admin.kpi') }}">
-                                    {{ trans('nav.performance') }}
+            <li
+                class="treeview {{ Request::is('admin/report*') || Request::is('admin/shop/report*') ? 'active' : '' }}">
+                <a href="javascript:void(0)">
+                    <i class="fa fa-bar-chart"></i>
+                    <span>{{ trans('nav.reports') }}</span>
+                    <i class="fa fa-angle-left pull-right"></i>
+                </a>
+                <ul class="treeview-menu">
+                    @if (is_incevio_package_loaded('wallet'))
+                        @can('report', \Incevio\Package\Wallet\Models\Wallet::class)
+                            <li class="{{ Request::is('admin/report/payout*') ? 'active' : '' }}">
+                                <a href="{{ route('admin.wallet.payout.report') }}">
+                                    {{ trans('nav.payout') }}
                                 </a>
                             </li>
-
-                            <li class="{{ Request::is('admin/report/sales*') ? 'active' : '' }}">
-                                <a href="javascript:void(0)">
-                                    {{ trans('nav.sales') }}
-                                    <i class="fa fa-angle-left pull-right"></i>
-                                </a>
-                                <ul class="treeview-menu">
-                                    <li class="{{ Request::is('admin/report/sales/orders*') ? 'active' : '' }}">
-                                        <a href="{{ route('admin.sales.orders') }}">
-                                            {{ trans('nav.orders') }}
-                                        </a>
-                                    </li>
-                                    <li class="{{ Request::is('admin/report/sales/products*') ? 'active' : '' }}">
-                                        <a href="{{ route('admin.sales.products') }}">
-                                            {{ trans('nav.products') }}
-                                        </a>
-                                    </li>
-                                    <li class="{{ Request::is('admin/report/sales/payment*') ? 'active' : '' }}">
-                                        <a href="{{ route('admin.sales.payments') }}">
-                                            {{ trans('nav.payments') }}
-                                        </a>
-                                    </li>
-                                </ul>
-                            </li>
-
-                            @if (is_incevio_package_loaded('googleAnalytics'))
-                                <li class="{{ Request::is('admin/report/googleAnalytics*') ? 'active' : '' }}">
-                                    <a href="{{ route('admin.report.googleAnalytics') }}">
-                                        {{ trans('analytics::lang.analytics') }}
-                                        @include('partials._addon_badge')
-                                    </a>
-                                </li>
-                            @endif
-
-                            <li class="{{ Request::is('admin/report/visitors*') ? 'active' : '' }}">
-                                <a href="{{ route('admin.report.visitors') }}">
-                                    {{ trans('nav.visitors') }}
-                                </a>
-                            </li>
-                        @elseif(Auth::user()->isMerchant())
-                            <li class="{{ Request::is('admin/shop/report/kpi*') ? 'active' : '' }}">
-                                <a href="{{ route('admin.shop-kpi') }}">
-                                    {{ trans('nav.performance') }}
-                                </a>
-                            </li>
-                        @endif --}}
-                    </ul>
-                </li>
+                        @endcan
+                    @endif
+                </ul>
+            </li>
             @endif
-            {{-- @endif --}}
-
         </ul>
     </section> <!-- /.sidebar -->
 </aside>
