@@ -716,7 +716,7 @@
         // END DEPARTMENT TABLE
 
         // OVERTIME TABLE
-        $('#overtime-tables').DataTable($.extend({}, dataTableOptions, {
+        const overtimeTable = $('#overtime-tables').DataTable($.extend({}, dataTableOptions, {
             "ajax": "{{ route('admin.admin.overtime.getOvertimes') }}",
             "columns": [{
                     'data': 'checkbox',
@@ -780,6 +780,11 @@
                 }
             ]
         }));
+
+        @if (!Auth::user()->isAdmin())
+            overtimeTable.column('created_by:name').search('{{ Auth::user()->name }}').draw();
+        @endif
+
         // END OVERTIME TABLE
 
         // LOAN TABLE
@@ -844,8 +849,7 @@
             ]
         }));
 
-        // if isFromPlatform
-        @if (!Auth::user()->isFromPlatform())
+        @if (!Auth::user()->isAdmin())
             loanTable.column('created_by:name').search('{{ Auth::user()->name }}').draw();
         @endif
         // END LOAN TABLE
@@ -1139,8 +1143,7 @@
         }));
 
 
-        // if not isFromPlatform and HRD
-        @if(Auth::user()->role_id !== 17 || Auth::user()->isAdmin())
+        @if(Auth::user()->isAdmin())
             timeoffTable.column('created_by:name').search('{{ Auth::user()->name }}').draw();
         @endif
 
@@ -2495,7 +2498,7 @@
 
         // Filter the 'created_by' column with the name of the authenticated user
         @if (!Auth::user()->isAdmin())
-            tableBudgets.column('created_by:name').search('{{ Auth::user()->pic_name }}').draw();
+            tableBudgets.column('created_by:name').search('{{ Auth::user()->name }}').draw();
         @endif
 
         // Function to calculate the total amount
@@ -3127,7 +3130,7 @@
 
 
         // Filter the 'created_by' column with the name of the authenticated user
-        @if (!Auth::user()->role_id === 8 || !Auth::user()->role_id === 1)
+        @if (Auth::user()->role_id !== 1)
             tableCRMsData.column('created_by:name').search('{{ Auth::user()->name }}').draw();
         @endif
 

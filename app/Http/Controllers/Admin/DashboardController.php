@@ -36,10 +36,6 @@ class DashboardController extends Controller
             return view('admin.dashboard.platform');
         }
 
-        if (Auth::user()->role_id == 10) {
-            return redirect()->route('admin.offering.index');
-        }
-
         return view('admin.dashboard.merchant');
     }
 

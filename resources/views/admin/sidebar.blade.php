@@ -3,18 +3,16 @@
     <!-- sidebar: style can be found in sidebar.less -->
     <section class="sidebar">
         <ul class="sidebar-menu">
-            <li class="{{ Request::is('admin/dashboard*') ? 'active' : '' }}">
-                <a href="{{ url('admin/dashboard') }}">
-                    <i class="fa fa-dashboard"></i> <span>
-                        {{-- VENDOR MANUFACTURING --}}
-                        @if (Auth::user()->role_id === 16)
-                            Offering Status
-                        @else
+            {{-- VENDOR MANUFACTURING --}}
+            @if (Auth::user()->role_id !== 16)
+                <li class="{{ Request::is('admin/dashboard*') ? 'active' : '' }}">
+                    <a href="{{ url('admin/dashboard') }}">
+                        <i class="fa fa-dashboard"></i> <span>
                             {{ trans('nav.dashboard') }}
-                        @endif
-                    </span>
-                </a>
-            </li>
+                        </span>
+                    </a>
+                </li>
+            @endif
 
             @if (Gate::allows('index', \App\Models\Category::class) ||
                     Gate::allows('index', \App\Models\Attribute::class) ||
@@ -144,7 +142,7 @@
                                 </a>
                             </li>
                         @endif
-                        @if ((new \App\Helpers\Authorize(Auth::user(), 'add_reimburse'))->check())
+                        @if (Auth::user()->isAdmin())
                             <li class="{{ Request::is('admin/requirement') ? 'active' : '' }}">
                                 <a href="{{ route('admin.requirement.index') }}">
                                     Reimburse Category
@@ -230,7 +228,8 @@
             @if (
                 (new \App\Helpers\Authorize(Auth::user(), 'view_overtime'))->check() ||
                     (new \App\Helpers\Authorize(Auth::user(), 'view_timeoff'))->check())
-                <li class="treeview {{ Request::is('admin/approval*') }}">
+                <li
+                    class="treeview {{ Request::is('admin/overtime*') ? 'active' : '' }} {{ Request::is('admin/timeoff*') ? 'active' : '' }}">
                     <a href="javascript:void(0)">
                         <i class="fa fa-hourglass"></i>
                         <span>Time Management</span>

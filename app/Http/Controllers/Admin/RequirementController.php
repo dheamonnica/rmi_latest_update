@@ -17,7 +17,7 @@ use App\Models\Merchant;
 
 class RequirementController extends Controller
 {
-    // use Authorizable;
+    use Authorizable;
 
     private $model_name;
 

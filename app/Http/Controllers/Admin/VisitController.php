@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\Auth;
 
 class VisitController extends Controller
 {
-    // use Authorizable;
+    use Authorizable;
 
     private $model_name;
 
@@ -48,7 +48,13 @@ class VisitController extends Controller
 
         $trashes = $this->visit->trashOnly();
 
-        $merchants = Merchant::get()->pluck('warehouse_name', 'id')->toArray();
+        $merchants = Merchant::whereNotNull('warehouse_name')
+            ->where('active', 1)
+            ->whereNull('deleted_at')
+            ->where('warehouse_name', 'like', '%warehouse%')
+            ->get()
+            ->pluck('warehouse_name', 'id')
+            ->toArray();
 
         $years = CRM::selectRaw('YEAR(created_at) as year')
             ->distinct()

@@ -20,7 +20,7 @@ use Illuminate\Support\Facades\Auth;
 
 class TargetController extends Controller
 {
-    // use Authorizable;
+    use Authorizable;
 
     private $model_name;
 
@@ -46,6 +46,9 @@ class TargetController extends Controller
     public function index()
     {
         $merchants = Merchant::whereNotNull('warehouse_name')
+            ->where('active', 1)
+            ->whereNull('deleted_at')
+            ->where('warehouse_name', 'like', '%warehouse%')
             ->get()
             ->pluck('warehouse_name', 'id')
             ->toArray();
@@ -75,6 +78,9 @@ class TargetController extends Controller
     public function report()
     {
         $merchants = Merchant::whereNotNull('warehouse_name')
+            ->where('active', 1)
+            ->whereNull('deleted_at')
+            ->where('warehouse_name', 'like', '%warehouse%')
             ->get()
             ->pluck('warehouse_name', 'id')
             ->toArray();
@@ -102,6 +108,9 @@ class TargetController extends Controller
     public function reportAdministrator()
     {
         $merchants = Merchant::whereNotNull('warehouse_name')
+            ->where('active', 1)
+            ->whereNull('deleted_at')
+            ->where('warehouse_name', 'like', '%warehouse%')
             ->get()
             ->pluck('warehouse_name', 'id')
             ->toArray();

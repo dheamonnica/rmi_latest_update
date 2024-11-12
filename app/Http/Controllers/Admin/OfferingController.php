@@ -14,7 +14,7 @@ use App\Models\Product;
 
 class OfferingController extends Controller
 {
-    // use Authorizable;
+    use Authorizable;
 
     private $model_name;
 

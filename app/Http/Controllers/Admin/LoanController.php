@@ -17,7 +17,7 @@ use App\Models\LoanPayment;
 
 class LoanController extends Controller
 {
-    // use Authorizable;
+    use Authorizable;
 
     private $model_name;
 

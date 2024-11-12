@@ -1390,6 +1390,7 @@ return [
         'success_rate' => 'Success Rate',
         'plan' => 'Plan',
         'action' => 'Action',
+        'management' => 'Management',
 
         // site visit
         'assignee' => 'Assignee',

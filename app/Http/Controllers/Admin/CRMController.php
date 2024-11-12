@@ -21,7 +21,7 @@ use Illuminate\Support\Facades\Auth;
 
 class CRMController extends Controller
 {
-    // use Authorizable;
+    use Authorizable;
 
     private $model_name;
 
@@ -50,7 +50,13 @@ class CRMController extends Controller
 
         $trashes = $this->crm->trashOnly();
 
-        $merchants = Merchant::get()->pluck('warehouse_name', 'id')->toArray();
+        $merchants = Merchant::whereNotNull('warehouse_name')
+            ->where('active', 1)
+            ->whereNull('deleted_at')
+            ->where('warehouse_name', 'like', '%warehouse%')
+            ->get()
+            ->pluck('warehouse_name', 'id')
+            ->toArray();
 
         $years = CRM::selectRaw('YEAR(created_at) as year')
             ->distinct()
@@ -66,7 +72,13 @@ class CRMController extends Controller
 
         $trashes = $this->crm->trashOnly();
 
-        $merchants = Merchant::get()->pluck('warehouse_name', 'id')->toArray();
+        $merchants = Merchant::whereNotNull('warehouse_name')
+            ->where('active', 1)
+            ->whereNull('deleted_at')
+            ->where('warehouse_name', 'like', '%warehouse%')
+            ->get()
+            ->pluck('warehouse_name', 'id')
+            ->toArray();
 
         $years = CRM::selectRaw('YEAR(created_at) as year')
             ->distinct()
@@ -186,14 +198,7 @@ class CRMController extends Controller
 
     public function getCRMsDataTables(Request $request)
     {
-        if (Auth::user()->role_id === 8 || Auth::user()->role_id === 13) {
-            $crms = $this->crm->all()->filter(function ($crm) {
-                return $crm->shop_id == Auth::user()->shop_id;
-            });
-
-        } else if (Auth::user()->role_id === 1) {
-            $crms = $this->crm->all();
-        }
+        $crms = $this->crm->all();
 
         return Datatables::of($crms)
             ->addColumn('checkbox', function ($crm) {

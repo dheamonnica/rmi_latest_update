@@ -18,7 +18,7 @@ use Illuminate\Support\Str;
 
 class TimeOffController extends Controller
 {
-    // use Authorizable;
+    use Authorizable;
 
     private $model_name;
 
