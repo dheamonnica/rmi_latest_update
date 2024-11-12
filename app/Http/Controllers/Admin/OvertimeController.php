@@ -15,7 +15,7 @@ use App\Http\Controllers\Admin\DB;
 
 class OvertimeController extends Controller
 {
-    // use Authorizable;
+    use Authorizable;
 
     private $model_name;
 

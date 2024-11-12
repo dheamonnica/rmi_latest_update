@@ -74,6 +74,9 @@ class OrderController extends Controller
         $deliveryBoysUser = ListHelper::deliveryBoyRole();
 
         $merchants = Merchant::whereNotNull('warehouse_name')
+            ->where('active', 1)
+            ->whereNull('deleted_at')
+            ->where('warehouse_name', 'like', '%warehouse%')
             ->get()
             ->pluck('warehouse_name', 'id')
             ->toArray();
@@ -896,6 +899,9 @@ class OrderController extends Controller
         $archives = $this->order->trashOnly();
 
         $merchants = Merchant::whereNotNull('warehouse_name')
+            ->where('active', 1)
+            ->whereNull('deleted_at')
+            ->where('warehouse_name', 'like', '%warehouse%')
             ->get()
             ->pluck('warehouse_name', 'id')
             ->toArray();

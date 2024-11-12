@@ -1,4 +1,4 @@
-@if ($timeoff->status == 0 && new\App\Helpers\Authorize(Auth::user(), 'approve_timeoff')->check())
+@if ($timeoff->status == 0 && (new \App\Helpers\Authorize(Auth::user(), 'edit_timeoff'))->check())
     {!! Form::open(['route' => ['admin.timeoff.setApprove', $timeoff], 'method' => 'put', 'class' => 'inline']) !!}
     <a href="javascript:void(0)"><i class="confirm ajax-silent fa fa-check"></i></a>
     {!! Form::close() !!}

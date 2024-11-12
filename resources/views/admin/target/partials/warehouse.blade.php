@@ -1,3 +1,1 @@
-@if ($target->created_by)
-    <td>{{ $target->getWarehouse->name }}</td>
-@endif
+<td>{{ $target->shop_id ? $target->getWarehouse->name : trans('app.form.management') }}</td>

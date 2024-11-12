@@ -20,7 +20,7 @@ use App\Http\Controllers\Admin\DB;
 
 class BudgetController extends Controller
 {
-    // use Authorizable;
+    use Authorizable;
 
     private $model_name;
 
@@ -46,6 +46,9 @@ class BudgetController extends Controller
     public function index()
     {
         $merchants = Merchant::whereNotNull('warehouse_name')
+            ->where('active', 1)
+            ->whereNull('deleted_at')
+            ->where('warehouse_name', 'like', '%warehouse%')
             ->get()
             ->pluck('warehouse_name', 'id')
             ->toArray();
@@ -65,6 +68,9 @@ class BudgetController extends Controller
     public function report()
     {
         $merchants = Merchant::whereNotNull('warehouse_name')
+            ->where('active', 1)
+            ->whereNull('deleted_at')
+            ->where('warehouse_name', 'like', '%warehouse%')
             ->get()
             ->pluck('warehouse_name', 'id')
             ->toArray();
@@ -151,6 +157,9 @@ class BudgetController extends Controller
     public function reportAdministrator()
     {
         $merchants = Merchant::whereNotNull('warehouse_name')
+            ->where('active', 1)
+            ->whereNull('deleted_at')
+            ->where('warehouse_name', 'like', '%warehouse%')
             ->get()
             ->pluck('warehouse_name', 'id')
             ->toArray();

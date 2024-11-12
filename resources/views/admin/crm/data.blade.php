@@ -44,7 +44,7 @@
                     </select>
                 @endif
 
-                @if (Auth::user()->role_id === 1 || Auth::user()->role_id === 8 || Auth::user()->role_id === 13)
+                @if ((new \App\Helpers\Authorize(Auth::user(), 'add_crm'))->check())
                     <a href="javascript:void(0)" data-link="{{ route('admin.crm.create') }}"
                         class="ajax-modal-btn btn btn-new btn-flat ml-5">{{ trans('app.form.create_crm') }}</a>
                 @endif
@@ -70,7 +70,7 @@
                         <th>{{ trans('app.form.plan') }}</th>
                         <th>{{ trans('app.form.action') }}</th>
                         <th>{{ trans('app.form.status') }}</th>
-                        
+
                         <th>{{ trans('app.form.created_at') }}</th>
                         <th>{{ trans('app.form.created_by') }}</th>
                         <th>{{ trans('app.form.verified_at') }}</th>

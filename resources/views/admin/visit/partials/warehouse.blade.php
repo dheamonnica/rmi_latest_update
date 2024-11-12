@@ -1,3 +1,1 @@
-@if ($visit->created_by)
-    <td>{{ $visit->getWarehouseByShop->name }}</td>
-@endif
+<td>{{ $visit->shop_id ? $visit->getWarehouseByShop->name : trans('app.form.management') }}</td>

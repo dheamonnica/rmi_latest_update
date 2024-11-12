@@ -25,6 +25,8 @@ trait Authorizable
         'statusOf'          => 'view',
         'general'           => 'view',
         'pickup'            => 'view',
+        'data'              => 'view',
+        'paymentDocument'   => 'view',
         'create'            => 'add',
         'add'               => 'add',
         'store'             => 'add',
@@ -46,6 +48,7 @@ trait Authorizable
         'setAsDelivered'     => 'view',
         'exportIndex'     => 'view',
         'setAsPacked'     => 'view',
+        'payment'           => 'view',
         'cancellation'      => 'cancel',
         'initiate'          => 'initiate',
         'form'              => 'initiate',
@@ -77,7 +80,6 @@ trait Authorizable
         'user'             => 'view',
         'report'           => 'report',
         'category'         => 'category',
-        'data'             => 'data',
     ];
 
     /**
