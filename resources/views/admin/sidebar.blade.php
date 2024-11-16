@@ -142,7 +142,7 @@
                                 </a>
                             </li>
                         @endif
-                        @if (Auth::user()->isAdmin())
+                        @if ((new \App\Helpers\Authorize(Auth::user(), 'view_reimburse_category'))->check())
                             <li class="{{ Request::is('admin/requirement') ? 'active' : '' }}">
                                 <a href="{{ route('admin.requirement.index') }}">
                                     Reimburse Category
@@ -359,7 +359,7 @@
                                     </a>
                                 </li>
                             @endif
-                            @if ((new \App\Helpers\Authorize(Auth::user(), 'view_order_report'))->check())
+                            @if ((new \App\Helpers\Authorize(Auth::user(), 'view_order_payment'))->check())
                                 <li class="{{ Request::is('admin/order/order-payment-document') ? 'active' : '' }}">
                                     <a href="{{ url('admin/order/order-payment-document') }}">
                                         Payment Doc
