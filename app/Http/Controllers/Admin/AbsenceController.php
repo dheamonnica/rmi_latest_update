@@ -1,38 +1,30 @@
 <?php
-
 namespace App\Http\Controllers\Admin;
-
 use App\Common\Authorizable;
 use App\Http\Controllers\Controller;
-use App\Models\Department;
-use App\Repositories\Department\DepartmentRepository;
+use App\Models\Absence;
+use App\Models\User;
+use App\Repositories\Absence\AbsenceRepository;
 use Illuminate\Http\Request;
 use Yajra\Datatables\Datatables;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Admin\DB;
-
-class DepartmentController extends Controller
+class AbsenceController extends Controller
 {
-    use Authorizable;
-
+    // use Authorizable;
     private $model_name;
-
-    private $department;
-
+    private $absence;
     /**
      * construct
      */
-    public function __construct(DepartmentRepository $department)
+    public function __construct(AbsenceRepository $absence)
     {
         parent::__construct();
-
-        $this->model_name = trans('app.model.department');
-
-        $this->department = $department;
+        $this->model_name = trans('app.model.absence');
+        $this->absence = $absence;
     }
-
     /**
      * Display a listing of the resource.
      *
@@ -40,44 +32,63 @@ class DepartmentController extends Controller
      */
     public function index()
     {
-        $departments = $this->department->all();
+        $absences = $this->absence->all();
+        $trashes = $this->absence->trashOnly();
 
-        $trashes = $this->department->trashOnly();
-
-        return view('admin.department.index', compact('departments'));
+        $branch_loc = User::where('shop_id', Auth::user()->shop_id)
+            ->get()->first();
+            if ($branch_loc->longitude === null && $branch_loc->latitude === null) {
+                $branch_loc = User::where('id', Auth::user()->office_location_id)->get()->first();
+            }
+        return view('admin.absence.index', compact('absences', 'trashes', 'branch_loc'));
     }
-
-
-    public function getDepartments(Request $request)
+    
+    public function getAbsences(Request $request)
     {
-        $departments = $this->department->all();
-
-        return Datatables::of($departments)
-            ->addColumn('checkbox', function ($department) {
-                return '<td><input id="' . $department->id . '" type="checkbox" class="massCheck"></td>';
+        $absences = $this->absence->all();
+        return Datatables::of($absences)
+            ->addColumn('checkbox', function ($absence) {
+                return '<td><input id="' . $absence->id . '" type="checkbox" class="massCheck"></td>';
             })
-            ->addColumn('name', function ($department) {
-                return $department->name;
+            ->addColumn('user_id', function ($absence) {
+                return $absence->getUsername->name;
             })
-            ->addColumn('created_at', function ($department) {
-                return $department->created_at;
+            ->addColumn('address', function ($absence) {
+                return $absence->address;
             })
-            ->addColumn('created_by', function ($department) {
-                return $department->getCreatedUsername->name;
+            ->addColumn('clock_in', function ($absence) {
+                return $absence->clock_in;
             })
-            ->addColumn('updated_at', function ($department) {
-                return $department->updated_at;
+            ->addColumn('clock_out', function ($absence) {
+                return $absence->clock_out;
             })
-            ->addColumn('updated_by', function ($department) {
-                return $department->updated_at ? $department->getUpdatedUsername->name : '';
+            ->addColumn('branch_loc', function ($absence) {
+                return $absence->getWarehouse->nice_name;
             })
-            ->addColumn('option', function ($department) {
-                return view('admin.department.partials.options', compact('department'));
+            ->addColumn('address', function ($absence) {
+                return $absence->address;
             })
-            ->rawColumns(['checkbox', 'name', 'created_at', 'created_by', 'updated_at', 'updated_by', 'option'])
+            ->addColumn('total_hours', function ($absence) {
+                return $absence->total_hours;
+            })
+            ->rawColumns(['checkbox', 'user_id', 'address', 'clock_in', 'clock_out', 'branch_loc', 'address', 'total_hours'])
             ->make(true);
     }
 
+    public function checkIfUserHasClockIn(Request $request) {
+        $absence = $this->absence->checkIfUserHasClockIn($request);
+        return response()->json(['success' => $absence]);
+    }
+
+    public function checkIfUserHasClockOut(Request $request) {
+        $absence = $this->absence->checkIfUserHasClockOut($request);
+        return response()->json(['success' => $absence]);
+    }
+
+    public function clockOut(Request $request) {
+        $absence = $this->absence->clockOut($request);
+        return response()->json(['success' => $absence]);
+    }
     /**
      * Show the form for creating a new resource.
      *
@@ -85,9 +96,8 @@ class DepartmentController extends Controller
      */
     public function create()
     {
-        return view('admin.department._create');
+        return view('admin.absence._create');
     }
-
     /**
      * Store a newly created resource in storage.
      *
@@ -96,12 +106,9 @@ class DepartmentController extends Controller
      */
     public function store(Request $request)
     {
-        date_default_timezone_set('Asia/Jakarta');
-        $request['created_at'] = date('Y-m-d G:i:s');
-        $this->department->store($request);
+        $this->absence->store($request);
         return back()->with('success', trans('messages.created', ['model' => $this->model_name]));
     }
-
     /**
      * Show the form for editing the specified resource.
      *
@@ -110,10 +117,9 @@ class DepartmentController extends Controller
      */
     public function edit($id)
     {
-        $department = $this->department->find($id);
-        return view('admin.department._edit', compact('department'));
+        $absence = $this->absence->find($id);
+        return view('admin.absence._edit', compact('absence'));
     }
-
     /**
      * Update the specified resource in storage.
      *
@@ -123,13 +129,9 @@ class DepartmentController extends Controller
      */
     public function update(Request $request, $id)
     {
-        date_default_timezone_set('Asia/Jakarta');
-        $request['updated_at'] = date('Y-m-d G:i:s');
-        $this->department->update($request, $id);
-
+        $this->absence->update($request, $id);
         return back()->with('success', trans('messages.updated', ['model' => $this->model_name]));
     }
-
     /**
      * Trash the specified resource.
      *
@@ -139,11 +141,9 @@ class DepartmentController extends Controller
      */
     public function trash(Request $request, $id)
     {
-        $this->department->trash($id);
-
+        $this->absence->trash($id);
         return back()->with('success', trans('messages.trashed', ['model' => $this->model_name]));
     }
-
     /**
      * Restore the specified resource from soft delete.
      *
@@ -153,11 +153,9 @@ class DepartmentController extends Controller
      */
     public function restore(Request $request, $id)
     {
-        $this->department->restore($id);
-
+        $this->absence->restore($id);
         return back()->with('success', trans('messages.restored', ['model' => $this->model_name]));
     }
-
     /**
      * Remove the specified resource from storage.
      *
@@ -167,11 +165,9 @@ class DepartmentController extends Controller
      */
     public function destroy(Request $request, $id)
     {
-        $this->department->destroy($id);
-
+        $this->absence->destroy($id);
         return back()->with('success', trans('messages.deleted', ['model' => $this->model_name]));
     }
-
     /**
      * Trash the mass resources.
      *
@@ -180,15 +176,12 @@ class DepartmentController extends Controller
      */
     public function massTrash(Request $request)
     {
-        $this->department->massTrash($request->ids);
-
+        $this->absence->massTrash($request->ids);
         if ($request->ajax()) {
             return response()->json(['success' => trans('messages.trashed', ['model' => $this->model_name])]);
         }
-
         return back()->with('success', trans('messages.trashed', ['model' => $this->model_name]));
     }
-
     /**
      * Trash the mass resources.
      *
@@ -197,15 +190,12 @@ class DepartmentController extends Controller
      */
     public function massDestroy(Request $request)
     {
-        $this->department->massDestroy($request->ids);
-
+        $this->absence->massDestroy($request->ids);
         if ($request->ajax()) {
             return response()->json(['success' => trans('messages.deleted', ['model' => $this->model_name])]);
         }
-
         return back()->with('success', trans('messages.deleted', ['model' => $this->model_name]));
     }
-
     /**
      * Empty the Trash the mass resources.
      *
@@ -214,12 +204,10 @@ class DepartmentController extends Controller
      */
     public function emptyTrash(Request $request)
     {
-        $this->department->emptyTrash($request);
-
+        $this->absence->emptyTrash($request);
         if ($request->ajax()) {
             return response()->json(['success' => trans('messages.deleted', ['model' => $this->model_name])]);
         }
-
         return back()->with('success', trans('messages.deleted', ['model' => $this->model_name]));
     }
 }

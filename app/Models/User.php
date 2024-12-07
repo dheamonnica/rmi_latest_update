@@ -122,6 +122,9 @@ class User extends Authenticatable
         'position',
         'level',
         'department_id',
+        'longitude',
+        'latitude',
+        'office_location_id',
     ];
 
     /**

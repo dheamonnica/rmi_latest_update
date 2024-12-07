@@ -732,7 +732,7 @@
                 },
                 {
                     'data': 'start_time',
-                    'name': 'nastart_timeme'
+                    'name': 'start_time'
                 },
                 {
                     'data': 'end_time',
@@ -786,6 +786,50 @@
         @endif
 
         // END OVERTIME TABLE
+
+        // ABSENCE TABLE
+        const absenceTable = $('#absence-tables').DataTable($.extend({}, dataTableOptions, {
+            "ajax": "{{ route('admin.admin.absence.getAbsences') }}",
+            "columns": [{
+                    'data': 'checkbox',
+                    'name': 'checkbox',
+                    'orderable': false,
+                    'searchable': false,
+                    'exportable': false,
+                    'printable': false
+                },
+                {
+                    'data': 'user_id',
+                    'name': 'user_id'
+                },
+                {
+                    'data': 'clock_in',
+                    'name': 'clock_in'
+                },
+                {
+                    'data': 'clock_out',
+                    'name': 'clock_out'
+                },
+                {
+                    'data': 'branch_loc',
+                    'name': 'branch_loc'
+                },
+                {
+                    'data': 'address',
+                    'name': 'address'
+                },
+                {
+                    'data': 'total_hours',
+                    'name': 'total_hours'
+                },
+            ]
+        }));
+
+        @if (!Auth::user()->isAdmin())
+            absenceTable.column('created_by:name').search('{{ Auth::user()->name }}').draw();
+        @endif
+
+        // END ABSENCE TABLE
 
         // LOAN TABLE
         var loanTable = $('#loan-tables').DataTable($.extend({}, dataTableOptions, {

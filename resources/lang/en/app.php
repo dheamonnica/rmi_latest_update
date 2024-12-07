@@ -73,6 +73,7 @@ return [
         'overtime' => 'Overtime',
         'loan' => 'Loan',
         'timeoff' => 'Time Off',
+        'absence' => 'Absence',
     ],
 
     // Application Levels
@@ -1266,6 +1267,8 @@ return [
         'warehouse_name' => 'Warehouse Name',
         'pic_name' => 'PIC Name',
         'employee' => 'Employee',
+        'longitude' => 'Longitude',
+        'latitude' => 'Latitude',
 
         // order
         'po_number_ref' => 'PO Number Ref',
@@ -1477,6 +1480,15 @@ return [
         'total_leave' => 'Total Leave',
         'total_date' => 'Total Date',
         'total_days' => 'Total Days',
+
+        // user
+        'select_office_location' => 'Select Office Location', 
+
+        // absence
+        'clock_in' => 'Clock In',
+        'clock_out' => 'Clock Out',
+        'office' => 'Office',
+        'total_hours' => 'Total Hours',
     ],
 
     'placeholder' => [

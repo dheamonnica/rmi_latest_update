@@ -72,6 +72,23 @@
     </div>
   </div>
 
+  <div class="row">
+    <div class="col-md-6 nopadding-right">
+      <div class="form-group">
+        {!! Form::label('longitude', trans('app.form.longitude') . '*', ['class' => 'with-help']) !!}
+        {!! Form::text('longitude', null, ['class' => 'form-control', 'placeholder' => trans('app.form.longitude'), 'required']) !!}
+        <div class="help-block with-errors"></div>
+      </div>
+    </div>
+    <div class="col-md-6 nopadding-left">
+      <div class="form-group">
+        {!! Form::label('latitude', trans('app.form.latitude') . '*', ['class' => 'with-help']) !!}
+        {!! Form::text('latitude', null, ['class' => 'form-control', 'placeholder' => trans('app.form.latitude'), 'required']) !!}
+        <div class="help-block with-errors"></div>
+      </div>
+    </div>
+  </div>
+
   <div class="row" style="display: none">
     <div class="col-md-6 nopadding-right">
       <div class="form-group">

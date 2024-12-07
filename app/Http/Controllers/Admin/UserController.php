@@ -11,6 +11,7 @@ use App\Http\Requests\Validations\AdminUserUpdatePasswordRequest as UpdatePasswo
 use App\Http\Requests\Validations\CreateUserRequest;
 use App\Http\Requests\Validations\UpdateUserRequest;
 use App\Models\Department;
+use App\Models\Merchant;
 use App\Repositories\User\UserRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -70,7 +71,15 @@ class UserController extends Controller
                 ->pluck('name', 'id')
                 ->toArray();
 
-            return view('admin.user._create', compact('user_position', 'user_level', 'departments'));
+            $merchants = Merchant::whereNotNull('warehouse_name')
+                ->where('active', 1)
+                ->whereNull('deleted_at')
+                ->where('warehouse_name', 'like', '%warehouse%')
+                ->get()
+                ->pluck('warehouse_name', 'id')
+                ->toArray();
+
+            return view('admin.user._create', compact('user_position', 'user_level', 'departments', 'merchants'));
         }
 
         return view('admin.partials._max_user_limit_notice');
@@ -126,7 +135,15 @@ class UserController extends Controller
             ->pluck('name', 'id')
             ->toArray();
 
-        return view('admin.user._edit', compact('user', 'user_position', 'user_level', 'departments'));
+        $merchants = Merchant::whereNotNull('warehouse_name')
+            ->where('active', 1)
+            ->whereNull('deleted_at')
+            ->where('warehouse_name', 'like', '%warehouse%')
+            ->get()
+            ->pluck('warehouse_name', 'id')
+            ->toArray();
+
+        return view('admin.user._edit', compact('user', 'user_position', 'user_level', 'departments', 'merchants'));
     }
 
     /**
