@@ -42,8 +42,6 @@ class EloquentAbsence extends EloquentRepository implements BaseRepository, Abse
     {
         $result = DB::table('absence')->where('user_id', Auth::user()->id)
         ->whereDate('clock_in', today())
-        // ->orWhereNull('clock_in')
-        // ->where('clock_out', null)
         ->first();
         return $result;
     }

@@ -86,41 +86,31 @@
                     console.log(data.success, 'checkIfUserHasClockIn data');
                     const res = data.success !== null ? true : false;
                     console.log(res, 'checkIfUserHasClockIn cek');
-                    if (res) {
-                        console.log('udh login')
-                        $('#clockInBtn').prop('disabled', true);
-                        $('#clockInBtn').show();
-                        $('#clockOutBtn').show();
-                    } else {
-                        console.log('blm login')
+
+                    if (!res) {
+                        console.log('blm login dan blm logout')
                         $('#clockInBtn').prop('disabled', false);
                         $('#clockInBtn').show();
-                        $('#clockOutBtn').show();
-                    }
-                },
-                error: function(xhr, status, error) {
-                    console.error(error);
-                }
-            });
-        }
 
-        function checkIfUserHasClockOut() {
-            console.log('checkIfUserHasClockOut');
-            $.ajax({
-                url: "{{ route('admin.admin.absence.checkIfUserHasClockOut') }}",
-                method: "GET",
-                success: function(data) {
-                    console.log(data.success, 'checkIfUserHasClockOut data');
-                    const res = data.success !== null ? true : false;
-                    console.log(res, 'checkIfUserHasClockOut cek');
-                    if (res) {
-                        console.log('udh logout')
                         $('#clockOutBtn').prop('disabled', true);
                         $('#clockOutBtn').show();
                     } else {
-                        console.log('blm logout')
-                        $('#clockOutBtn').prop('disabled', false);
-                        $('#clockOutBtn').show();
+                        if (data.success.clock_in != null && data.success.clock_out == null) {
+                            console.log('udh login blm logout')
+                            $('#clockInBtn').prop('disabled', true);
+                            $('#clockInBtn').show();
+
+                            $('#clockOutBtn').prop('disabled', false);
+                            $('#clockOutBtn').show();
+                        } else if (data.success.clock_in != null && data.success.clock_out !=
+                            null) {
+                            console.log('udh login udh logout')
+                            $('#clockInBtn').prop('disabled', true);
+                            $('#clockInBtn').show();
+
+                            $('#clockOutBtn').prop('disabled', true);
+                            $('#clockOutBtn').show();
+                        }
                     }
                 },
                 error: function(xhr, status, error) {
@@ -135,13 +125,6 @@
             $.ajax({
                 url: "{{ route('admin.admin.absence.clockOut') }}", // Ensure this route is correct
                 type: 'PUT', // Use the appropriate HTTP method (GET, POST, etc.)
-                // data: {
-                //     user_id: {{ Auth::user()->id }},
-                //     branch_loc: branch_loc,
-                //     longitude: longitude,
-                //     latitude: latitude,
-                //     address: address,
-                // },
                 success: function(
                     response
                 ) {
@@ -185,7 +168,6 @@
                             userLat,
                             userLon);
                         checkIfUserHasClockIn();
-                        checkIfUserHasClockOut();
                         // const radius = 0.1; // Radius in kilometers
                         const radius = 10; // Radius in kilometers
                         const warehouse_name = {!! json_encode($branch_loc->warehouse_name) !!};
@@ -228,7 +210,8 @@
                                                 //     `<p>Address: ${address}</p>`
                                                 // );
 
-                                                const clock_in = "{{ \Carbon\Carbon::now()->format('Y-m-d H:i:s') }}"; // Generate formatted datetime in PHP
+                                                const clock_in =
+                                                    "{{ \Carbon\Carbon::now()->format('Y-m-d H:i:s') }}"; // Generate formatted datetime in PHP
 
                                                 $.ajax({
                                                     url: "{{ route('admin.absence.store') }}", // Ensure this route is correct
