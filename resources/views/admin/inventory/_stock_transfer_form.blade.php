@@ -84,16 +84,16 @@
 	<div class="col-md-3 nopadding-left">
 		<div class="box">
 			<div class="box-header with-border">
-			<h3 class="box-title"> {{ trans('app.transfer_type') }}</h3>
+				<h3 class="box-title"> {{ trans('app.transfer_type') }}</h3>
 			</div> <!-- /.box-header -->
 			<div class="box-body">
-			<div class="form-group">
-				{!! Form::label('transfer_type', trans('app.form.transfer_type') . '*') !!}
-				{!! Form::select('transfer_type', [
-					'delivery' => 'Delivery'
- 				], isset($cart->transfer_type) ? $cart->transfer_type : config('shop_settings.default_transfer_type'), ['class' => 'form-control select2-normal', 'placeholder' => trans('app.placeholder.payment'), 'required']) !!}
-				<div class="help-block with-errors"></div>
-			</div>
+				<div class="form-group">
+					{!! Form::label('transfer_type', trans('app.form.transfer_type') . '*') !!}
+					{!! Form::select('transfer_type', [
+						'delivery' => 'Delivery'
+					], isset($cart->transfer_type) ? $cart->transfer_type : config('shop_settings.default_transfer_type'), ['class' => 'form-control select2-normal', 'placeholder' => trans('app.placeholder.payment'), 'required']) !!}
+					<div class="help-block with-errors"></div>
+				</div>
 			</div>	
 		</div>
 	</div>

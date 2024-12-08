@@ -289,8 +289,10 @@
 
             @if (Gate::allows('index', \App\Models\Inventory::class) ||
                     Gate::allows('index', \App\Models\Warehouse::class) ||
-                    Gate::allows('index', \App\Models\Supplier::class))
-                <li class="treeview {{ Request::is('admin/stock*') ? 'active' : '' }}">
+                    Gate::allows('index', \App\Models\Supplier::class) || 
+                    Gate::allows('index', \App\Models\Purchasing::class)
+                    )
+                <li class="treeview {{ Request::is('admin/stock*') || Request::is('admin/purchasing*') ? 'active' : '' }}">
                     <a href="javascript:void(0)">
                         <i class="fa fa-cubes"></i>
                         <span>{{ trans('nav.stock') }}</span>
@@ -303,6 +305,13 @@
                                     class="{{ (Request::is('admin/stock/inventory/physical') && !(Request::is('admin/stock/inventory/digital*') || Request::is('admin/stock/inventory/auction*'))) || (isset($inventory) && isset($product) && !$product->downloadable && !$inventory->auctionable) ? 'active' : '' }}">
                                     <a href="{{ route('admin.stock.inventory.index', ['type' => 'physical']) }}">
                                         {{ trans('nav.physical_products') }}
+                                    </a>
+                                </li>
+
+                                <li
+                                    class="{{ (Request::is('admin/stock/inventory/physical') && !(Request::is('admin/stock/inventory/digital*') || Request::is('admin/stock/inventory/auction*'))) || (isset($inventory) && isset($product) && !$product->downloadable && !$inventory->auctionable) ? 'active' : '' }}">
+                                    <a href="{{ route('admin.stock.inventory.index', ['type' => 'opname']) }}">
+                                        {{ trans('nav.opname_products') }}
                                     </a>
                                 </li>
 
@@ -341,6 +350,23 @@
                                 @endif
                             @endcan
                         @endif
+
+                        {{-- @can('index', \App\Models\Supplier::class)
+                            <li class="{{ Request::is('admin/stock/supplier*') ? 'active' : '' }}">
+                                <a href="{{ url('admin/stock/supplier') }}">
+                                    {{ trans('nav.suppliers') }}
+                                </a>
+                            </li>
+                        @endcan --}}
+
+                        @can('index', \App\Models\Purchasing::class)
+                            <li
+                                class="{{ (Request::is('admin/purchasing/purchasing*')) ? 'active' : '' }}">
+                                <a href="{{ route('admin.purchasing.purchasing.index') }}">
+                                    {{ trans('nav.purchasing') }}
+                                </a>
+                            </li>
+                        @endcan
                     </ul>
                 </li>
             @endif

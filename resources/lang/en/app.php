@@ -900,7 +900,8 @@ return [
         'partials' => 'Partial',
         'partial_fulfilled' => 'Fulfilled',
         'awaiting_payment' => '	Awaiting payment',
-        '',
+        '', 
+        //stock transfer
         'stock_transfer' => [
             'approved' => 'Approved',
             'created' => 'Created',
@@ -908,9 +909,23 @@ return [
             'send_by_warehouse' => 'Send By Warehouse',
             'on_delivery' => 'On Delivery',
             'delivered' => 'Delivered',
-            'received_by' => 'Received',
-            'packed' => 'Packed',
-        ]
+            'received_by' => 'Received By',
+            'packed' => 'packed',
+        ],
+
+        //purchasing
+        'purchasing' => [
+            'created' => 'Created',
+            'in_progress' => 'In Progress',
+            'depature' => 'Depature',
+            'arrival' => 'Arrival',
+            'transfer_shipment' => 'On Shipment',
+            'transfer_stock' => 'Transfer Stock',
+            'transfer_complete' => 'Transfer Complete',
+            'requested' => 'Requested',
+            'request' => 'Request',
+            'done' => 'Done',
+        ],
     ],
 
     'priorities' => [
@@ -1471,6 +1486,18 @@ return [
         'total_payment' => 'Total Payment',
         'total_outstanding_balance' => 'Total Outstanding Balance',
 
+        //
+        'shipment_status' => 'Shipment Status',
+        'transfer_status' => 'Transfer Status',
+        'request_status' => 'Request Status' ,
+        'manufacture_numbers' => 'Manufacture Number',
+        'select_manufacture' => 'Select Manufacture',
+        'request_quantity' => 'Request Quantity',
+        'purchasing_date' => 'Purchasing Date',
+        'purchasing_status' => 'Purchasing Status',
+        'shipping_status' => 'Shipping Status',
+        'warehouse_requester' => 'Warehouse Requester',
+
         'backdate' => 'Back Date',
 
         // timeoff
@@ -1738,6 +1765,10 @@ return [
 
         //stock_transfer
         'search_warehouse' => 'Search Warehouse',
+
+        //purchasing
+        'choose_manufacture' => 'Choose Manufacture',
+        'choose_warehouse_requester' => 'Choose Warehouse Requester',
     ],
 
     // Version 1.3.0
@@ -2150,6 +2181,22 @@ return [
     'year_start' => 'Year Start',
     'year_end' => 'Year End',
     'backdate' => 'Back Date (Optional)',
+
+    //request purchasing
+    'add_purchasing' => 'Request Product',
+    'assign_manufacture' => 'Assign Manufacture',
+    'assign_purchasing_status' => 'Assign Status',
+    'mark_as_shipping_in_progress' => 'Mark As Shipping In Progress',
+    'mark_as_shipping_depature' => 'Mark As Shipping depature',
+    'mark_as_shipping_arrival' => 'Mark As Shipping Arrival',
+    'mark_as_transfer_shipment' => 'Mark As Transfer Shipment',
+    'mark_as_transfer_stock' => 'Mark As Transfer Stock',
+    'mark_as_transfer_complete' => 'Mark As Transfer Complete',
+    'mark_as_transfer_done' => 'Mark As Transfer Done',
+    'manufacture_number' => 'Manufacture Number',
+    'purchasing_status' => 'Purchasing Status',
+    'request_date' => 'Request Date',
+    'save' => 'Save',
 ];
 
 
