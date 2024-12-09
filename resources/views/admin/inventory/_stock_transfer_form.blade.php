@@ -119,73 +119,80 @@ $('body').on('click', '.deleteThisRow', function() {
 
 $('#add-to-cart-btn').click(
 	function() {
-		var ID = $("#product-to-add").select2('data')[0].id;
+		if($("#product-to-add").select2('data')[0].id){
+			var ID = $("#product-to-add").select2('data')[0].id;
+			if(productObj[ID].stockQtt === 0) {
+				$("#global-alert-msg").html('{{ trans('messages.notice.out_of_stock') }}');
+				$("#global-alert-box").removeClass('hidden');
+			} else {
+				var itemDescription = $("#product-to-add").select2('data')[0].text;
 
-		if(productObj[ID].stockQtt === 0) {
-            $("#global-alert-msg").html('{{ trans('messages.notice.out_of_stock') }}');
-            $("#global-alert-box").removeClass('hidden');
-          } else {
-            var itemDescription = $("#product-to-add").select2('data')[0].text;
+				var isPartial = "0";
 
-            var isPartial = "0";
+				if (ID == '' || itemDescription == '') {
+					return false;
+				} else {
+					$("#empty-cart").hide(); // Hide the empty cart message
+				}
 
-              if (ID == '' || itemDescription == '') {
-                return false;
-              } else {
-                $("#empty-cart").hide(); // Hide the empty cart message
-              }
+				$("#product-to-add").select2("val", ""); // Reset the product search dropdown
 
-              $("#product-to-add").select2("val", ""); // Reset the product search dropdown
+				// Check if the product is already on the cart, Is so then just increase the qtt
+				if ($("tr#" + ID).length) {
+					increaseQttByOne(ID);
+					return;
+				}
 
-              // Check if the product is already on the cart, Is so then just increase the qtt
-              if ($("tr#" + ID).length) {
-                increaseQttByOne(ID);
-                return;
-              }
+				//Pick the string after the - to get the item description
+				// itemDescription = itemDescription.substring(itemDescription.indexOf(" - ") - 1);
+				// Find the first occurrence of " - "
+				var indexOfSeparator = itemDescription.indexOf(") - ");
+				// Check if the separator exists
+				if (indexOfSeparator != -1) {
+					// Extract the substring from the beginning to before the separator
+					itemDescription = itemDescription.substring(0, indexOfSeparator + 2);
+				}
 
-              //Pick the string after the - to get the item description
-              // itemDescription = itemDescription.substring(itemDescription.indexOf(" - ") - 1);
-              // Find the first occurrence of " - "
-              var indexOfSeparator = itemDescription.indexOf(") - ");
-              // Check if the separator exists
-              if (indexOfSeparator != -1) {
-                // Extract the substring from the beginning to before the separator
-                itemDescription = itemDescription.substring(0, indexOfSeparator + 2);
-              }
+				var imgSrc = getFromPHPHelper('get_product_img_src', ID, 'tiny');
 
-              var imgSrc = getFromPHPHelper('get_product_img_src', ID, 'tiny');
+				var numOfRows = $("tbody#items tr").length;
 
-              var numOfRows = $("tbody#items tr").length;
+				var dateOfferAvailable = productObj[ID].dateNow > productObj[ID].offerStart && productObj[ID].dateNow < productObj[ID].offerEnd;
+				// var isOfferAvailable = dateOfferAvailable ? 'Offer Available' : 'Offer Unavailable';
+				var price = productObj[ID].offerPrice > 0 ? productObj[ID].offerPrice : productObj[ID].salePrice;
+				//product item added
+				var node = '<tr id="' + ID + '">' +
+					'<td><img src="' + imgSrc + '" class="img-circle img-md" alt="{{ trans('app.image') }}"></td>' +
+					'<td class="nopadding-right" width="55%">' + itemDescription +
+					'<input type="hidden" name="product[' + numOfRows + '][inventory_id]" value="' + ID + '"></input>' +
+					'<input type="hidden" name="product[' + numOfRows + '][product_id]" value="' + productObj[ID].product_id + '"></input>' +
+					'<input type="hidden" name="product[' + numOfRows + '][stock_quantity]" value="' + productObj[ID].stockQtt + '" id="stock-' + ID + '" class="itemStock"></input>' +
+					'</td>' +
+					'<td class="nopadding-right text-center" width="10%">' +
+					'<span>transfer qty</span>' +
+					'<input name="product[' + numOfRows + '][transfer_quantity]" value="1" type="number" max="' + productObj[ID].stockQtt + '" id="qtt-' + ID + '" class="form-control itemQtt no-border" placeholder="{{ trans('app.quantity') }}" required>' +
+					'</td>' +
+					'<td class="small"><i class="fa fa-trash text-muted deleteThisRow" data-toggle="tooltip" data-placement="left" title="{{ trans('help.remove_this_product_item') }}"></i></td>' +
+					'</tr>';
 
-              var dateOfferAvailable = productObj[ID].dateNow > productObj[ID].offerStart && productObj[ID].dateNow < productObj[ID].offerEnd;
-              // var isOfferAvailable = dateOfferAvailable ? 'Offer Available' : 'Offer Unavailable';
-              var price = productObj[ID].offerPrice > 0 ? productObj[ID].offerPrice : productObj[ID].salePrice;
-              //product item added
-              var node = '<tr id="' + ID + '">' +
-                '<td><img src="' + imgSrc + '" class="img-circle img-md" alt="{{ trans('app.image') }}"></td>' +
-                '<td class="nopadding-right" width="55%">' + itemDescription +
-                '<input type="hidden" name="product[' + numOfRows + '][inventory_id]" value="' + ID + '"></input>' +
-                '<input type="hidden" name="product[' + numOfRows + '][product_id]" value="' + productObj[ID].product_id + '"></input>' +
-                '<input type="hidden" name="product[' + numOfRows + '][stock_quantity]" value="' + productObj[ID].stockQtt + '" id="stock-' + ID + '" class="itemStock"></input>' +
-                '</td>' +
-                '<td class="nopadding-right text-center" width="10%">' +
-                '<span>transfer qty</span>' +
-                '<input name="product[' + numOfRows + '][transfer_quantity]" value="1" type="number" max="' + productObj[ID].stockQtt + '" id="qtt-' + ID + '" class="form-control itemQtt no-border" placeholder="{{ trans('app.quantity') }}" required>' +
-                '</td>' +
-                '<td class="small"><i class="fa fa-trash text-muted deleteThisRow" data-toggle="tooltip" data-placement="left" title="{{ trans('help.remove_this_product_item') }}"></i></td>' +
-                '</tr>';
+					/**
+					 * '<input name="product[' + numOfRows + '][transfer_quantity]" value="1" max="' + productObj[ID].stockQtt + '" type="number" id="qtt-' + ID + '" class="form-control itemQtt no-border" placeholder="{{ trans('app.quantity') }}" required>' +
+					 */
 
-                /**
-                  * '<input name="product[' + numOfRows + '][transfer_quantity]" value="1" max="' + productObj[ID].stockQtt + '" type="number" id="qtt-' + ID + '" class="form-control itemQtt no-border" placeholder="{{ trans('app.quantity') }}" required>' +
-                 */
+				$('tbody#items').append(node);
 
-              $('tbody#items').append(node);
+				calculateTransferTotal();
 
-              calculateTransferTotal();
-
-              return false; //Return false to prevent unspected form submition
+				return false; //Return false to prevent unspected form submition
+			}
 		}
+		$("#global-alert-msg").html('{{ trans('messages.notice.please_choose_at_least_one_product') }}');
+		$("#global-alert-box").removeClass('hidden');
+
+		return false;
+		//
 	}
+		
 	);
 
 	 /**

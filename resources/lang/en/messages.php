@@ -107,6 +107,7 @@ return [
 
         'out_of_stock' => 'Out of stock',
         'last_stock' => 'Last stock',
+        'please_choose_at_least_one_product' => 'Product selection required, to add into cart below!'
     ],
 
     'no_changes' => 'Nothing to show',
