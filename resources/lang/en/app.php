@@ -1486,7 +1486,9 @@ return [
 
         // absence
         'clock_in' => 'Clock In',
+        'clock_in_img' => 'Clock In Image',
         'clock_out' => 'Clock Out',
+        'clock_out_img' => 'Clock Out Image',
         'office' => 'Office',
         'total_hours' => 'Total Hours',
     ],

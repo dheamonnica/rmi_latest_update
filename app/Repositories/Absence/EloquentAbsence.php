@@ -34,7 +34,7 @@ class EloquentAbsence extends EloquentRepository implements BaseRepository, Abse
         if ($request->hasFile('picture')) {
             $absence->saveImage($request->file('picture'));
         }
-
+        
         return $absence;
     }
 
@@ -54,14 +54,15 @@ class EloquentAbsence extends EloquentRepository implements BaseRepository, Abse
         return $result;
     }
 
-    public static function clockOut()
+    public static function clockOut($request, $filePath)
     {
         $result = DB::table('absence')
         ->where('user_id', Auth::user()->id)
         ->whereDate('clock_in', today())
         ->whereNull('clock_out')
         ->update([
-            'clock_out' => now()->format('Y-m-d H:i:s') // Update the 'clock_out' column with the current timestamp
+            'clock_out' => now()->format('Y-m-d H:i:s'), // Update the 'clock_out' column with the current timestamp
+            'clock_out_img' => $filePath,
         ]);
         return $result;
     }

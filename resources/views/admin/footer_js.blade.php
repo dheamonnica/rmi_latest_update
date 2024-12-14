@@ -807,8 +807,16 @@
                     'name': 'clock_in'
                 },
                 {
+                    'data': 'clock_in_img',
+                    'name': 'clock_in_img'
+                },
+                {
                     'data': 'clock_out',
                     'name': 'clock_out'
+                },
+                {
+                    'data': 'clock_out_img',
+                    'name': 'clock_out_img'
                 },
                 {
                     'data': 'branch_loc',
@@ -826,7 +834,7 @@
         }));
 
         @if (!Auth::user()->isAdmin())
-            absenceTable.column('created_by:name').search('{{ Auth::user()->name }}').draw();
+            absenceTable.column('user_id:name').search('{{ Auth::user()->name }}').draw();
         @endif
 
         // END ABSENCE TABLE
@@ -1187,7 +1195,7 @@
         }));
 
 
-        @if(Auth::user()->isAdmin())
+        @if(!Auth::user()->isAdmin())
             timeoffTable.column('created_by:name').search('{{ Auth::user()->name }}').draw();
         @endif
 

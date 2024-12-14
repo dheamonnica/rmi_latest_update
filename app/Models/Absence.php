@@ -29,7 +29,9 @@ class Absence extends BaseModel
         'latitude',
         'address',
         'clock_in',
+        'clock_in_img',
         'clock_out',
+        'clock_out_img',
         'branch_loc',
         'total_hours'
     ];
@@ -41,6 +43,6 @@ class Absence extends BaseModel
 
     public function getWarehouse()
     {
-        return $this->belongsTo(Merchant::class, 'branch_loc');
+        return $this->belongsTo(Shop::class, 'branch_loc');
     }
 }

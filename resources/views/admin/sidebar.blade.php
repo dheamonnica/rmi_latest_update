@@ -252,9 +252,13 @@
                     </ul>
                 @endif
                 <ul class="treeview-menu">
-                    <li class="{{ Request::is('admin/absence*') ? 'active' : '' }}">
+                    <li class="{{ Request::is('admin/absence') ? 'active' : '' }}">
                         <a href="{{ route('admin.absence.index') }}">
-                            Absence
+                            @if (Auth::user()->isAdmin())
+                                Absence Management
+                            @else
+                                Absence
+                            @endif
                         </a>
                     </li>
                 </ul>

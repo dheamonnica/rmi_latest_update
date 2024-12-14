@@ -15,6 +15,12 @@ Route::get('checkIfUserHasClockIn', [
     AbsenceController::class,
     'checkIfUserHasClockIn'
 ])->name('admin.absence.checkIfUserHasClockIn')->middleware('ajax');
+Route::post('admin/absence/uploadPhotoClockIn/save', [
+    AbsenceController::class, 'uploadPhotoClockIn'
+])->name('admin.absence.uploadPhotoClockIn.save');
+Route::post('admin/absence/uploadPhotoClockOut/save', [
+    AbsenceController::class, 'uploadPhotoClockOut'
+])->name('admin.absence.uploadPhotoClockOut.save');
 Route::get('checkIfUserHasClockOut', [
     AbsenceController::class,
     'checkIfUserHasClockOut'

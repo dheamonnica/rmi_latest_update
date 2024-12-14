@@ -11,6 +11,8 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Admin\DB;
+use Illuminate\Support\Facades\Storage;
+
 class AbsenceController extends Controller
 {
     // use Authorizable;
@@ -35,14 +37,18 @@ class AbsenceController extends Controller
         $absences = $this->absence->all();
         $trashes = $this->absence->trashOnly();
 
-        $branch_loc = User::where('shop_id', Auth::user()->shop_id)
-            ->get()->first();
+        if (!Auth::user()->isAdmin()) {
+            $branch_loc = User::where('shop_id', Auth::user()->shop_id)
+                ->get()->first();
             if ($branch_loc->longitude === null && $branch_loc->latitude === null) {
                 $branch_loc = User::where('id', Auth::user()->office_location_id)->get()->first();
             }
-        return view('admin.absence.index', compact('absences', 'trashes', 'branch_loc'));
+            return view('admin.absence.index', compact('absences', 'trashes', 'branch_loc'));
+        } else {
+            return view('admin.absence.administrator', compact('absences', 'trashes'));
+        }
     }
-    
+
     public function getAbsences(Request $request)
     {
         $absences = $this->absence->all();
@@ -59,36 +65,83 @@ class AbsenceController extends Controller
             ->addColumn('clock_in', function ($absence) {
                 return $absence->clock_in;
             })
+            ->addColumn('clock_in_img', function ($absence) {
+                if ($absence->clock_in_img === null) {
+                    return '-';
+                } else {
+                    return '<a href="' . asset('storage/' . $absence->clock_in_img) . '" target="_blank">Photo</a>';
+                }
+            })
             ->addColumn('clock_out', function ($absence) {
-                return $absence->clock_out;
+                return $absence->clock_out ? $absence->clock_out : '-';
+            })
+            ->addColumn('clock_out_img', function ($absence) {
+                if ($absence->clock_out_img === null) {
+                    return '-';
+                } else {
+                    return '<a href="' . asset('storage/' . $absence->clock_out_img) . '" target="_blank">Photo</a>';
+                }
             })
             ->addColumn('branch_loc', function ($absence) {
-                return $absence->getWarehouse->nice_name;
+                return $absence->getWarehouse->name;
             })
             ->addColumn('address', function ($absence) {
                 return $absence->address;
             })
             ->addColumn('total_hours', function ($absence) {
-                return $absence->total_hours;
+                if ($absence->clock_out) {
+                    $startTime = Carbon::parse($absence->clock_in);
+                    $endTime = Carbon::parse($absence->clock_out);
+
+                    // Calculate the difference in seconds
+                    $totalSeconds = $endTime->diffInSeconds($startTime);
+
+                    // Convert seconds to hours, minutes, and seconds
+                    $hours = floor($totalSeconds / 3600);
+                    $minutes = floor(($totalSeconds % 3600) / 60);
+                    $seconds = $totalSeconds % 60;
+
+                    // Format the output
+                    $totalTime = sprintf('%02d:%02d:%02d', $hours, $minutes, $seconds);
+                    return $totalTime;
+                } else {
+                    return 0;
+                }
             })
-            ->rawColumns(['checkbox', 'user_id', 'address', 'clock_in', 'clock_out', 'branch_loc', 'address', 'total_hours'])
+            ->rawColumns(['checkbox', 'user_id', 'address', 'clock_in', 'clock_in_img', 'clock_out', 'clock_out_img', 'branch_loc', 'address', 'total_hours'])
             ->make(true);
     }
 
-    public function checkIfUserHasClockIn(Request $request) {
+    public function checkIfUserHasClockIn(Request $request)
+    {
         $absence = $this->absence->checkIfUserHasClockIn($request);
         return response()->json(['success' => $absence]);
     }
 
-    public function checkIfUserHasClockOut(Request $request) {
+    public function checkIfUserHasClockOut(Request $request)
+    {
         $absence = $this->absence->checkIfUserHasClockOut($request);
         return response()->json(['success' => $absence]);
     }
 
-    public function clockOut(Request $request) {
-        $absence = $this->absence->clockOut($request);
+    public function clockOut(Request $request)
+    {
+
+        // Decode Base64 image
+        $imageData = explode(',', $request['clock_out_img'])[1]; // Extract image data
+        $image = base64_decode($imageData);
+
+        // Generate file name and path
+        $fileName = now()->format('d-m-Y_H-i-s') . '_user_' . $request->user_id . '.png';
+        $filePath = 'absence/' . $request->user_id . '/' . $fileName;
+
+        // Store the image in storage
+        Storage::put($filePath, $image);
+
+        $absence = $this->absence->clockOut($request, $filePath);
         return response()->json(['success' => $absence]);
     }
+
     /**
      * Show the form for creating a new resource.
      *
@@ -106,9 +159,32 @@ class AbsenceController extends Controller
      */
     public function store(Request $request)
     {
-        $this->absence->store($request);
+        // Decode Base64 image
+        $imageData = explode(',', $request['clock_in_img'])[1]; // Get the actual image data
+        $image = base64_decode($imageData);
+
+        // Generate file name and path
+        $fileName = now()->format('d-m-Y_H-i-s') . '_user_' . $request['user_id'] . '.png';
+        $filePath = 'absence/' . $request['user_id'] . '/' . $fileName;
+
+        // Store the image in storage
+        Storage::put($filePath, $image);
+
+        // Save data to the database
+        $absence = new Absence();
+        $absence->user_id = $request['user_id'];
+        $absence->branch_loc = $request['branch_loc'];
+        $absence->longitude = $request['longitude'];
+        $absence->latitude = $request['latitude'];
+        $absence->address = $request['address'];
+        $absence->clock_in = $request['clock_in'];
+        $absence->clock_in_img = 'absence/' . $request['user_id'] . '/' . $fileName;
+        $absence->save();
+
+        // Redirect back with success message
         return back()->with('success', trans('messages.created', ['model' => $this->model_name]));
     }
+
     /**
      * Show the form for editing the specified resource.
      *
