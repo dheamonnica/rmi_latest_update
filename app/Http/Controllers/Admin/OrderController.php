@@ -930,7 +930,8 @@ class OrderController extends Controller
                 return $order->po_number_ref;
             })
             ->addColumn('shop_id', function ($order) {
-                return $order->shop_id ? $order->getWarehouse->name : trans('app.form.management');
+                // return $order->shop_id ? $order->getWarehouse->name : trans('app.form.management');
+                return 'a';
             })
             ->addColumn('customer_id', function ($order) {
                 return $order->customer_id ? $order->getCustomer->name : "";
