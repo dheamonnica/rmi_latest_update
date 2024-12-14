@@ -754,7 +754,7 @@ class OrderController extends Controller
             })
 
             ->addColumn('created_at', function ($order) {
-                return $order->created_at;
+                return date('Y-m-d h:i:s', strtotime($order->created_at));
             })
             ->addColumn('created_by', function ($order) {
                 return $order->created_by;

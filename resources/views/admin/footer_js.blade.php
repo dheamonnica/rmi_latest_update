@@ -1381,7 +1381,8 @@
                 },
                 {
                     'data': 'order_date',
-                    'name': 'order_date'
+                    'name': 'order_date',
+                    'type': 'date'
                 },
                 {
                     'data': 'due_date_payment',
@@ -1416,7 +1417,8 @@
                     'exportable': false,
                     'printable': false
                 }
-            ]
+            ],
+            order: [[2, 'desc']] // Sort by the 3rd column (index 2) in ascending order
         }));
         // END ORDER TABLE
 
@@ -1487,10 +1489,10 @@
                     'data': 'Grand_Total',
                     'name': 'Grand_Total',
                 },
-
                 {
                     'data': 'created_at',
                     'name': 'created_at',
+                    'type': 'date'
                 },
                 {
                     'data': 'created_by',
@@ -1570,7 +1572,8 @@
                     'data': 'order_status_id',
                     'name': 'order_status_id',
                 },
-            ]
+            ],
+            order: [[14, 'desc']] // Sort by the 3rd column (index 2) in ascending order
         }));
 
         // if isFromPlatform
