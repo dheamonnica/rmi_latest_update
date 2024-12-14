@@ -1696,9 +1696,9 @@
         }));
 
         // if isFromPlatform
-        @if (!Auth::user()->isFromPlatform())
-            tableOrdePaymentDocReport.column('shop_id:name').search('{{ Auth::user()->shop_id }}').draw();
-        @endif
+        // @if (!Auth::user()->isAdmin())
+        //     tableOrdePaymentDocReport.column('shop_id:name').search('{{ Auth::user()->shop_id }}').draw();
+        // @endif
 
         function filterByWarehouseOrderReport() {
             var selectedMerchant = $('#merchantOrderPaymentDocReportFilter').val();
