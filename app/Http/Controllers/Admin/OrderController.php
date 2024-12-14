@@ -930,12 +930,11 @@ class OrderController extends Controller
                 return $order->po_number_ref;
             })
             ->addColumn('shop_id', function ($order) {
-                // return $order->shop_id ? $order->getWarehouse->name : trans('app.form.management');
-                return $order->shop_id;
+                return $order->shop_id ? $order->getWarehouse->name : trans('app.form.management');
             })
             ->addColumn('customer_id', function ($order) {
                 // return $order->customer_id ? $order->getCustomer->name : "";
-                return $order->customer_id;
+                return $order->getCustomer;
             })
             ->addColumn('doc_SI', function ($order) {
                 $url = route('admin.order.order.invoice', $order->id);
