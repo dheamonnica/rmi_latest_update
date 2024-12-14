@@ -934,7 +934,8 @@ class OrderController extends Controller
                 return 'a';
             })
             ->addColumn('customer_id', function ($order) {
-                return $order->customer_id ? $order->getCustomer->name : "";
+                // return $order->customer_id ? $order->getCustomer->name : "";
+                return 'b';
             })
             ->addColumn('doc_SI', function ($order) {
                 $url = route('admin.order.order.invoice', $order->id);
