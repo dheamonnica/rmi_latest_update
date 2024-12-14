@@ -225,37 +225,44 @@
                 </li>
             @endif
 
-            @if (
-                (new \App\Helpers\Authorize(Auth::user(), 'view_overtime'))->check() ||
-                    (new \App\Helpers\Authorize(Auth::user(), 'view_timeoff'))->check())
-                <li
-                    class="treeview {{ Request::is('admin/overtime*') ? 'active' : '' }} {{ Request::is('admin/timeoff*') ? 'active' : '' }}">
-                    <a href="javascript:void(0)">
-                        <i class="fa fa-hourglass"></i>
-                        <span>Time Management</span>
-                        <i class="fa fa-angle-left pull-right"></i>
-                        <i class="fa fa-angle-left pull-right"></i>
-                    </a>
-                    @if ((new \App\Helpers\Authorize(Auth::user(), 'view_overtime'))->check())
-                        <ul class="treeview-menu">
-                            <li class="{{ Request::is('admin/overtime*') ? 'active' : '' }}">
-                                <a href="{{ route('admin.overtime.index') }}">
-                                    Overtime
-                                </a>
-                            </li>
-                        </ul>
-                    @endif
-                    @if ((new \App\Helpers\Authorize(Auth::user(), 'view_timeoff'))->check())
-                        <ul class="treeview-menu">
-                            <li class="{{ Request::is('admin/timeoff*') ? 'active' : '' }}">
-                                <a href="{{ route('admin.timeoff.index') }}">
-                                    Request Time Off
-                                </a>
-                            </li>
-                        </ul>
-                    @endif
-                </li>
-            @endif
+            <li
+                class="treeview {{ Request::is('admin/overtime*') ? 'active' : '' }} {{ Request::is('admin/timeoff*') ? 'active' : '' }} {{ Request::is('admin/absence*') ? 'active' : '' }}">
+                <a href="javascript:void(0)">
+                    <i class="fa fa-hourglass"></i>
+                    <span>Time Management</span>
+                    <i class="fa fa-angle-left pull-right"></i>
+                    <i class="fa fa-angle-left pull-right"></i>
+                </a>
+                @if ((new \App\Helpers\Authorize(Auth::user(), 'view_overtime'))->check())
+                    <ul class="treeview-menu">
+                        <li class="{{ Request::is('admin/overtime*') ? 'active' : '' }}">
+                            <a href="{{ route('admin.overtime.index') }}">
+                                Overtime
+                            </a>
+                        </li>
+                    </ul>
+                @endif
+                @if ((new \App\Helpers\Authorize(Auth::user(), 'view_timeoff'))->check())
+                    <ul class="treeview-menu">
+                        <li class="{{ Request::is('admin/timeoff*') ? 'active' : '' }}">
+                            <a href="{{ route('admin.timeoff.index') }}">
+                                Request Time Off
+                            </a>
+                        </li>
+                    </ul>
+                @endif
+                <ul class="treeview-menu">
+                    <li class="{{ Request::is('admin/absence') ? 'active' : '' }}">
+                        <a href="{{ route('admin.absence.index') }}">
+                            @if (Auth::user()->isAdmin())
+                                Absence Management
+                            @else
+                                Absence
+                            @endif
+                        </a>
+                    </li>
+                </ul>
+            </li>
 
             @if ((new \App\Helpers\Authorize(Auth::user(), 'customize_appearance'))->check())
                 <li class="treeview {{ Request::is('admin/appearance*') ? 'active' : '' }}">

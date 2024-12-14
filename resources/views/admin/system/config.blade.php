@@ -20,36 +20,36 @@
             {{ trans('app.config_formats') }}
           </a>
         </li>
-        <li>
+        {{-- <li>
           <a href="#payment_method_tab" data-toggle="tab">
             <i class="fa fa-credit-card hidden-sm"></i>
             {{ trans('app.payment_methods') }}
           </a>
-        </li>
-        <li>
+        </li> --}}
+        {{-- <li>
           <a href="#shipping_method_tab" data-toggle="tab">
             <i class="fa fa-truck hidden-sm"></i>
             {{ 'Shipping' }}
           </a>
-        </li>
+        </li> --}}
         <li>
           <a href="#support_tab" data-toggle="tab">
             <i class="fa fa-phone hidden-sm"></i>
             {{ trans('app.support') }}
           </a>
         </li>
-        <li>
+        {{-- <li>
           <a href="#reports_tab" data-toggle="tab">
             <i class="fa fa-line-chart hidden-sm"></i>
             {{ trans('app.reports') }}
           </a>
-        </li>
-        <li>
+        </li> --}}
+        {{-- <li>
           <a href="#notifications_tab" data-toggle="tab">
             <i class="fa fa-bell-o hidden-sm"></i>
             {{ trans('app.notifications') }}
           </a>
-        </li>
+        </li> --}}
       </ul>
 
       <div class="tab-content">
@@ -738,7 +738,7 @@
 
             <div class="col-sm-6">
               <fieldset>
-                <legend>{{ trans('app.config_promotions') }}</legend>
+                {{-- <legend>{{ trans('app.config_promotions') }}</legend>
                 <div class="form-group">
                   {!! Form::label('coupon_code_size', '*' . trans('theme.coupon_code_size') . ':', ['class' => 'with-help col-sm-7 control-label']) !!}
                   <i class="fa fa-question-circle" data-toggle="tooltip" data-placement="left" title="{{ trans('help.config_coupon_code_size') }}"></i>
@@ -750,7 +750,7 @@
                       <span>{{ $system->coupon_code_size }}</span>
                     @endif
                   </div>
-                </div>
+                </div> --}}
 
                 {{-- <div class="form-group">
 								        {!! Form::label('gift_card_pin_size', '*' . trans('app.config_gift_card_pin_size'). ':', ['class' => 'with-help col-sm-7 control-label']) !!}
