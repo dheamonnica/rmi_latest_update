@@ -60,7 +60,7 @@
   {!! Form::textarea('description', null, ['class' => 'form-control summernote', 'rows' => '2', 'placeholder' => trans('app.placeholder.description')]) !!}
 </div>
 
-<div class="row">
+{{-- <div class="row">
   <div class="col-md-3 nopadding-right">
     <div class="form-group">
       {!! Form::label('hospital_pic_name', trans('app.form.hospital_pic_name') . '*') !!}
@@ -89,7 +89,7 @@
       <div class="help-block with-errors"></div>
     </div>
   </div>
-</div>
+</div> --}}
 
 <div class="row">
   <div class="col-md-4 nopadding-right">
