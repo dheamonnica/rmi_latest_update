@@ -821,7 +821,7 @@ class Order extends BaseModel
 
         $barcode_path = DNS1D::getBarcodePNGPath($this->order_number, 'C128', 3, 50, array(1,1,1) ,true);
 
-        $invoice->setBarcode($barcode_path);
+        $invoice->setBarcode(url($barcode_path));
 
         if(Storage::exists($this->digital_sign_image)){
             $invoice->setSignature(url($this->digital_sign_image), 100, 100, 150, 150);
