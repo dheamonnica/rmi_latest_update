@@ -27,7 +27,7 @@
         </div> <!-- /.box-header -->
         <div class="box-body">
           <div class="row">
-            <div class="col-md-5 nopadding-right">
+            <div class="col-md-4 nopadding-right">
               <div class="form-group">
                 {!! Form::label('name', trans('app.form.name') . '*', ['class' => 'with-help']) !!}
                 <i class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="{{ trans('help.product_name') }}"></i>
@@ -36,7 +36,15 @@
               </div>
             </div>
 
-            <div class="col-md-4 nopadding-right">
+            <div class="col-md-3 nopadding-right">
+              <div class="form-group">
+                {!! Form::label('reference_number', trans('app.form.reference_number'), ['class' => 'with-help']) !!}
+                <i class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="{{ trans('help.reference_number') }}"></i>
+                {!! Form::text('reference_number', null, ['class' => 'form-control', 'placeholder' => trans('app.form.reference_number')]) !!}
+              </div>
+            </div>
+
+            <div class="col-md-3 nopadding-right">
               <div class="form-group">
                 {!! Form::label('general_name', trans('app.form.general_name') . '*', ['class' => 'with-help']) !!}
                 <i class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="{{ trans('help.general_name') }}"></i>
@@ -45,7 +53,7 @@
               </div>
             </div>
 
-            <div class="col-md-3">
+            <div class="col-md-2">
               <div class="form-group">
                 {!! Form::label('active', trans('app.form.status') . '*', ['class' => 'with-help']) !!}
                 <i class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="{{ trans('help.product_active') }}"></i>
