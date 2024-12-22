@@ -36,7 +36,6 @@
               <th></th>
             @endcan
             <th>{{ trans('app.avatar') }}</th>
-            <th>{{ trans('app.form.hospital_pic_name') }}</th>
             <th>{{ trans('app.form.hospital_name') }}</th>
             <th>{{ trans('app.form.hospital_email') }}</th>
             <th>{{ trans('app.form.coverage_area') }}</th>
