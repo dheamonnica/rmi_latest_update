@@ -76,8 +76,7 @@
                                 {{ trans('app.invoices') }}</a></li>
                     </ul>
                 </div>
-                {{-- @if (Auth::user()->isFromMerchant()) --}}
-                @if ((new \App\Helpers\Authorize(Auth::user(), 'add_order'))->check())
+                @if (Auth::user()->isFromMerchant())
                     <a href="javascript:void(0)" data-link="{{ route('admin.order.order.searchCustomer') }}"
                         class="ajax-modal-btn btn btn-new btn-lg btn-flat ml-5">{{ trans('app.add_order') }}</a>
                 @endif

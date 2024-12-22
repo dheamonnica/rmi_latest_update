@@ -818,7 +818,7 @@ class OrderController extends Controller
             })
 
             ->addColumn('due_date_in_days', function ($order) {
-                return $order->due_date_in_days;
+                return view('admin.partials.actions.order.order_due_date_payment', compact('order'));
             })
             ->addColumn('due_date', function ($order) {
                 return $order->due_date;
