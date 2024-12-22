@@ -754,7 +754,7 @@ class OrderController extends Controller
             })
 
             ->addColumn('created_at', function ($order) {
-                return $order->created_at;
+                return date('Y-m-d h:i:s', strtotime($order->created_at));
             })
             ->addColumn('created_by', function ($order) {
                 return $order->created_by;
@@ -818,7 +818,7 @@ class OrderController extends Controller
             })
 
             ->addColumn('due_date_in_days', function ($order) {
-                return $order->due_date_in_days;
+                return view('admin.partials.actions.order.order_due_date_payment', compact('order'));
             })
             ->addColumn('due_date', function ($order) {
                 return $order->due_date;

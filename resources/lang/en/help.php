@@ -244,6 +244,8 @@ return [
 
     'product_name' => 'This name only helps admin to find the item for listing. Example: Rizkimed Nasal Mask, etc.',
 
+    'reference_number' => 'Unique identifier for a specific product',
+
     'general_name' => 'This name only helps customers to find the item in listing catalogue. Example: Nasal Mask',
 
     'product_featured_image' =>  'This helps to make thumbnail photo.',

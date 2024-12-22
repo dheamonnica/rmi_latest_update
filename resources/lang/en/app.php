@@ -1257,6 +1257,7 @@ return [
         'manufacturing' => 'Manufacturing',
         'type_uom' => 'Type of UOM',
         'general_name' => 'General Name',
+        'reference_number' => 'Reference Number',
 
         // inventories
         'expired_date' => 'Expired Date',

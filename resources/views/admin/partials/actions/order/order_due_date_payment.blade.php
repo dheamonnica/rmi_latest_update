@@ -6,8 +6,14 @@
 
             $interval = $date1->diff($date2);
             $diffInDays = $interval->format('%a');
+
+            $dd_payment = 40 - $diffInDays;
         @endphp
 
-        {{40 - $diffInDays}} days
+        @if ($dd_payment <= 5)
+            <span class='label label-danger'>{{$dd_payment}} days</span>
+        @else
+            <span class='label label-info'>{{$dd_payment}} days</span>
+        @endif
     @endif
 </td>

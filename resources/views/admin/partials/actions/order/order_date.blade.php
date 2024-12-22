@@ -1,1 +1,1 @@
-<td> {{date('d-m-Y h:i:s', strtotime($order->created_at)) }}</td>                  
+<td> {{date('Y-m-d h:i:s', strtotime($order->created_at)) }}</td>                  
