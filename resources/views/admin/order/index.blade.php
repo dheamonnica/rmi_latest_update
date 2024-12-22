@@ -5,12 +5,13 @@
         @include('ebay::_pull_btn')
     @endif
 
-    @if (Auth::user()->isFromMerchant())
-        @can('create', \App\Models\Order::class)
-            <a href="javascript:void(0)" data-link="{{ route('admin.order.order.searchCustomer') }}"
-                class="ajax-modal-btn btn btn-new btn-lg btn-flat">{{ trans('app.add_order') }}</a>
-        @endcan
-    @endif
+    {{-- @if (Auth::user()->isFromMerchant()) --}}
+    {{-- @if ((new \App\Helpers\Authorize(Auth::user(), 'add_order'))->check()) --}}
+        {{-- @can('create', \App\Models\Order::class) --}}
+            {{-- <a href="javascript:void(0)" data-link="{{ route('admin.order.order.searchCustomer') }}"
+                class="ajax-modal-btn btn btn-new btn-lg btn-flat">{{ trans('app.add_order') }}</a> --}}
+        {{-- @endcan --}}
+    {{-- @endif --}}
 @endsection
 
 @section('content')
@@ -75,7 +76,8 @@
                                 {{ trans('app.invoices') }}</a></li>
                     </ul>
                 </div>
-                @if (Auth::user()->isFromMerchant())
+                {{-- @if (Auth::user()->isFromMerchant()) --}}
+                @if ((new \App\Helpers\Authorize(Auth::user(), 'add_order'))->check())
                     <a href="javascript:void(0)" data-link="{{ route('admin.order.order.searchCustomer') }}"
                         class="ajax-modal-btn btn btn-new btn-lg btn-flat ml-5">{{ trans('app.add_order') }}</a>
                 @endif
