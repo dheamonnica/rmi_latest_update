@@ -1756,10 +1756,6 @@
                     'searchable': false
                 },
                 {
-                    'data': 'nice_name',
-                    'name': 'nice_name'
-                },
-                {
                     'data': 'name',
                     'name': 'name'
                 },
