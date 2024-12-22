@@ -231,14 +231,19 @@ class Purchasing extends BaseModel
 
         if($this->items->count() > 0){
             $manufacture_number = $this->items[0]->manufacture_number;
+            $invoice->setManufactureNumber($manufacture_number);
         }
-
-        $invoice->setManufactureNumber($manufacture_number);
 
         $invoice->setPurchasingInvoiceNumber($this->purchasing_invoice_number);
 
         $invoice->setDate($this->created_at->format('M d, Y'));
         $invoice->setTime($this->created_at->format('h:i:s A'));
+
+        if($this->items->count() > 0){
+            foreach ($this->items as $item) {
+                $invoice->addItem($item->product->name, '',$item->manufacture->name, $item->request_quantity, $item->price);
+            }
+        }
         
         
         $invoice->setFooternote(get_platform_title() . ' | ' . url('/') . ' | ' . trans('invoice.footer_note'));

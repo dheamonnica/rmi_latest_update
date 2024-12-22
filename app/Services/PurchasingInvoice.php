@@ -336,10 +336,11 @@ class PurchasingInvoice extends FPDF
         return $amount . $space . $currency;
     }
 
-    public function addItem($item, $description, $quantity, $price)
+    public function addItem($item, $description, $manufacture,$quantity, $price)
     {
         $p['item'] = $item;
-        $p['product'] = $this->br2nl($description);
+        $p['description'] = $description;
+        $p['manufacture'] = $manufacture;
         $p['price'] = $price;
         $p['quantity'] = $quantity;
         $p['total'] = $quantity * $price;
@@ -539,26 +540,15 @@ class PurchasingInvoice extends FPDF
                 0
             );
 
-			$this->Cell($this->columnSpacing, 10, '', 0, 0, 'L', 0);
-            $this->Cell($width_other, 10, $this->str_iconv(trans('invoice.manufacture'), true), 0, 0, 'C', 0);
-
             $this->Cell($this->columnSpacing, 10, '', 0, 0, 'L', 0);
             $this->Cell($width_other, 10, $this->str_iconv(trans('invoice.qty'), true), 0, 0, 'C', 0);
 
             $this->Cell($this->columnSpacing, 10, '', 0, 0, 'L', 0);
             $this->Cell($width_other, 10, $this->str_iconv(trans('invoice.price'), true), 0, 0, 'C', 0);
-            if (isset($this->discountField)) {
-                $this->Cell($this->columnSpacing, 10, '', 0, 0, 'L', 0);
-                $this->Cell(
-                    $width_other,
-                    10,
-                    $this->str_iconv(trans('invoice.discount'), true),
-                    0,
-                    0,
-                    'C',
-                    0
-                );
-            }
+            
+            $this->Cell($this->columnSpacing, 10, '', 0, 0, 'L', 0);
+            $this->Cell($width_other, 10, $this->str_iconv(trans('invoice.total'), true), 0, 0, 'C', 0);
+            
 
             
             $this->Ln();
@@ -583,16 +573,16 @@ class PurchasingInvoice extends FPDF
                     $this->Ln($this->columnSpacing);
                 }
 
-                if ($item['description']) {
+                if ($item['item']) {
                     //Precalculate height
                     $calculateHeight = new self;
                     $calculateHeight->addPage();
                     $calculateHeight->setXY(0, 0);
                     $calculateHeight->SetFont($this->font, '', 7);
                     $calculateHeight->MultiCell(
-                        $this->firstColumnWidth + 40,
+                        $this->firstColumnWidth,
                         3,
-                        $this->str_iconv($item['description']),
+                        $this->str_iconv($item['item']),
                         0,
                         'L',
                         1
@@ -620,16 +610,16 @@ class PurchasingInvoice extends FPDF
                     1
                 );
 
-                if ($item['description']) {
+                if ($item['manufacture']) {
                     $resetX = $this->GetX();
                     $resetY = $this->GetY();
                     $this->SetTextColor(120, 120, 120);
                     $this->SetXY($x, $this->GetY() + 8);
-                    $this->SetFont($this->font, '', $this->fontSizeProductDescription);
+                    $this->SetFont($this->font, '', $this->fontSizeProductDescription / 2);
                     $this->MultiCell(
                         $this->firstColumnWidth,
                         floor($this->fontSizeProductDescription / 2),
-                        $this->str_iconv($item['description']),
+                        $this->str_iconv($item['manufacture']),
                         0,
                         'L',
                         1
