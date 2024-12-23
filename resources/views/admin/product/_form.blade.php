@@ -48,7 +48,7 @@
               <div class="form-group">
                 {!! Form::label('general_name', trans('app.form.general_name') . '*', ['class' => 'with-help']) !!}
                 <i class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="{{ trans('help.general_name') }}"></i>
-                {!! Form::text('general_name', null, ['class' => $title_classes, 'placeholder' => trans('app.form.general_name'), 'required']) !!}
+                {!! Form::text('general_name', null, ['class' => $title_classes, 'placeholder' => trans('app.form.general_name_product'), 'required']) !!}
                 <div class="help-block with-errors"></div>
               </div>
             </div>

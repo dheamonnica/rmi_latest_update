@@ -1309,7 +1309,7 @@ return [
         'doc_tukar_faktur_pajak' => 'Document Tukar Faktur Pajak',
         'upload_document_faktur_terbayar' => 'Upload Document Faktur Terbayar',
         'upload_document_tukar_faktur_pajak' => 'Upload Document Tukar Faktur Pajak',
-        'doc_faktur_pajak_terbayar' => 'Document Faktur Pajak Terbayar',
+        'doc_tukar_faktur_pajak_terbayar' => 'Document Tukar Faktur Pajak Terbayar',
         'from' => 'From',
         'to' => 'To',
         'uploaded_at' => 'Uploaded At',
@@ -1346,6 +1346,7 @@ return [
         'updated_by' => 'Updated By',
         'create_offering' => 'Create Offering',
         'product_name' => 'Rizkimed Nasal Mask',
+        'general_name_product' => 'Nasal Mask',
         'min_selling_price' => 'Min Selling Price',
         'max_selling_price' => 'Max Selling Price',
 

@@ -4,14 +4,6 @@
     @if (is_incevio_package_loaded('ebay') && is_ebay_configured())
         @include('ebay::_pull_btn')
     @endif
-
-    {{-- @if (Auth::user()->isFromMerchant()) --}}
-    {{-- @if ((new \App\Helpers\Authorize(Auth::user(), 'add_order'))->check()) --}}
-        {{-- @can('create', \App\Models\Order::class) --}}
-            {{-- <a href="javascript:void(0)" data-link="{{ route('admin.order.order.searchCustomer') }}"
-                class="ajax-modal-btn btn btn-new btn-lg btn-flat">{{ trans('app.add_order') }}</a> --}}
-        {{-- @endcan --}}
-    {{-- @endif --}}
 @endsection
 
 @section('content')
@@ -24,23 +16,68 @@
             <div class="pull-left">
                 <h1 class="box-title mr-5 mt-2">{{ trans('app.orders') }}</h1>
             </div>
+            <br><br>
             <div class="pull-left">
-                {{-- <select id="filter-all-order-table-order-status" class="btn btn-sm btn-default">
-                    <option value="0" selected>{{ 'Filter by order status' }}</option>
-                    @foreach ($order_statuses as $order_status_number => $order_status)
-                        <option value={{ $order_status_number }}>{{ $order_status }}</option>
-                    @endforeach
-                </select>
-                <select id="filter-all-order-table-payment-status" class="btn btn-sm btn-default">
-                    <option value="0" selected>{{ trans('app.placeholder.filter_by_status') }}</option>
-                    @foreach ($payment_statuses as $payment_status_number => $payment_status)
-                        <option value={{ $payment_status_number }}>{{ $payment_status }}</option>
-                    @endforeach
-                </select> --}}
+                <div class="pull-left">
+                    <div class="row">
+                        <div class="col-md-9 nopadding-right">
+                            <select id="merchantOrderTableFilter" class="btn btn-sm btn-default">
+                                <option value="" selected>Select Business Unit</option>
+                                @foreach ($merchants as $merchant)
+                                    <option value="{{ $merchant }}">{{ $merchant }}</option>
+                                @endforeach
+                            </select>
+
+                            <select id="customerOrderTableFilter" class="btn btn-sm btn-default">
+                                <option value="" selected>Select Customer</option>
+                                @foreach ($customers as $customer)
+                                    <option value="{{ $customer }}">{{ $customer }}</option>
+                                @endforeach
+                            </select>
+
+                            <select id="statusOrderTableFilter" class="btn btn-sm btn-default">
+                                <option value="" selected>Select Order Status</option>
+                                @foreach ($order_statuses as $order_status_number => $order_status)
+                                    <option value={{ $order_status_number }}>{{ $order_status }}</option>
+                                @endforeach
+                            </select>
+
+                            <select id="paymentStatusOrderTableFilter" class="btn btn-sm btn-default">
+                                <option value="" selected>Select Payment Status</option>
+                                @foreach ($payment_statuses as $payment_status_number => $payment_status)
+                                    <option value={{ $payment_status_number }}>{{ $payment_status }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-3 nopadding-right">
+                            <div class="row">
+                                <div class="col-md-5 nopadding-right">
+                                    {!! Form::text('startDateOrderTableFilter', null, [
+                                        'class' => 'form-control datepicker',
+                                        'placeholder' => trans('app.form.from'),
+                                        'id' => 'startDateOrderTableFilter',
+                                    ]) !!}
+                                </div>
+                                <div class="col-md-5 nopadding-left">
+                                    {!! Form::text('endDateOrderTableFilter', null, [
+                                        'class' => 'form-control datepicker',
+                                        'placeholder' => trans('app.form.to'),
+                                        'id' => 'endDateOrderTableFilter',
+                                    ]) !!}
+                                </div>
+                                <div class="col-md-2 nopadding-left py-1">
+                                    <button id="dateRangeOrderTableFilterButton">
+                                        <i class="fa fa-filter"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="pull-right">
+            <div class="pull-left py-2">
                 <div class="btn-group">
-                    <button type="button" class="btn btn-sm btn-default dropdown-toggle"
+                    <button type="button" class="btn btn-sm btn-success dropdown-toggle"
                         data-toggle="dropdown"aria-expanded="false">
                         {{ trans('app.assign_payment_status') }}
                         <span class="sr-only">{{ trans('app.toggle_dropdown') }}</span>
@@ -53,13 +90,10 @@
                         <li><a href="javascript:void(0)"
                                 data-link="{{ route('admin.order.order.assignPaymentStatus', 'unpaid') }}"
                                 class="massAction" data-doafter="reload">{{ trans('app.mark_as_unpaid') }}</a></li>
-                        {{-- <li><a href="javascript:void(0)"
-                                data-link="{{ route('admin.order.order.assignPaymentStatus', 'refunded') }}"
-                                class="massAction" data-doafter="reload">{{ trans('app.mark_as_refunded') }}</a></li> --}}
                     </ul>
                 </div>
                 <div class="btn-group">
-                    <button type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown"
+                    <button type="button" class="btn btn-sm btn-success dropdown-toggle" data-toggle="dropdown"
                         aria-expanded="false">
                         {{ trans('app.assign_order_status') }}
                         <span class="sr-only">{{ trans('app.toggle_dropdown') }}</span>
@@ -95,8 +129,10 @@
                         <th>{{ trans('app.form.po_number_ref') }}</th>
                         <th>{{ trans('app.order_date') }}</th>
                         <th>{{ trans('app.form.due_date_payment') }}</th>
+                        <th>{{ trans('app.form.business_unit') }}</th>
                         <th>{{ trans('app.client') }}</th>
                         <th>{{ trans('app.grand_total') }}</th>
+                        <th>{{ trans('app.payment_status') }}</th>
                         <th>{{ trans('app.payment_status') }}</th>
                         <th>{{ trans('app.order_status') }}</th>
                         <th>{{ trans('app.partial') }}</th>

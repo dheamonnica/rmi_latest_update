@@ -1365,7 +1365,7 @@
         // END PAYROLL REPORT TABLE
 
         // ORDER TABLE
-        $('#all-order-table').DataTable($.extend({}, dataTableOptions, {
+        var orderTableData = $('#all-order-table').DataTable($.extend({}, dataTableOptions, {
             "ajax": "{{ route('admin.order.bulkorder_process', ['paymentStatus' => '0', 'orderStatus' => '0']) }}",
             "columns": [{
                     'data': 'checkbox',
@@ -1389,6 +1389,10 @@
                     'name': 'due_date_payment'
                 },
                 {
+                    'data': 'shop_id',
+                    'name': 'shop_id'
+                },
+                {
                     'data': 'customer_name',
                     'name': 'customer_name',
                 },
@@ -1397,12 +1401,22 @@
                     'name': 'grand_total',
                 },
                 {
-                    'data': 'payment_status',
-                    'name': 'payment_status',
+                    'data': 'payment_status_name',
+                    'name': 'payment_status_name',
+                },
+                {
+                    'data': 'payment_status_id',
+                    'name': 'payment_status_id',
+                    visible: false
                 },
                 {
                     'data': 'order_status',
                     'name': 'order_status',
+                },
+                {
+                    'data': 'order_status_id',
+                    'name': 'order_status_id',
+                    visible: false
                 },
                 {
                     'data': 'partial_status',
@@ -1420,6 +1434,54 @@
             ],
             order: [[2, 'desc']] // Sort by the 3rd column (index 2) in ascending order
         }));
+
+         // if isFromPlatform
+         @if (!Auth::user()->isAdmin())
+         orderTableData.column('shop_id:name').search('{{ Auth::user()->shop_id }}').draw();
+         @endif
+
+        function filterByWarehouseOrderTbl() {
+            var selectedMerchant = $('#merchantOrderTableFilter').val();
+
+            orderTableData.column('shop_id:name').search(selectedMerchant).draw();
+        }
+
+        function filterByCustomerOrderTbl() {
+            var selectedCustomer = $('#customerOrderTableFilter').val();
+
+            orderTableData.column('customer_name:name').search(selectedCustomer).draw();
+        }
+
+        function filterByStatusOrderTbl() {
+            var selectedStatus = $('#statusOrderTableFilter').val();
+
+            orderTableData.column('order_status_id:name').search(selectedStatus).draw();
+        }
+
+        function filterByPaymentStatusOrderTbl() {
+            var selectedPaymentStatus = $('#paymentStatusOrderTableFilter').val();
+
+            orderTableData.column('payment_status_id:name').search(selectedPaymentStatus).draw();
+        }
+
+        function filterByDateRangeOrderTbl() {
+            var startDate = $('#startDateOrderTableFilter').val();
+            var endDate = $('#endDateOrderTableFilter').val();
+            console.log(startDate, endDate);
+
+            // If both dates are selected, filter by range
+            if (startDate && endDate) {
+                orderTableData.column('order_date:name')
+                    .search(startDate + '|' + endDate, true, false)
+                    .draw();
+            }
+        }
+
+        $('#dateRangeOrderTableFilterButton').on('click', filterByDateRangeOrderTbl);
+        $('#merchantOrderTableFilter').on('change', filterByWarehouseOrderTbl);
+        $('#customerOrderTableFilter').on('change', filterByCustomerOrderTbl);
+        $('#statusOrderTableFilter').on('change', filterByStatusOrderTbl);
+        $('#paymentStatusOrderTableFilter').on('change', filterByPaymentStatusOrderTbl);
         // END ORDER TABLE
 
         // Load Order Report list by Ajax

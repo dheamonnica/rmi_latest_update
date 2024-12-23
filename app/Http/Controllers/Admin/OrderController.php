@@ -60,7 +60,20 @@ class OrderController extends Controller
 
         $deliveryBoysUser = ListHelper::deliveryBoyRole();
 
-        return view('admin.order.index', compact('orders', 'archives', 'deliveryBoysUser'));
+        $merchants = Merchant::whereNotNull('warehouse_name')
+            ->where('active', 1)
+            ->whereNull('deleted_at')
+            ->where('warehouse_name', 'like', '%warehouse%')
+            ->get()
+            ->pluck('warehouse_name', 'id')
+            ->toArray();
+
+        $customers = Customer::whereNotNull('name')
+            ->get()
+            ->pluck('name', 'id')
+            ->toArray();
+
+        return view('admin.order.index', compact('orders', 'archives', 'deliveryBoysUser', 'merchants', 'customers'));
     }
 
     public function exportIndex()
@@ -193,8 +206,11 @@ class OrderController extends Controller
             ->editColumn('grand_total', function ($order) {
                 return get_formated_currency($order->grand_total, 2);
             })
-            ->editColumn('payment_status', function ($order) {
+            ->editColumn('payment_status_name', function ($order) {
                 return view('admin.partials.actions.order.payment_status', compact('order'));
+            })
+            ->editColumn('payment_status_id', function ($order) {
+                return $order->payment_status;
             })
             ->editColumn('partial_status', function ($order) {
                 return view('admin.partials.actions.order.order_partial', compact('order'));
@@ -203,10 +219,13 @@ class OrderController extends Controller
                 $order_statuses = \App\Helpers\ListHelper::order_statuses();
                 return view('admin.partials.actions.order.order_status', compact('order', 'order_statuses'));
             })
+            ->addColumn('shop_id', function ($order) {
+                return $order->shop_id ? $order->getWarehouse->name : trans('app.form.management');
+            })
             ->editColumn('option', function ($order) {
                 return view('admin.partials.actions.order.option', compact('order'));
             })
-            ->rawColumns(['checkbox', 'order', 'po_number_ref', 'order_date', 'created_by', 'packed_date', 'shipped_by', 'shipping_date', 'delivery_by', 'delivery_date', 'due_date_payment', 'due_days_payment', 'cancel_by', 'cancel_date', 'paid_by', 'paid_date', 'shop', 'customer_name', 'order_product_qty', 'grand_total', 'payment_status', 'partial_status', 'option'])
+            ->rawColumns(['checkbox', 'order', 'po_number_ref', 'order_date', 'created_by', 'packed_date', 'shipped_by', 'shipping_date', 'delivery_by', 'delivery_date', 'due_date_payment', 'due_days_payment', 'cancel_by', 'cancel_date', 'paid_by', 'paid_date', 'shop', 'customer_name', 'order_product_qty', 'grand_total', 'payment_status_name', 'payment_status_id', 'partial_status', 'shop_id', 'option'])
             ->make(true);
     }
 
@@ -1063,14 +1082,14 @@ class OrderController extends Controller
         if ($request->file('doc_faktur_pajak') && $request->file('doc_faktur_pajak_terbayar')) {
             // DOC FAKTUR PAJAK
             $pdfFileFP = $request->file('doc_faktur_pajak');
-            $originalFilenameFP = now()->format('d-m-Y') . '/PoNumberRef_' . str_replace('/', '_', $orderData->po_number_ref) . '/' . 'FP_' . $pdfFileFP->getClientOriginalName(); // Add a timestamp to the original filename
+            $originalFilenameFP = now()->format('d-m-Y') . '/PoNumberRef_' . str_replace(['/', '#'],'_', $orderData->po_number_ref) . '/' . 'FP_' . $pdfFileFP->getClientOriginalName(); // Add a timestamp to the original filename
             $pdfFileFP->storeAs('payment_documents', $originalFilenameFP, 'public');
             $orderData->doc_faktur_pajak = 'payment_documents/' . $originalFilenameFP;
             $orderData->doc_faktur_pajak_uploaded_at = $request->input('doc_faktur_pajak_uploaded_at');
 
             // DOC FAKTUR PAJAK TERBAYAR
             $pdfFileFPT = $request->file('doc_faktur_pajak_terbayar');
-            $originalFilenameFPT = now()->format('d-m-Y') . '/PoNumberRef_' . str_replace('/', '_', $orderData->po_number_ref) . '/' . 'FPT_' . $pdfFileFPT->getClientOriginalName(); // Add a timestamp to the original filename
+            $originalFilenameFPT = now()->format('d-m-Y') . '/PoNumberRef_' . str_replace(['/', '#'],'_', $orderData->po_number_ref) . '/' . 'FPT_' . $pdfFileFPT->getClientOriginalName(); // Add a timestamp to the original filename
             $pdfFileFPT->storeAs('payment_documents', $originalFilenameFPT, 'public');
             $orderData->doc_faktur_pajak_terbayar = 'payment_documents/' . $originalFilenameFPT;
             $orderData->doc_faktur_pajak_terbayar_uploaded_at = $request->input('doc_faktur_pajak_terbayar_uploaded_at');
@@ -1079,7 +1098,7 @@ class OrderController extends Controller
         } else if ($request->file('doc_faktur_pajak')) {
             // DOC FAKTUR PAJAK
             $pdfFileFP = $request->file('doc_faktur_pajak');
-            $originalFilenameFP = now()->format('d-m-Y') . '/PoNumberRef_' . str_replace('/', '_', $orderData->po_number_ref) . '/' . 'FP_' . $pdfFileFP->getClientOriginalName(); // Add a timestamp to the original filename
+            $originalFilenameFP = now()->format('d-m-Y') . '/PoNumberRef_' . str_replace(['/', '#'],'_', $orderData->po_number_ref) . '/' . 'FP_' . $pdfFileFP->getClientOriginalName(); // Add a timestamp to the original filename
             $pdfFileFP->storeAs('payment_documents', $originalFilenameFP, 'public');
             $orderData->doc_faktur_pajak = 'payment_documents/' . $originalFilenameFP;
             $orderData->doc_faktur_pajak_uploaded_at = $request->input('doc_faktur_pajak_uploaded_at');
@@ -1088,7 +1107,7 @@ class OrderController extends Controller
         } else if ($request->file('doc_faktur_pajak_terbayar')) {
             // DOC FAKTUR PAJAK TERBAYAR
             $pdfFileFPT = $request->file('doc_faktur_pajak_terbayar');
-            $originalFilenameFPT = now()->format('d-m-Y') . '/PoNumberRef_' . str_replace('/', '_', $orderData->po_number_ref) . '/' . 'FPT_' . $pdfFileFPT->getClientOriginalName(); // Add a timestamp to the original filename
+            $originalFilenameFPT = now()->format('d-m-Y') . '/PoNumberRef_' . str_replace(['/', '#'],'_', $orderData->po_number_ref) . '/' . 'FPT_' . $pdfFileFPT->getClientOriginalName(); // Add a timestamp to the original filename
             $pdfFileFPT->storeAs('payment_documents', $originalFilenameFPT, 'public');
             $orderData->doc_faktur_pajak_terbayar = 'payment_documents/' . $originalFilenameFPT;
             $orderData->doc_faktur_pajak_terbayar_uploaded_at = $request->input('doc_faktur_pajak_terbayar_uploaded_at');

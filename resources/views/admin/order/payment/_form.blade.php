@@ -19,7 +19,7 @@
             {!! Form::label('upload_document_tukar_faktur_pajak', trans('app.form.upload_document_tukar_faktur_pajak'), [
                 'class' => 'with-help',
             ]) !!}
-            {!! Form::file('doc_tukar_faktur_pajak') !!}
+            {!! Form::file('doc_faktur_pajak_terbayar') !!}
             @if ($order->doc_faktur_pajak_terbayar)
                 <a href="{{ asset('storage/' . $order->doc_faktur_pajak_terbayar) }}" target="_blank">Dokumen Tukar Faktur
                     Terbayar</a>

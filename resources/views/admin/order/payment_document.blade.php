@@ -67,8 +67,8 @@
                         <th>{{ trans('app.form.doc_faktur_pajak') }}</th>
                         <th>{{ trans('app.form.doc_faktur_pajak') }} - {{ trans('app.form.uploaded_at') }}</th>
                         <th>{{ trans('app.form.sla_faktur_pajak') }} (min)</th>
-                        <th>{{ trans('app.form.doc_faktur_pajak_terbayar') }}</th>
-                        <th>{{ trans('app.form.doc_faktur_pajak_terbayar') }} - {{ trans('app.form.uploaded_at') }}</th>
+                        <th>{{ trans('app.form.doc_tukar_faktur_pajak_terbayar') }}</th>
+                        <th>{{ trans('app.form.doc_tukar_faktur_pajak_terbayar') }} - {{ trans('app.form.uploaded_at') }}</th>
                         <th>{{ trans('app.form.sla_faktur_pajak_terbayar') }} (days)</th>
                         <th>{{ trans('app.form.payment_status') }}</th>
                         <th>{{ trans('app.form.order_status') }}</th>
