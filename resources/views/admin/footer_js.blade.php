@@ -1627,12 +1627,22 @@
                     'name': 'cancel_by'
                 },
                 {
-                    'data': 'payment_status',
-                    'name': 'payment_status',
+                    'data': 'payment_status_name',
+                    'name': 'payment_status_name',
+                },
+                {
+                    'data': 'payment_status_id',
+                    'name': 'payment_status_id',
+                    visible: false
+                },
+                {
+                    'data': 'order_status_name',
+                    'name': 'order_status_name',
                 },
                 {
                     'data': 'order_status_id',
                     'name': 'order_status_id',
+                    visible: false
                 },
             ],
             order: [[14, 'desc']] // Sort by the 3rd column (index 2) in ascending order
@@ -1664,7 +1674,7 @@
         function filterByPaymentStatusOrderTable() {
             var selectedPaymentStatus = $('#paymentStatusOrderReportFilter').val();
 
-            tableOrderReport.column('payment_status:name').search(selectedPaymentStatus).draw();
+            tableOrderReport.column('payment_status_id:name').search(selectedPaymentStatus).draw();
         }
 
         function filterByDateRangeOrderTable() {
