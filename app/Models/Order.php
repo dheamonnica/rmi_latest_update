@@ -1240,9 +1240,9 @@ class Order extends BaseModel
             // case static::PAYMENT_STATUS_PARTIALLY_REFUNDED:
             //     return '<span class="label label-outline">' . $payment_status . '</span>';
 
-            // case static::PAYMENT_STATUS_PENDING:
-            // case static::PAYMENT_STATUS_INITIATED_REFUND:
-            //     return '<span class="label label-info">' . $payment_status . '</span>';
+            case static::PAYMENT_STATUS_PENDING:
+            case static::PAYMENT_STATUS_INITIATED_REFUND:
+                return '<span class="label label-info">' . $payment_status . '</span>';
 
             // case static::PAYMENT_STATUS_PAID:
             //     return '<span class="label label-info">' . $payment_status . '</span>';

@@ -39,15 +39,15 @@
                 </select>
 
                 <select id="statusOrderReportFilter" class="btn btn-sm btn-default">
-                    <option value="" selected>Select Status</option>
+                    <option value="" selected>Select Order Status</option>
                     @foreach ($order_statuses as $order_status_number => $order_status)
-                        <option value={{ $order_status }}>{{ $order_status }}</option>
+                        <option value={{ $order_status_number }}>{{ $order_status }}</option>
                     @endforeach
                 </select>
                 <select id="paymentStatusOrderReportFilter" class="btn btn-sm btn-default">
                     <option value="" selected>Select Payment Status</option>
                     @foreach ($payment_statuses as $payment_status_number => $payment_status)
-                        <option value={{ $payment_status }}>{{ $payment_status }}</option>
+                        <option value={{ $payment_status_number }}>{{ $payment_status }}</option>
                     @endforeach
                 </select>
             </div>
@@ -124,7 +124,9 @@
                         <th>{{ trans('app.form.cancel_date') }}</th>
                         <th>{{ trans('app.form.cancel_by') }}</th>
                         <th>{{ trans('app.form.payment_status') }}</th>
+                        <th>{{ trans('app.form.payment_status_id') }}</th>
                         <th>{{ trans('app.form.order_status') }}</th>
+                        <th>{{ trans('app.form.order_status_id') }}</th>
                     </tr>
                 </thead>
                 <tbody id="massSelectArea">
