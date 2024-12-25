@@ -42,3 +42,4 @@ package-lock.json
 /vendor/composer/installed.php
 /bootstrap/cache/packages.php
 /bootstrap/cache/services.php
+composer.lock
