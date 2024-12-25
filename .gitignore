@@ -1,21 +1,21 @@
-# /node_modules
-# /public/hot
-# /public/storage
-# /public/images/demo
-# /public/sitemap.xml
-# /public/*.index*
-# /storage/*.index*
-# /storage/*.key
-# /storage/*_token
-# /storage/installed
+/node_modules
+/public/hot
+/public/storage
+/public/images/demo
+/public/sitemap.xml
+/public/*.index*
+/storage/*.index*
+/storage/*.key
+/storage/*_token
+/storage/installed*
 /storage/logs/**
-# /storage/app/analytics-api.json
-# /storage/ebay_refresh_token
-# /vendor/**
+/storage/app/analytics-api.json
+/storage/ebay_refresh_token
+/vendor
 # !/vendor/helper_functions.php
 # /.idea
 # /.vagrant
-# .vscode/
+.vscode/
 # .sass-cache/
 # .css.map
 # Homestead.json
@@ -23,7 +23,7 @@
 # npm-debug.log
 # yarn-error.log
 # laravel-echo-server.json
-# .DS_Store
+.DS_Store
 # queue.pid
 # .env.demo
 .env
@@ -35,3 +35,5 @@ public/storage
 storage/installed
 storage/inventories.index
 vendor/composer/installed.php
+composer.json
+package-lock.json
