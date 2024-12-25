@@ -9,6 +9,7 @@
 /storage/*_token
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 /storage/installed*
 =======
  storage/installed
@@ -16,6 +17,9 @@
 =======
 /storage/installed
 >>>>>>> 8129e7073 (fixed untracked files)
+=======
+/storage/installed*
+>>>>>>> 7aa57732d (fix git ignore)
 /storage/logs/**
 /storage/app/analytics-api.json
 /storage/ebay_refresh_token
