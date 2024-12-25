@@ -1,1 +1,0 @@
-<img src="{{ get_avatar_src($customer, 'tiny') }}" class="img-circle" alt="{{ trans('app.avatar') }}">

@@ -1,1 +1,0 @@
-<td>{{$budget->created_at}}</td>

@@ -1,1 +1,0 @@
-<td>Rp. {{ number_format($budget->total, 0, '.', '.') }}</td>

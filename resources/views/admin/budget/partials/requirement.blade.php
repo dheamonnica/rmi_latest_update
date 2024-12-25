@@ -1,1 +1,0 @@
-<td>{{$budget->requirement}}</td>

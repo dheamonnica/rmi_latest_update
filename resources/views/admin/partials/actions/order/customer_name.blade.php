@@ -1,1 +1,0 @@
-<td>{{ $order->customer->name }}</td>

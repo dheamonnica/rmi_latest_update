@@ -1,3 +1,0 @@
-<td>
-    {{ $order->sumProductbyOrder()}}
-</td>

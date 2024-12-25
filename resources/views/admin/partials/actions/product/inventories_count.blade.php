@@ -1,1 +1,0 @@
-<span class="label label-default">{{ $product->inventories_count }}</span>

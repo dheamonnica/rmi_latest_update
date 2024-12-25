@@ -1,1 +1,0 @@
-<td>$ {{$offering->medium_quantity_price}}</td>

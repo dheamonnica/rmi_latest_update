@@ -7,7 +7,11 @@
 /storage/*.index*
 /storage/*.key
 /storage/*_token
+<<<<<<< HEAD
 /storage/installed*
+=======
+ storage/installed
+>>>>>>> b36427a0a (fixed untracked files)
 /storage/logs/**
 /storage/app/analytics-api.json
 /storage/ebay_refresh_token
@@ -27,7 +31,7 @@
 # queue.pid
 # .env.demo
 .env
-# /.htaccess
+/.htaccess
 # /composer1.phar
 # /public/barcode
 /vendor/composer/*

@@ -1,1 +1,0 @@
-<td>{{$offering->getCreatedOfferedByName->business_name}}</td>

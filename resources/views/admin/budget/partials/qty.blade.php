@@ -1,3 +1,0 @@
-<td>
-    {{ $budget->qty }}
-</td>

@@ -1,1 +1,0 @@
-<td>{{$offering->created_at}}</td>

@@ -1,1 +1,0 @@
-<td>{{ \Carbon\Carbon::parse($target->date)->format('F') }}</td>
