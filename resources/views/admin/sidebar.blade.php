@@ -308,12 +308,12 @@
                                     </a>
                                 </li>
 
-                                <li
+                                {{-- <li
                                     class="{{ (Request::is('admin/stock/inventory/physical') && !(Request::is('admin/stock/inventory/digital*') || Request::is('admin/stock/inventory/auction*'))) || (isset($inventory) && isset($product) && !$product->downloadable && !$inventory->auctionable) ? 'active' : '' }}">
                                     <a href="{{ route('admin.stock.inventory.index', ['type' => 'opname']) }}">
                                         {{ trans('nav.opname_products') }}
                                     </a>
-                                </li>
+                                </li> --}}
 
                                 @if (is_incevio_package_loaded('auction'))
                                     <li
@@ -359,14 +359,14 @@
                             </li>
                         @endcan --}}
 
-                        @can('index', \App\Models\Purchasing::class)
+                        {{-- @can('index', \App\Models\Purchasing::class) --}}
                             <li
                                 class="{{ (Request::is('admin/purchasing/purchasing*')) ? 'active' : '' }}">
                                 <a href="{{ route('admin.purchasing.purchasing.index') }}">
                                     {{ trans('nav.purchasing') }}
                                 </a>
                             </li>
-                        @endcan
+                        {{-- @endcan --}}
                     </ul>
                 </li>
             @endif

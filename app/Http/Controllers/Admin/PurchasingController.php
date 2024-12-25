@@ -72,9 +72,14 @@ class PurchasingController extends Controller
         ->rightjoin('purchasing_orders', 'purchasing_orders.id', '=', 'purchasing_order_items.purchasing_order_id')
         ->leftjoin('shops', 'shops.id', '=', 'purchasing_orders.shop_requester_id')
         ->leftjoin('products', 'products.id', '=', 'purchasing_order_items.product_id')
-        ->whereNotNull('purchasing_order_items.purchasing_order_id')
-        ->orderBy('purchasing_orders.created_at')
-        ->get();
+        ->whereNotNull('purchasing_order_items.purchasing_order_id');
+
+        if (!Auth::user()->isFromPlatform()) {
+            $purchasing->mine()->orderBy('purchasing_orders.created_at')->get();
+        } else {
+            $purchasing->orderBy('purchasing_orders.created_at')->get();
+        }
+
 
         // When accessing by a merchent user
         // if (Auth::user()->isFromMerchant()) {

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use App\Common\CascadeSoftDeletes;
+use App\Common\Attachable;
 use App\Common\Feedbackable;
 use App\Common\Imageable;
 use App\Common\Taggable;
@@ -15,7 +16,7 @@ use App\Services\PurchasingInvoice;
 
 class Purchasing extends BaseModel
 {
-    use HasFactory, SoftDeletes, Taggable, Imageable, Feedbackable;
+    use HasFactory, SoftDeletes, Taggable, Imageable, Attachable, Feedbackable;
 
     const STATUS_PURCHASING_SHIPPING_CREATED = 1;
     const STATUS_PURCHASING_SHIPPING_IN_PROGRESS = 2;
@@ -137,6 +138,11 @@ class Purchasing extends BaseModel
     public function setShippingDateAttribute($value)
     {
         $this->attributes['shipping_date'] = Carbon::createFromFormat('Y-m-d', $value);
+    }
+
+    public function scopeMine($query)
+    {
+        return $query->whereNotNull('shop_requester_id')->where('shop_requester_id', Auth::user()->merchantId());
     }
 
 	/**
