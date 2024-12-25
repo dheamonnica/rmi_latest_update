@@ -8,10 +8,14 @@
 /storage/*.key
 /storage/*_token
 <<<<<<< HEAD
+<<<<<<< HEAD
 /storage/installed*
 =======
  storage/installed
 >>>>>>> b36427a0a (fixed untracked files)
+=======
+/storage/installed
+>>>>>>> 8129e7073 (fixed untracked files)
 /storage/logs/**
 /storage/app/analytics-api.json
 /storage/ebay_refresh_token
