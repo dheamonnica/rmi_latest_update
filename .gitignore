@@ -35,7 +35,6 @@ public/storage
 storage/installed
 storage/inventories.index
 vendor/composer/installed.php
-composer.json
 package-lock.json
 /vendor/composer/autoload_classmap.php
 /vendor/composer/autoload_static.php
