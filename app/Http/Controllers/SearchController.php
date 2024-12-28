@@ -119,7 +119,11 @@ class SearchController extends Controller
         //find user warehouses service & Unit And Aksesoris
 
         // if(Auth::user()->role->level === 1){
-            $warehouses = Shop::where('name', 'LIKE', '%'.$term.'%')->where('active', 1)->take(5)->get();
+            $warehouses = Shop::where('name', 'LIKE', '%'.$term.'%')
+            ->where('active', 1)
+            ->where('id', '!=', Auth::user()->shop_id)
+            ->take(5)
+            ->get();
         // } else {
         //     $warehouse = User::
         //         where('warehouse_name', 'LIKE', '%SERVICE%')

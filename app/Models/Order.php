@@ -803,6 +803,7 @@ class Order extends BaseModel
         //echo '<img src="'.get_logo_url('system', 'logo').'" width="30">';
         //dd(get_logo_url('system', 'logo'));
         $invoice->setLogo(get_logo_url('system', 'logo'), 25, 25);
+        $invoice->setLogo('https://rmi-testing.ideaprojects.my.id/image/images/logo.png', 25, 25);
 
         $invoice->setReference($this->order_number);   // Reference
         $invoice->setDate($this->created_at->format('M d, Y'));   //Billing Date

@@ -908,8 +908,8 @@ return [
             'send_by_warehouse' => 'Send By Warehouse',
             'on_delivery' => 'On Delivery',
             'delivered' => 'Delivered',
-            'received_by' => 'Received By',
-            'packed' => 'packed',
+            'received_by' => 'Received',
+            'packed' => 'Packed',
         ]
     ],
 

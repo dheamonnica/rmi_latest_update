@@ -765,14 +765,20 @@ class Inventory extends Inspectable
     {
         // dd($query->toSql());
         return $query
-        ->join('stock_transfer_items', function($join) {
+        ->leftJoin('stock_transfer_items', function($join) {
+            //TODO: Bug in the query - double join
             $join->on('inventories.id', '=', 'stock_transfer_items.from_inventory_id')
                  ->orOn('inventories.id', '=', 'stock_transfer_items.to_inventory_id');
         })
         ->join('stock_transfers', 'stock_transfer_items.stock_transfer_id', '=', 'stock_transfers.id')
         ->join('shops as shop_from', 'stock_transfers.shop_depature_id', '=', 'shop_from.id')
         ->join('shops as shop_to', 'stock_transfers.shop_arrival_id', '=', 'shop_to.id')
-        ->select('inventories.*','stock_transfers.id as stock_transfer_id','stock_transfer_items.transfer_qty', 'stock_transfers.movement_number', 'stock_transfers.shop_depature_id', 'stock_transfers.shop_arrival_id', 'shop_from.name as shop_from', 'shop_to.name as shop_to', 'stock_transfers.transfer_date', 'stock_transfers.status', 'stock_transfers.received_by as approve_by', 'stock_transfers.received_time as approve_date', 'stock_transfers.updated_by as updated_by', 'stock_transfers.updated_at as updated_date');
+        ->select('inventories.*','stock_transfers.id as stock_transfer_id','stock_transfer_items.transfer_qty', 'stock_transfers.movement_number', 'stock_transfers.shop_depature_id', 'stock_transfers.shop_arrival_id', 'shop_from.name as shop_from', 'shop_to.name as shop_to', 'stock_transfers.transfer_date', 'stock_transfers.status', 'stock_transfers.received_by as approve_by', 'stock_transfers.received_time as approve_date', 'stock_transfers.updated_by as updated_by', 'stock_transfers.updated_at as updated_date')
+        ->orderBy('stock_transfers.transfer_date', 'desc')
+        ->orderBy('stock_transfers.movement_number', 'desc')
+        ->orderBy('inventories.sku', 'desc')
+        ->orderBy('inventories.stock_quantity', 'desc')
+        ->orderBy('stock_transfers.status', 'desc');
     }
 
     /**

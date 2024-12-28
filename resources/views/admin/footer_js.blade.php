@@ -1404,6 +1404,10 @@
                     'data': 'payment_status_name',
                     'name': 'payment_status_name',
                 },
+                // {
+                //     'data': 'request_quantity',
+                //     'name': 'request_quantity',
+                // },
                 {
                     'data': 'payment_status_id',
                     'name': 'payment_status_id',
