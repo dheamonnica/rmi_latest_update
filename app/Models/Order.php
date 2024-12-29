@@ -242,7 +242,7 @@ class Order extends BaseModel
         // ->withPivot(['item_description', 'quantity', 'unit_price','feedback_id'])->withTimestamps();
 
         return $this->belongsToMany(Inventory::class, 'order_items')
-            ->withPivot(['item_description', 'quantity', 'unit_price', 'feedback_id', 'download'])
+            ->withPivot(['item_description', 'quantity', 'unit_price', 'feedback_id', 'download', 'request_quantity'])
             ->withTimestamps();
     }
 
