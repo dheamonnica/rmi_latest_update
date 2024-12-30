@@ -151,6 +151,17 @@
               <span class="spacer10"></span>
 
               <table class="table table-sripe">
+                <thead>
+                  <tr>
+                    <th></th>
+                    <th class="nopadding-right" width="55%">Item Description</th>
+                    <th class="nopadding-right" width="10%">Request Quantity</th>
+                    <th class="nopadding-right text-right" width="15%">Price</th>
+                    <th class="nopadding-right"></th>
+                    <th class="nopadding-right" width="10%">Order Quantity</th>
+                    <th class="nopadding-right" width="10%">Total</th>
+                  </tr>
+                </thead>
                 <tbody id="items">
                   @if (count($order->inventories) > 0)
                     @foreach ($order->inventories as $item)
@@ -161,6 +172,9 @@
                         <td class="nopadding-right" width="55%">
                           {{ $item->pivot->item_description }}
                           {{-- <a href="{{ route('show.product', $item->slug) }}" target="_blank" class="indent5 small"><i class=" fa fa-external-link"></i></a> --}}
+                        </td>
+                        <td class="nopadding text-center" width="10%">
+                          {{ $item->pivot->request_quantity ?? 0}}
                         </td>
                         <td class="nopadding-right text-right " width="15%">
                           {{ get_formated_currency($item->pivot->unit_price, 2, $order->currency_id) }}

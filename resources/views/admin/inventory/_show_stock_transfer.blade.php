@@ -85,7 +85,7 @@
 							@if ((int) $stock_transfer->status == 1)	
 								{!! Form::open(['route' => ['admin.stock.inventory.updateStatusStocktransfer', $stock_transfer], 'method' => 'post', 'class' => 'inline']) !!}
 								{{ Form::hidden('status', 2, ['id' => 'status']) }}
-								<button type="submit" class="confirm ajax-silent btn btn-lg btn-primary">PACKED ORDER</button>
+								<button type="submit" class="confirm ajax-silent btn btn-lg btn-secondary">PACKED ORDER</button>
 								{!! Form::close() !!}
 							@endif
 
@@ -93,7 +93,7 @@
 							@if ((int) $stock_transfer->status == 2)
 								{!! Form::open(['route' => ['admin.stock.inventory.updateStatusStocktransfer', $stock_transfer], 'method' => 'post', 'class' => 'inline']) !!}
 								{{ Form::hidden('status', 3, ['id' => 'status']) }}
-								<button type="submit" class="confirm ajax-silent btn btn-lg btn-primary">SET AS SEND BY WAREHOUSE</button>
+								<button type="submit" class="confirm ajax-silent btn btn-lg btn-secondary">SET AS SEND BY WAREHOUSE</button>
 								{!! Form::close() !!}
 							@endif
 
@@ -101,7 +101,7 @@
 							@if ((int) $stock_transfer->status == 3)
 								{!! Form::open(['route' => ['admin.stock.inventory.updateStatusStocktransfer', $stock_transfer], 'method' => 'post', 'class' => 'inline']) !!}
 								{{ Form::hidden('status', 4, ['id' => 'status']) }}
-								<button type="submit" class="confirm ajax-silent btn btn-lg btn-primary">SET AS ON DELIVERY</button>
+								<button type="submit" class="confirm ajax-silent btn btn-lg btn-secondary">SET AS ON DELIVERY</button>
 								{!! Form::close() !!}
 							@endif
 
@@ -109,7 +109,7 @@
 							@if ((int) $stock_transfer->status == 4)
 								{!! Form::open(['route' => ['admin.stock.inventory.updateStatusStocktransfer', $stock_transfer], 'method' => 'post', 'class' => 'inline']) !!}
 								{{ Form::hidden('status', 5, ['id' => 'status']) }}
-									<button type="submit" class="confirm ajax-silent btn btn-lg btn-primary">SET AS DELIVERED</button>
+									<button type="submit" class="confirm ajax-silent btn btn-lg btn-secondary">SET AS DELIVERED</button>
 								{!! Form::close() !!}
 							@endif
 						@endif
@@ -119,7 +119,7 @@
 							@if ((int) $stock_transfer->status == 5)
 								{!! Form::open(['route' => ['admin.stock.inventory.updateStatusStocktransfer', $stock_transfer], 'method' => 'post', 'class' => 'inline']) !!}
 								{{ Form::hidden('status', 6, ['id' => 'status']) }}
-									<button type="submit" class="confirm ajax-silent btn btn-lg btn-primary">SET AS RECEIVED</button>
+									<button type="submit" class="confirm ajax-silent btn btn-lg btn-secondary">SET AS RECEIVED</button>
 								{!! Form::close() !!}
 							@endif
 
@@ -138,7 +138,7 @@
 		<div class="col-md-4 nopadding-left">
 			<div class="box">
 				<div class="box-header with-border">
-				<h3 class="box-title"> {{ trans('app.status') }}</h3>
+					<h3 class="box-title"> {{ trans('app.status') }}</h3>
 				</div> <!-- /.box-header -->
 				<div class="box-body">
 					<div>
@@ -151,6 +151,7 @@
 										<th class="text-right">{{ trans('app.status') }}:</th>
 										<td style="width: 75%;">{{ get_stock_transfer_status_name($stock_transfer->status) }}</td>
 									</tr>
+									
 									@if ($stock_transfer->packed_by)
 										<tr>
 											<th class="text-right">{{ trans('app.packed_by') }}:</th>
@@ -162,7 +163,7 @@
 										</tr>
 									@endif
 
-									@if ($stock_transfer->send_by_warehouse)
+									{{-- @if ($stock_transfer->send_by_warehouse)
 										<tr>
 											<th class="text-right">{{ trans('app.send_by_warehouse') }}:</th>
 											<td style="width: 75%;">{{ $stock_transfer->sendByWarehouse->name }}</td>
@@ -171,7 +172,7 @@
 											<th class="text-right">{{ trans('app.send_by_warehouse_at') }}:</th>
 											<td style="width: 75%;">{{ $stock_transfer->send_by_warehouse_time }}</td>
 										</tr>
-									@endif
+									@endif --}}
 
 									@if ($stock_transfer->on_delivery_by)
 										<tr>

@@ -307,7 +307,8 @@
         <div class="box-body">
           <div class="form-group">
             {!! Form::label('payment_method_id', trans('app.form.payment_method') . '*') !!}
-            {!! Form::select('payment_method_id', $payment_methods, isset($cart->payment_method_id) ? $cart->payment_method_id : config('shop_settings.default_payment_method_id'), ['class' => 'form-control select2-normal', 'placeholder' => trans('app.placeholder.payment'), 'required']) !!}
+            {{-- {!! Form::select('payment_method_id', $payment_methods, isset($cart->payment_method_id) ? $cart->payment_method_id : config('shop_settings.default_payment_method_id'), ['class' => 'form-control select2-normal', 'placeholder' => trans('app.placeholder.payment'), 'required']) !!} default --}}
+            {!! Form::select('payment_method_id', $payment_methods, isset($cart->payment_method_id) ? $cart->payment_method_id : 4 , ['class' => 'form-control select2-normal', 'placeholder' => trans('app.placeholder.payment'), 'required']) !!}
             <div class="help-block with-errors"></div>
           </div>
           <div class="form-group">
