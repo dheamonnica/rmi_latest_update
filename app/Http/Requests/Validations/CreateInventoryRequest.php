@@ -52,6 +52,7 @@ class CreateInventoryRequest extends Request
             'sale_price' => 'nullable|required_without:base_price|numeric|min:' . $min_price . ($max_price ? '|max:' . $max_price : ''),
             'base_price' => 'nullable|required_without:sale_price|numeric|min:' . $min_price . ($max_price ? '|max:' . $max_price : ''),
             'offer_price' => 'nullable|numeric',
+            'purchase_price' => 'nullable|numeric',
             'available_from' => 'nullable|date',
             'auction_end' => 'nullable|date|after:available_from',
             'offer_start' => 'nullable|date|required_with:offer_price',
