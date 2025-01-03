@@ -4,6 +4,7 @@ use App\Common\Authorizable;
 use App\Http\Controllers\Controller;
 use App\Models\Absence;
 use App\Models\User;
+use App\Models\Shop;
 use App\Repositories\Absence\AbsenceRepository;
 use Illuminate\Http\Request;
 use Yajra\Datatables\Datatables;
@@ -43,7 +44,9 @@ class AbsenceController extends Controller
             if ($branch_loc->longitude === null && $branch_loc->latitude === null) {
                 $branch_loc = User::where('id', Auth::user()->office_location_id)->get()->first();
             }
-            return view('admin.absence.index', compact('absences', 'trashes', 'branch_loc'));
+            $warehouse = Shop::where('owner_id', Auth::user()->office_location_id)
+                ->get()->first();
+            return view('admin.absence.index', compact('absences', 'trashes', 'branch_loc', 'warehouse'));
         } else {
             return view('admin.absence.administrator', compact('absences', 'trashes'));
         }
@@ -174,6 +177,7 @@ class AbsenceController extends Controller
         $absence = new Absence();
         $absence->user_id = $request['user_id'];
         $absence->branch_loc = $request['branch_loc'];
+        $absence->warehouse_id = $request['warehouse_id'];
         $absence->longitude = $request['longitude'];
         $absence->latitude = $request['latitude'];
         $absence->address = $request['address'];

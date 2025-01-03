@@ -32,6 +32,7 @@
 
         {{ Form::hidden('product_id', $product->id) }}
         {{ Form::hidden('brand', $product->brand) }}
+        {{ Form::hidden('purchase_price', $product->purchase_price) }}
 
         <div class="row">
           <div class="col-md-8 nopadding-right">
@@ -524,7 +525,7 @@
               </span>
             @endif
 
-            {!! Form::number('purchase_price', null, ['class' => 'form-control', 'step' => 'any', 'placeholder' => trans('app.placeholder.purchase_price')]) !!}
+            {{-- {!! Form::number('purchase_price', null, ['class' => 'form-control', 'step' => 'any', 'placeholder' => trans('app.placeholder.purchase_price')]) !!} --}}
 
             @if (get_currency_suffix())
               <span class="input-group-addon" id="basic-addon1">

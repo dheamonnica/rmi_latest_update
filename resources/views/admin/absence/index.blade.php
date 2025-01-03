@@ -89,7 +89,7 @@
                         <img id="photo" alt="Your Photo" style="display: none; width: 100%" name="img_clock_in" />
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="cancelButtonClockIn">Cancel</button>
                         <button type="button" class="btn btn-primary" id="confirmClockIn">Yes, Clock In</button>
                     </div>
                 </div>
@@ -125,7 +125,7 @@
                         <img id="photoOut" alt="Your Photo" style="display: none; width: 100%" name="img_clock_out" />
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="cancelButtonClockOut">Cancel</button>
                         <button type="button" class="btn btn-primary" id="confirmClockOut">Yes, Clock Out</button>
                     </div>
                 </div>
@@ -141,6 +141,17 @@
     $(document).ready(function() {
         $('#clockInBtn').hide();
         $('#clockOutBtn').hide();
+
+        $('#cancelButtonClockIn').on('click', function() {
+            // $('#clockInModal').css('display', 'none').attr('aria-hidden', 'true').removeClass('in');
+            $('#clockInModal').hide();
+            $('.modal-backdrop').remove(); // Remove any remaining backdrops
+        });
+
+        $('#cancelButtonClockOut').on('click', function() {
+            $('#clockOutModal').hide();
+            $('.modal-backdrop').remove(); // Remove any remaining backdrops
+        });
 
         // Function to calculate the distance between two points (Haversine formula)
         function calculateDistance(lat1, lon1, lat2, lon2) {
@@ -273,7 +284,7 @@
             });
         });
 
-        function getPhoto(branch_loc, longitude, latitude, address, clock_in) {
+        function getPhoto(branch_loc, longitude, latitude, address, clock_in, warehouse_id) {
             $('#clockInModal').modal('show');
             $('#photo').hide();
             $('#canvas').hide();
@@ -319,6 +330,7 @@
                         data: {
                             user_id: {{ Auth::user()->id }},
                             branch_loc: branch_loc,
+                            warehouse_id: warehouse_id,
                             longitude: longitude,
                             latitude: latitude,
                             address: address,
@@ -351,6 +363,8 @@
             // Pass branch location from PHP to JavaScript
             const branchLongitude = @json($branch_loc->longitude);
             const branchLatitude = @json($branch_loc->latitude);
+            const warehouse_id= @json($warehouse->id);
+            console.log(warehouse_id, 'warehouse_id')
 
             // Check if coordinates are available
             if (branchLongitude && branchLatitude) {
@@ -419,7 +433,7 @@
                                                     getPhoto(branch_loc,
                                                         longitude,
                                                         latitude, address,
-                                                        clock_in);
+                                                        clock_in, warehouse_id);
                                                 }).fail(function(xhr, status,
                                                     error) {
                                                     console.error(

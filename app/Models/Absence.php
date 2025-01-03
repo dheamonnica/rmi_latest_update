@@ -33,6 +33,7 @@ class Absence extends BaseModel
         'clock_out',
         'clock_out_img',
         'branch_loc',
+        'warehouse_id',
         'total_hours'
     ];
     
