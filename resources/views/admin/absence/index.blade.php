@@ -361,9 +361,9 @@
         
         // if (Auth::user()->id !== 1) {
             // Pass branch location from PHP to JavaScript
-            const branchLongitude = @json($branch_loc->longitude);
-            const branchLatitude = @json($branch_loc->latitude);
-            const warehouse_id= @json($warehouse->id);
+            const branchLongitude = @json($branch_loc->longitude ?? null);
+            const branchLatitude = @json($branch_loc->latitude ?? null);
+            const warehouse_id= @json($warehouse->id ?? null);
             console.log(warehouse_id, 'warehouse_id')
 
             // Check if coordinates are available
@@ -386,7 +386,7 @@
                                 userLon);
                             // const radius = 0.1; // Radius in kilometers
                             const radius = 100; // Radius in kilometers
-                            const warehouse_name = {!! json_encode($branch_loc->warehouse_name) !!};
+                            const warehouse_name = {!! json_encode($branch_loc->warehouse_name ?? null) !!};
 
                             // Update the result in the DOM
                             if (distance <= radius) {
@@ -476,7 +476,9 @@
                     $('#branch_loc').text('Error retrieving address.');
                 });
             } else {
-                $('#branch_loc').text('Coordinates not available.');
+                $('#branch_loc').text('Coordinates not available or office area is not set.');
+                $('#distance-result').hide();
+                $('#calculation-spinner').hide();
             }
         // }
     });

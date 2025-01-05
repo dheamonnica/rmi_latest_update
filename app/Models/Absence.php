@@ -44,6 +44,6 @@ class Absence extends BaseModel
 
     public function getWarehouse()
     {
-        return $this->belongsTo(Shop::class, 'branch_loc');
+        return $this->belongsTo(Shop::class, 'warehouse_id');
     }
 }
