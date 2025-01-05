@@ -830,7 +830,8 @@
                     'data': 'total_hours',
                     'name': 'total_hours'
                 },
-            ]
+            ],
+            order: [[2, 'desc']]
         }));
 
         @if (!Auth::user()->isAdmin())
