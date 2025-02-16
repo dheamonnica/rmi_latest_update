@@ -88,6 +88,8 @@ Route::middleware('auth')->name('admin.')->prefix('admin')->group(function () {
         include 'admin/Payroll.php';
         // Department
         include 'admin/Department.php';
+        // Logistic
+        include 'admin/Logistic.php';
         // Overtime
         include 'admin/Overtime.php';
         // Loan

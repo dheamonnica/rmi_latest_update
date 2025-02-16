@@ -27,6 +27,7 @@ return [
     'vendors' => 'Vendors',
     'merchants' => 'Merchants',
     'manufacturers' => 'Manufacturers',
+    'logistics' => 'Logistics',
     'blogs' => 'Blogs',
     'settings' => 'Settings',
     'catalog' => 'Catalog',

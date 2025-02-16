@@ -715,6 +715,53 @@
         }));
         // END DEPARTMENT TABLE
 
+        // LOGISTIC TABLE
+        $('#logistic-tables').DataTable($.extend({}, dataTableOptions, {
+            "ajax": "{{ route('admin.admin.logistic.getLogistics') }}",
+            "columns": [{
+                    'data': 'checkbox',
+                    'name': 'checkbox',
+                    'orderable': false,
+                    'searchable': false,
+                    'exportable': false,
+                    'printable': false
+                },
+                {
+                    'data': 'name',
+                    'name': 'name'
+                },
+                {
+                    'data': 'email',
+                    'name': 'email'
+                },
+                {
+                    'data': 'phone',
+                    'name': 'phone'
+                },
+                {
+                    'data': 'logistic_pic_name',
+                    'name': 'logistic_pic_name'
+                },
+                {
+                    'data': 'logistic_pic_email',
+                    'name': 'logistic_pic_email'
+                },
+                {
+                    'data': 'logistic_pic_phone',
+                    'name': 'logistic_pic_phone'
+                },
+                {
+                    'data': 'option',
+                    'name': 'option',
+                    'orderable': false,
+                    'searchable': false,
+                    'exportable': false,
+                    'printable': false
+                }
+            ]
+        }));
+        // END LOGISTIC TABLE
+
         // OVERTIME TABLE
         const overtimeTable = $('#overtime-tables').DataTable($.extend({}, dataTableOptions, {
             "ajax": "{{ route('admin.admin.overtime.getOvertimes') }}",
