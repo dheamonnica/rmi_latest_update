@@ -26,6 +26,8 @@ Route::post('purchasing/{purchasing}/update', [PurchasingController::class, 'upd
 
 Route::post('purchasing/{purchasing}/setShippingStatus', [PurchasingController::class, 'setShippingStatus'])->name('purchasing.setShippingStatus');
 
+Route::post('purchasing/{purchasing}/setPrice', [PurchasingController::class, 'setPrice'])->name('purchasing.setPrice');
+
 Route::post('purchasing/massManufacture', [PurchasingController::class, 'massManufacture'])->name('purchasing.assignManufacture');
 
 Route::post('purchasing/assignManufacture', [PurchasingController::class, 'assignManufacture'])->name('purchasing.assignMassManufacture');
@@ -33,5 +35,7 @@ Route::post('purchasing/assignManufacture', [PurchasingController::class, 'assig
 Route::post('purchasing/generateInvoice', [PurchasingController::class, 'generateInvoice'])->name('purchasing.generateInvoice');
 
 Route::get('purchasing/getPurchasing', [PurchasingController::class, 'getPurchasing'])->name('purchasing.getMore');
+
+Route::get('purchasing/getRequest', [PurchasingController::class, 'getRequest'])->name('purchasing.getMoreRequest');
 
 Route::resource('purchasing', PurchasingController::class)->except('store', 'show','update');

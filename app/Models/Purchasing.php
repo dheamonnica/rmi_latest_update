@@ -12,6 +12,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Response;
 use App\Services\PurchasingInvoice;
+use Illuminate\Support\Facades\DB;
+use Riskihajar\Terbilang\Facades\Terbilang;
 // use Laravel\Scout\Searchable;
 
 class Purchasing extends BaseModel
@@ -77,10 +79,33 @@ class Purchasing extends BaseModel
         'shipment_status',
         'transfer_status',
         'request_status',
+        'currency',
+        'exchange_rate',
+        'currency_timestamp',
 	];
 
     public function items() {
         return $this->hasMany(PurchasingItem::class, 'purchasing_order_id');
+    }
+
+    public function itemGroups()
+    {
+        return $this->hasMany(PurchasingItem::class, 'purchasing_order_id')
+            ->select('product_id', 'manufacture_id','purchasing_order_id','shipment_status', 'transfer_status','shipment_status',
+        'request_status', 'price',
+                DB::raw('COUNT(*) as items_count'),
+                DB::raw('SUM(request_quantity) as request_quantity'),
+            )
+            ->groupBy('product_id');
+    }
+
+    public function groupedProductIds()
+    {
+        return $this->hasMany(PurchasingItem::class, 'purchasing_order_id')
+            ->select('id')
+            ->groupBy('product_id')
+            ->pluck('id');
+            // ->toArray();
     }
 
 	public function receiverWarehouse() {
@@ -129,6 +154,11 @@ class Purchasing extends BaseModel
 	public function doneBy()
     {
         return $this->belongsTo(User::class, 'done_by');
+    }
+
+    public function getWarehousePrimary($slug = 'warehouse-bogor')
+    {
+        return Shop::where('slug', $slug)->first();
     }
 
 	//useful function
@@ -231,27 +261,105 @@ class Purchasing extends BaseModel
         $invoice->setDocumentSize('A4');      // set document size
         $invoice->setType($title);    // Invoice Type
 
-        $invoice->setLogo(get_logo_url('system', 'logo'), 100, 80);
+        // $invoice->setLogo(get_logo_url('system', 'logo'), 100, 80);
+        $invoice->setLogo('https://rmi-testing.ideaprojects.my.id/image/images/logo.png', 75, 75);
 
         $manufacture_number = '-';
 
         if($this->items->count() > 0){
+            $manufactures = $this->items[0]->manufacture;
             $manufacture_number = $this->items[0]->manufacture_number;
             $invoice->setManufactureNumber($manufacture_number);
+            // $manufactureAddress = $this->item[0]->manufacture->address->primaryAddress ?? $this->item[0]->manufacture->address;
+            // Replace the address type with manufacture shop name
+            $manufacture_name = $manufactures->name;
+            $manufacture_email = $manufactures->email;
+            $manufacture_country = $manufactures->country->name;
+            $manufacture = [$manufacture_name,'', $manufacture_email, $manufacture_country];
+            // Reset the array keys
+            // $manufacture = array_values($manufacture);
+            // $manufacture = addressToArray(formatIndexedArrayAddress($manufacture));
+
+            $invoice->setFrom($manufacture);
         }
+
+        if($this->shop_requester_id){
+            $vendorAddress = $this->requesterWarehouse->primaryAddress ?? $this->requesterWarehouse->address;
+            $invoiceFrom = $vendorAddress ? $vendorAddress->toArray() : [];
+            // Replace the address type with vendor shop name
+            $warehouse_dest = $this->requesterWarehouse->legal_name ?? $this->requesterWarehouse->name;
+            // Reset the array keys
+            $invoiceFrom = array_values($invoiceFrom);
+            $invoiceFrom = addressToArray(formatIndexedArrayAddress($invoiceFrom));
+            array_unshift($invoiceFrom, $warehouse_dest);
+
+            // $invoice->setTo([$warehouse_dest,'Alamat Bogor']);
+            $invoice->setTo($invoiceFrom);
+        } else {
+            $vendorAddress = $this->getWarehousePrimary()->primaryAddress ?? $this->getWarehousePrimary()->address;
+            $invoiceFrom = $vendorAddress ? $vendorAddress->toArray() : [];
+            // Replace the address type with vendor shop name
+            $warehouse_dest = $this->getWarehousePrimary()->legal_name ?? $this->getWarehousePrimary()->name;
+            // Reset the array keys
+            $invoiceFrom = array_values($invoiceFrom);
+            $invoiceFrom = addressToArray(formatIndexedArrayAddress($invoiceFrom));
+            array_unshift($invoiceFrom, $warehouse_dest);
+
+            // $invoice->setTo([$warehouse_dest,'Alamat Bogor']);
+            $invoice->setTo($invoiceFrom);
+
+
+        }
+                
+
+        // $invoice->setReceiverName('Warehouse Bogor');
 
         $invoice->setPurchasingInvoiceNumber($this->purchasing_invoice_number);
 
         $invoice->setDate($this->created_at->format('M d, Y'));
         $invoice->setTime($this->created_at->format('h:i:s A'));
 
-        if($this->items->count() > 0){
-            foreach ($this->items as $item) {
-                $invoice->addItem($item->product->name, '',$item->manufacture->name, $item->request_quantity, $item->price);
+        $total = 0;
+        $total_price = 0;
+
+        if($this->itemGroups->count() > 0){
+            foreach ($this->itemGroups as $item) {
+                $invoice->addItem($item->product->name, '',$item->product->manufacture_skuid, $item->product->selling_skuid, $item->request_quantity, $item->price, $item->img);
+
+                $total += ($item->request_quantity * $item->price);
             }
         }
-        
-        
+
+        $total_converted =  get_formated_decimal($total / $this->exchange_rate, true, 2);
+
+        $invoice->addSummary(trans('invoice.total'), $total);
+        $invoice->addSummary(trans('invoice.currency'), $this->currency);
+        $invoice->addSummary(trans('invoice.currency_time'), $this->currency_timestamp);
+        $invoice->addSummary(trans('invoice.rate'), $this->exchange_rate);
+        $invoice->addSummary(trans('invoice.total_currency'), $this->currency." ".$total_converted);
+
+        $invoice->setNetAmount($total);
+        $invoice->setNetAmountCurrency($this->currency." ".$total_converted);
+        $invoice->setNetAmountWord(Terbilang::make($total));
+        /**
+         * setCurrency -> CNY or USD
+         * manufacture name setFromName
+         * manufacture address setFrom
+         * 
+         * send to (default) 
+         * wh name setReceiverName
+         * address setTo
+         * 
+         * items list addItem
+         * 
+         * amount setNetAmount
+         * say setNetAmountWord
+         * 
+         * qty total
+         * tax
+         * grand total
+         */
+
         $invoice->setFooternote(get_platform_title() . ' | ' . url('/') . ' | ' . trans('invoice.footer_note'));
 
         if($des =='F'){

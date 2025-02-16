@@ -56,6 +56,7 @@ class PurchasingInvoice extends FPDF
     protected $columns;
 
 	public $manufacture_number;
+	public $manufacture_name;
 	public $purchasing_invoice_number;
 
     //components
@@ -64,15 +65,17 @@ class PurchasingInvoice extends FPDF
     public $payment_status;
     public $payment_term;
     public $net_amount;
+    public $net_amount_currency;
     public $net_amount_word;
     public $receiver;
+    public $currency;
 
     public function __construct($size = 'A4', $currency = '$', $documentOrientation = 'L')
     {
         $this->items = [];
         $this->totals = [];
         $this->addText = [];
-        $this->firstColumnWidth = 118;
+        $this->firstColumnWidth = 100;
         $this->currency = $currency;
         $this->maxImageDimensions = [230, 130];
         $this->setDocumentSize($size);
@@ -253,6 +256,11 @@ class PurchasingInvoice extends FPDF
         $this->displayToFromHeaders = false;
     }
 
+    public function setFromName($data)
+    {
+        $this->manufacture_name = $data;
+    }
+
     public function setFrom($data)
     {
         $this->from = $data;
@@ -303,9 +311,18 @@ class PurchasingInvoice extends FPDF
         $this->net_amount = $net_amount;
     }
 
+    public function setNetAmountCurrency($net_amount)
+    {
+        $this->net_amount_currency = $net_amount;
+    }
+
     public function setReceiverName($receiver)
     {
         $this->receiver = $receiver;
+    }
+    public function setCurrency($currency)
+    {
+        $this->currency = $currency;
     }
 
     public function setNumberFormat($decimals = '.', $thousands_sep = ',', $alignment = 'left', $space = true)
@@ -336,9 +353,11 @@ class PurchasingInvoice extends FPDF
         return $amount . $space . $currency;
     }
 
-    public function addItem($item, $description, $manufacture,$quantity, $price)
+    public function addItem($item, $description, $manufacture, $selling_sku, $quantity, $price, $img)
     {
         $p['item'] = $item;
+        $p['selling_sku'] = $selling_sku;
+        $p['img'] = $img;
         $p['description'] = $description;
         $p['manufacture'] = $manufacture;
         $p['price'] = $price;
@@ -451,25 +470,10 @@ class PurchasingInvoice extends FPDF
         ) - 35;
 
         //Number
-        if (!empty($this->manufacture_number)) {
-            $width_reference = $this->firstColumnWidth + 75; // Width for the left-aligned label
-            $width_value = $this->GetPageWidth() - $width_reference - $this->lMargin - $this->rMargin; // Calculate remaining width for right-aligned value
-            $this->SetTextColor(50, 50, 50);
-            $this->SetFont($this->font, 'B', 9);
-
-            // Invoice Number
-			$this->Cell($width_reference, $lineheight, 'MANUFACTURE NUMBER : ', 0, 0, 'R');
-            $this->Cell($width_value, $lineheight, $this->manufacture_number, 0, 0, 'R');
-			$this->Ln(4);
-
-            $this->Cell($width_reference, $lineheight, 'PURCHASING INVOICE NUMBER : ', 0, 0, 'R');
-            $this->Cell($width_value, $lineheight, $this->purchasing_invoice_number, 0, 0, 'R');
-
-            $this->Ln(4);
-            $this->Cell($width_reference, $lineheight, 'PURCHASING DATE : ', 0, 0, 'R');
-            $this->Cell($width_value, $lineheight, $this->date .' '.$this->time , 0, 0, 'R');
-            $this->Ln(-4);
-        }
+        $width_reference = $this->firstColumnWidth + 75; // Width for the left-aligned label
+        $width_value = $this->GetPageWidth() - $width_reference - $this->lMargin - $this->rMargin; // Calculate remaining width for right-aligned value
+        $this->SetTextColor(50, 50, 50);
+        $this->SetFont($this->font, 'B', 9);
 
         // First page
         // if ($this->PageNo() == 1) {
@@ -492,40 +496,96 @@ class PurchasingInvoice extends FPDF
             $this->SetFont($this->font, 'B', 10);
             $width = ($this->document['w'] - $this->margins['l'] - $this->margins['r']) / 2;
 
-			//Information
-			$this->SetTextColor(50, 50, 50);
-			$this->SetFont($this->font, 'B', 10);
-			$this->Cell(0, $lineheight, $this->from[0] ?? '', 0, 0, 'L');
+			$to_lang = trans('invoice.sent_to');
+            $from_lang = trans('invoice.manufacture_from');
 
-			$this->Ln();
-			$this->SetFont($this->font, '', 8);
-			$this->SetTextColor(100, 100, 100);
+            if ($this->displayToFromHeaders === true) {
+                $this->Cell(0, $lineheight, $this->str_iconv($from_lang, true), 0, 1, 'L');
+            }
 
-			$this->SetTextColor(50, 50, 50);
-			$this->SetFont($this->font, 'B', 10);
-			$this->Cell(0, $lineheight, $this->str_iconv($this->to[0] ?? ''), 0, 0, 'L');
-			// $this->Cell(0, $lineheight, 'LINE another', 0, 0, 'R');
-			$this->Ln();
+            //Information
+            $this->SetTextColor(50, 50, 50);
+            $this->SetFont($this->font, 'B', 10);
+            $this->Cell(0, $lineheight, $this->from[0] ?? '', 0, 0, 'L');
+            $this->SetFont($this->font, '', 8);
+            $this->SetTextColor(100, 100, 100);
 
-			$this->SetFont($this->font, '', 8);
-			$this->SetTextColor(100, 100, 100);
-			for ($i = 1, $iMax = max($this->from === null ? 0 : count($this->from), $this->to === null ? 0 : count($this->to)); $i < $iMax; $i++) {
-				// check if the TO or FROM array value is not empty.
-				$to = isset($this->to[$i]) ? $this->to[$i] : '';
+            for ($i = 1, $iMax = max($this->from === null ? 0 : count($this->from), $this->to === null ? 0 : count($this->to)); $i < $iMax; $i++) {
+                // check if the TO or FROM array value is not empty.
+                $from = isset($this->from[$i]) ? $this->from[$i] : '';
 
-				// $this->Cell(0, $lineheight, $this->str_iconv($from), 0, 0, 'L');
-				$this->Cell(0, $lineheight, $this->str_iconv($to), 0, 0, 'L');
-				
-				$this->Ln();
-			}
-			$this->Ln(-6);
-		
-		$this->Ln(2);
+                $this->Cell(0, $lineheight, $this->str_iconv($from), 0, 0, 'L');
+                // $this->Cell(0, $lineheight, $this->str_iconv($to), 0, 0, 'R');
+                if($i == 1){
+                    $this->SetTextColor(50, 50, 50);
+                    $this->SetFont($this->font, 'B', 9);
+                    $this->Cell(-($width_value), $lineheight, 'MANUFACTURE NUMBER : ', 0, 0, 'R');
+                    $this->Cell(0, $lineheight, $this->str_iconv($this->manufacture_number, true), 0, 0, 'R', 0);
+                    $this->SetFont($this->font, '', 8);
+                    $this->SetTextColor(100, 100, 100);
+                }
+
+                if($i == 2){
+                    $this->SetTextColor(50, 50, 50);
+                    $this->SetFont($this->font, 'B', 9);
+                    $this->Cell(-($width_value), $lineheight, 'PURCHASING INVOICE NUMBER : ', 0, 0, 'R');
+                    $this->Cell(0, $lineheight, $this->str_iconv($this->purchasing_invoice_number, true), 0, 0, 'R', 0);
+                    $this->SetFont($this->font, '', 8);
+                    $this->SetTextColor(100, 100, 100);
+                }
+
+                if($i == 3){
+                    $this->SetTextColor(50, 50, 50);
+                    $this->SetFont($this->font, 'B', 9);
+                    $this->Cell(-($width_value), $lineheight, 'PURCHASING DATE : ', 0, 0, 'R');
+                    $this->Cell(0, $lineheight, $this->str_iconv($this->date, true), 0, 0, 'R', 0);
+                    $this->SetFont($this->font, '', 8);
+                    $this->SetTextColor(100, 100, 100);
+                }
+
+                $this->Ln();
+            }
+
+            $this->SetTextColor($this->color[0], $this->color[1], $this->color[2]);
+            $this->SetFont($this->font, 'B', 10);
+            $this->Cell(0, $lineheight, $this->str_iconv($to_lang, true), 0, 0, 'L');
+            // $this->Cell(0, $lineheight, 'LINE another', 0, 0, 'R');
+            $this->Ln();
+
+            $this->SetTextColor(50, 50, 50);
+            $this->SetFont($this->font, 'B', 10);
+            $this->Cell(0, $lineheight, $this->str_iconv($this->to[0] ?? ''), 0, 0, 'L');
+            // $this->Cell(0, $lineheight, 'LINE another', 0, 0, 'R');
+            $this->Ln();
+
+            $this->SetFont($this->font, '', 8);
+            $this->SetTextColor(100, 100, 100);
+            for ($i = 1, $iMax = max($this->from === null ? 0 : count($this->from), $this->to === null ? 0 : count($this->to)); $i < $iMax; $i++) {
+                // check if the TO or FROM array value is not empty.
+                $to = isset($this->to[$i]) ? $this->to[$i] : '';
+
+                // $this->Cell(0, $lineheight, $this->str_iconv($from), 0, 0, 'L');
+                $this->Cell(0, $lineheight, $this->str_iconv($to), 0, 0, 'L');
+                
+                // if($i == 1){
+                //     $this->Cell(0, $lineheight, 'LINE 1', 0, 0, 'R');
+                // }
+
+                // if($i == 2){
+                //     $this->Cell(0, $lineheight, 'LINE 2', 0, 0, 'R');
+                // }
+
+                // if($i == 3){
+                //     $this->Cell(0, $lineheight, 'LINE 3', 0, 0, 'R');
+                // }
+                $this->Ln();
+            }
+            $this->Ln(4);
 
         // }
         //Table header
         if (!isset($this->productsEnded)) {
-            $width_other = (($this->document['w'] - $this->margins['l'] - $this->margins['r'] - $this->firstColumnWidth - ($this->columns * $this->columnSpacing)) / ($this->columns - 1) + 28);
+            $width_other = (($this->document['w'] - $this->margins['l'] - $this->margins['r'] - $this->firstColumnWidth - ($this->columns * $this->columnSpacing)) / ($this->columns - 1) + 7);
             $this->SetTextColor(50, 50, 50);
             $this->Ln(5);
             $this->SetFont($this->font, 'B', 9);
@@ -539,6 +599,12 @@ class PurchasingInvoice extends FPDF
                 'L',
                 0
             );
+
+            $this->Cell($this->columnSpacing, 10, '', 0, 0, 'L', 0);
+            $this->Cell($width_other, 10, $this->str_iconv(trans('invoice.manufacture_sku'), true), 0, 0, 'C', 0);
+
+            $this->Cell($this->columnSpacing, 10, '', 0, 0, 'L', 0);
+            $this->Cell($width_other, 10, $this->str_iconv(trans('invoice.selling_sku'), true), 0, 0, 'C', 0);
 
             $this->Cell($this->columnSpacing, 10, '', 0, 0, 'L', 0);
             $this->Cell($width_other, 10, $this->str_iconv(trans('invoice.qty'), true), 0, 0, 'C', 0);
@@ -563,7 +629,7 @@ class PurchasingInvoice extends FPDF
 
     public function Body()
     {
-        $width_other = (($this->document['w'] - $this->margins['l'] - $this->margins['r'] - $this->firstColumnWidth - ($this->columns * $this->columnSpacing)) / ($this->columns - 1) + 28);
+        $width_other = (($this->document['w'] - $this->margins['l'] - $this->margins['r'] - $this->firstColumnWidth - ($this->columns * $this->columnSpacing)) / ($this->columns - 1) + 7);
         $cellHeight = 8;
         $bgcolor = (1 - $this->columnOpacity) * 255;
 
@@ -610,37 +676,17 @@ class PurchasingInvoice extends FPDF
                     1
                 );
 
-                if ($item['manufacture']) {
-                    $resetX = $this->GetX();
-                    $resetY = $this->GetY();
-                    $this->SetTextColor(120, 120, 120);
-                    $this->SetXY($x, $this->GetY() + 8);
-                    $this->SetFont($this->font, '', $this->fontSizeProductDescription / 2);
-                    $this->MultiCell(
-                        $this->firstColumnWidth,
-                        floor($this->fontSizeProductDescription / 2),
-                        $this->str_iconv($item['manufacture']),
-                        0,
-                        'L',
-                        1
-                    );
-                    //Calculate Height
-                    $newY = $this->GetY();
-                    $cHeight = $newY - $resetY + 2;
-                    //Make our spacer cell the same height
-                    $this->SetXY($x - 1, $resetY);
-                    $this->Cell(1, $cHeight, '', 0, 0, 'L', 1);
-                    //Draw empty cell
-                    $this->SetXY($x, $newY);
-                    $this->Cell($this->firstColumnWidth, 2, '', 0, 0, 'L', 1);
-                    $this->SetXY($resetX, $resetY);
-                }
-
                 $this->SetTextColor(50, 50, 50);
                 $this->SetFont($this->font, '', 8);
 
                 // $this->Cell($this->columnSpacing, $cHeight, '', 0, 0, 'L', 0);
                 // $this->Cell($width_other, $cHeight, $item['quantity'], 0, 0, 'C', 1);
+
+                $this->Cell($this->columnSpacing, $cHeight, '', 0, 0, 'L', 0);
+                $this->Cell($width_other, $cHeight, $item['manufacture'], 0, 0, 'C', 1);
+
+                $this->Cell($this->columnSpacing, $cHeight, '', 0, 0, 'L', 0);
+                $this->Cell($width_other, $cHeight, $item['selling_sku'], 0, 0, 'C', 1);
 
                 $this->Cell($this->columnSpacing, $cHeight, '', 0, 0, 'L', 0);
                 $this->Cell($width_other, $cHeight, $item['quantity'], 0, 0, 'C', 1);
@@ -664,7 +710,7 @@ class PurchasingInvoice extends FPDF
                 $this->SetTextColor(50, 50, 50);
                 $this->SetFillColor($bgcolor, $bgcolor, $bgcolor);
                 $this->Cell(1 + $this->firstColumnWidth, $cellHeight, '', 0, 0, 'L', 0);
-                for ($i = 0; $i < $this->columns - 3; $i++) {
+                for ($i = 0; $i < $this->columns - 1; $i++) {
                     $this->Cell($width_other, $cellHeight, '', 0, 0, 'L', 0);
                     $this->Cell($this->columnSpacing, $cellHeight, '', 0, 0, 'L', 0);
                 }
@@ -722,10 +768,16 @@ class PurchasingInvoice extends FPDF
             }
         }
 
-        $this->Ln(7);
+        $this->Ln(-35);
         //payment information
         $this->SetFont($this->font, 'b', 9);
         $this->SetTextColor(50, 50, 50);
+
+        if($this->net_amount_currency)
+        {
+            $this->Cell(0, 10, $this->str_iconv('Net Amount : '.$this->net_amount_currency, true), 0, 0, 'L', 0);
+            $this->Ln(4);
+        }
 
         if($this->net_amount)
         {
@@ -737,6 +789,8 @@ class PurchasingInvoice extends FPDF
         {
             $this->Cell(0, 10, $this->str_iconv('Say : '.$this->net_amount_word, true), 0, 0, 'L', 0);
         }
+
+
 
         // if($this->receiver)
         // {

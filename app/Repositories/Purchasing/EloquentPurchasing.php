@@ -4,11 +4,15 @@ namespace App\Repositories\Purchasing;
 
 use App\Models\Attribute;
 use App\Models\AttributeValue;
-use App\Models\Purchasing;
+use App\Models\Inventory;
 use App\Models\PurchasingItem;
+use App\Models\Purchasing;
+use App\Models\Shop;
+use App\Models\Product;
 use App\Repositories\BaseRepository;
 use App\Repositories\EloquentRepository;
 use App\Repositories\Purchasing\PurchasingRepository;
+use Carbon\Carbon;
 use Google\Service\AndroidPublisher\Resource\Purchases;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
@@ -57,178 +61,192 @@ class EloquentPurchasing extends EloquentRepository implements BaseRepository, P
     //     return $this->model->onlyTrashed()->with('product', 'image')->get();
     // }
 
-    public function updatePurchasingStatus(Request $request, $status) {
+    public function updatePurchasingStatus(Request $request, $id) {
 
-        if(!$status) {
-            $status = $request->transfer_status;
+        $status = 1;
+
+        $purchasing_order = $this->model->where('id', $id)->first();
+
+        foreach($request->product as $item){
+            $p_item = PurchasingItem::where(['purchasing_order_id'=> $item['purchasing_order_id'], 'product_id' => $item['product_id']])->get();
+
+            $status = $item['shipping_status'] ?? 9;
+
+            foreach($p_item as $purchasing_item){
+                $update_p_item = PurchasingItem::find($purchasing_item->id);
+
+                if(isset($item['shipping_status'])) {
+                    switch ($item['shipping_status']) {
+                        // item status
+                        case Purchasing::STATUS_PURCHASING_SHIPPING_IN_PROGRESS :
+                            //2
+                            $update_p_item->shipment_status = Purchasing::STATUS_PURCHASING_SHIPPING_IN_PROGRESS;
+                            $update_p_item->updated_at = now();
+                            $update_p_item->updated_by = Auth::user()->id;
+                            # code...
+                            break;
+                        case Purchasing::STATUS_PURCHASING_SHIPPING_DEPATURE :
+                            //3
+                            $update_p_item->shipment_status = Purchasing::STATUS_PURCHASING_SHIPPING_DEPATURE;
+                            $update_p_item->depatured_at = now();
+                            $update_p_item->depatured_by = Auth::user()->id;
+                            $update_p_item->updated_at = now();
+                            $update_p_item->updated_by = Auth::user()->id;
+                            # code...
+                            break;
+                        case Purchasing::STATUS_PURCHASING_SHIPPING_ARRIVAL :
+                            //4
+                            $update_p_item->shipment_status = Purchasing::STATUS_PURCHASING_SHIPPING_ARRIVAL;
+                            $update_p_item->arrival_at = now();
+                            $update_p_item->arrival_by = Auth::user()->id;
+                            $update_p_item->fulfilled_at = now();
+                            $update_p_item->fulfilled_by = Auth::user()->id;
+                            $update_p_item->updated_at = now();
+                            $update_p_item->updated_by = Auth::user()->id;
+                            # code...
+                            break;
+                        case Purchasing::STATUS_PURCHASING_TRANSFER_SHIPMENT :
+                            //5
+                            $purchasing_order->transfer_status = Purchasing::STATUS_PURCHASING_TRANSFER_SHIPMENT;
+                            $purchasing_order->shipped_at = now();
+                            $purchasing_order->shipped_by = Auth::user()->id;
+                            # code...
+                            break;
+                        case Purchasing::STATUS_PURCHASING_TRANSFER_STOCK :
+                            //6
+                            $purchasing_order->transfer_status = Purchasing::STATUS_PURCHASING_TRANSFER_STOCK;
+                            $purchasing_order->transfered_stock_at = now();
+                            $purchasing_order->transfered_stock_by = Auth::user()->id;
+                            # code...
+                            break;
+                        case Purchasing::STATUS_PURCHASING_TRANSFER_COMPLETE :
+                            //7
+                            $purchasing_order->transfer_status = Purchasing::STATUS_PURCHASING_TRANSFER_COMPLETE;
+                            $purchasing_order->transfered_complete_at = now();
+                            $purchasing_order->transfered_complete_by = Auth::user()->id;
+                            # code...
+                            break;
+                        default:
+                            //first created
+                            $update_p_item->shipment_status = Purchasing::STATUS_PURCHASING_SHIPPING_CREATED;
+                            $update_p_item->transfer_status = Purchasing::STATUS_PURCHASING_TRANSFER_REQUESTED;
+                            $update_p_item->request_status = Purchasing::STATUS_PURCHASING_REQUEST;
+                            $update_p_item->updated_at = now();
+                            $update_p_item->updated_by = Auth::user()->id;
+                            # code...
+                            break;
+                    }
+                }
+
+
+                $update_p_item->price = $item['price'];
+                $update_p_item->currency = $request->currency;
+                $update_p_item->currency_amount = (int) $request->exchange_rate * (int) $item['price'];
+
+                $update_p_item->save();
+            }
         }
-        // if (!$purchasing instanceof Purchasing) {
-        //     $purchasing = $this->model->find($purchasing);
+
+        
+        // if($request->request_status) {
+        //     $status = $request->request_status;
+        //     switch ($request->request_status) {
+        //         case Purchasing::STATUS_PURCHASING_DONE :
+        //             //9
+        //             $purchasing_order->request_status = Purchasing::STATUS_PURCHASING_DONE;
+        //             $purchasing_order->done_at = now();
+        //             $purchasing_order->done_by = Auth::user()->id;
+        //             # code...
+        //             break;
+        //     }
         // }
 
-        //update status for items. 
-        foreach($request->ids as $id){
-            $purchasing_item = PurchasingItem::find($id);
+        //update the purchasing
+        switch ($status) {
+            case Purchasing::STATUS_PURCHASING_SHIPPING_CREATED :
+                //1
+                $purchasing_order->shipment_status = Purchasing::STATUS_PURCHASING_SHIPPING_CREATED;
+                $purchasing_order->created_at = now();
+                $purchasing_order->created_by = Auth::user()->id;
+                # code...
+                break;
+            case Purchasing::STATUS_PURCHASING_SHIPPING_IN_PROGRESS :
+                //2
+                $purchasing_order->shipment_status = Purchasing::STATUS_PURCHASING_SHIPPING_IN_PROGRESS;
+                $purchasing_order->in_progress_at = now();
+                $purchasing_order->in_progress_by = Auth::user()->id;
+                # code...
+                break;
+            case Purchasing::STATUS_PURCHASING_SHIPPING_DEPATURE :
+                //3
+                $purchasing_order->shipment_status = Purchasing::STATUS_PURCHASING_SHIPPING_DEPATURE;
+                $purchasing_order->depatured_at = now();
+                $purchasing_order->depatured_by = Auth::user()->id;
+                # code...
+                break;
+            case Purchasing::STATUS_PURCHASING_SHIPPING_ARRIVAL :
+                //4
+                $purchasing_order->shipment_status = Purchasing::STATUS_PURCHASING_SHIPPING_ARRIVAL;
+                $purchasing_order->arrival_at = now();
+                $purchasing_order->arrival_by = Auth::user()->id;
+                # code...
+                break;
+            case Purchasing::STATUS_PURCHASING_TRANSFER_SHIPMENT :
+                //5
+                $purchasing_order->transfer_status = Purchasing::STATUS_PURCHASING_TRANSFER_SHIPMENT;
+                $purchasing_order->shipped_at = now();
+                $purchasing_order->shipped_by = Auth::user()->id;
+                # code...
+                break;
+            case Purchasing::STATUS_PURCHASING_TRANSFER_STOCK :
+                //6
+                //create stock trnasfer
+                
+                $purchasing_order->transfer_status = Purchasing::STATUS_PURCHASING_TRANSFER_STOCK;
+                $purchasing_order->transfered_stock_at = now();
+                $purchasing_order->transfered_stock_by = Auth::user()->id;
+                # code...
+                break;
+            case Purchasing::STATUS_PURCHASING_TRANSFER_COMPLETE :
+                //7
+                $purchasing_order->transfer_status = Purchasing::STATUS_PURCHASING_TRANSFER_COMPLETE;
+                $purchasing_order->transfered_complete_at = now();
+                $purchasing_order->transfered_complete_by = Auth::user()->id;
+                # code...
+                break;
+            case Purchasing::STATUS_PURCHASING_REQUEST :
+                //8
+                $purchasing_order->request_status = Purchasing::STATUS_PURCHASING_REQUEST;
+                $purchasing_order->request_at = now();
+                $purchasing_order->request_by = Auth::user()->id;
+                # code...
+                break;
+            case Purchasing::STATUS_PURCHASING_DONE :
+                //9
+                $purchasing_order->request_status = Purchasing::STATUS_PURCHASING_DONE;
+                $purchasing_order->done_at = now();
+                $purchasing_order->done_by = Auth::user()->id;
 
-            $purchasing_id = $purchasing_item->purchasing_order_id;
+                //TODO: update inventory bogor
+                # code...
+                break;
+            default:
+                //first created
+                $purchasing_order->shipment_status = Purchasing::STATUS_PURCHASING_SHIPPING_CREATED;
+                $purchasing_order->transfer_status = Purchasing::STATUS_PURCHASING_TRANSFER_REQUESTED;
+                $purchasing_order->request_status = Purchasing::STATUS_PURCHASING_REQUEST;
+                $purchasing_order->updated_at = now();
+                $purchasing_order->updated_by = Auth::user()->id;
+                # code...
+                break;
+        }
 
-            switch ($status) {
-                // item status
-                case Purchasing::STATUS_PURCHASING_SHIPPING_IN_PROGRESS :
-                    //2
-                    $purchasing_item->shipment_status = Purchasing::STATUS_PURCHASING_SHIPPING_IN_PROGRESS;
-                    $purchasing_item->updated_at = now();
-                    $purchasing_item->updated_by = Auth::user()->id;
-                    # code...
-                    break;
-                case Purchasing::STATUS_PURCHASING_SHIPPING_DEPATURE :
-                    //3
-                    $purchasing_item->shipment_status = Purchasing::STATUS_PURCHASING_SHIPPING_DEPATURE;
-                    $purchasing_item->depatured_at = now();
-                    $purchasing_item->depatured_by = Auth::user()->id;
-                    $purchasing_item->updated_at = now();
-                    $purchasing_item->updated_by = Auth::user()->id;
-                    # code...
-                    break;
-                case Purchasing::STATUS_PURCHASING_SHIPPING_ARRIVAL :
-                    //4
-                    $purchasing_item->shipment_status = Purchasing::STATUS_PURCHASING_SHIPPING_ARRIVAL;
-                    $purchasing_item->arrival_at = now();
-                    $purchasing_item->arrival_by = Auth::user()->id;
-                    $purchasing_item->fulfilled_at = now();
-                    $purchasing_item->fulfilled_by = Auth::user()->id;
-                    $purchasing_item->updated_at = now();
-                    $purchasing_item->updated_by = Auth::user()->id;
-                    # code...
-                    break;
-                     case Purchasing::STATUS_PURCHASING_TRANSFER_SHIPMENT :
-                    //5
-                    $purchasing_order->transfer_status = Purchasing::STATUS_PURCHASING_TRANSFER_SHIPMENT;
-                    $purchasing_order->shipped_at = now();
-                    $purchasing_order->shipped_by = Auth::user()->id;
-                    # code...
-                    break;
-                case Purchasing::STATUS_PURCHASING_TRANSFER_STOCK :
-                    //6
-                    $purchasing_order->transfer_status = Purchasing::STATUS_PURCHASING_TRANSFER_STOCK;
-                    $purchasing_order->transfered_stock_at = now();
-                    $purchasing_order->transfered_stock_by = Auth::user()->id;
-                    # code...
-                    break;
-                case Purchasing::STATUS_PURCHASING_TRANSFER_COMPLETE :
-                    //7
-                    $purchasing_order->transfer_status = Purchasing::STATUS_PURCHASING_TRANSFER_COMPLETE;
-                    $purchasing_order->transfered_complete_at = now();
-                    $purchasing_order->transfered_complete_by = Auth::user()->id;
-                    # code...
-                    break;
-                default:
-                    //first created
-                    $purchasing_item->shipment_status = Purchasing::STATUS_PURCHASING_SHIPPING_CREATED;
-                    $purchasing_item->transfer_status = Purchasing::STATUS_PURCHASING_TRANSFER_REQUESTED;
-                    $purchasing_item->request_status = Purchasing::STATUS_PURCHASING_REQUEST;
-                    $purchasing_item->updated_at = now();
-                    $purchasing_item->updated_by = Auth::user()->id;
-                    # code...
-                    break;
-            }
+        $purchasing_order->transfer_status = $request->transfer_status;
+        $purchasing_order->request_status = $request->request_status;
+        $purchasing_order->currency = $request->currency;
+        $purchasing_order->exchange_rate = $request->exchange_rate;
 
-            if($request->request_status) {
-                switch ($request->request_status) {
-                    case Purchasing::STATUS_PURCHASING_DONE :
-                        //9
-                        $purchasing_order->request_status = Purchasing::STATUS_PURCHASING_DONE;
-                        $purchasing_order->done_at = now();
-                        $purchasing_order->done_by = Auth::user()->id;
-                        # code...
-                        break;
-                }
-            }
-
-            $purchasing_item->save();
-
-            $purchasing_order = $this->model->where('id', $purchasing_id)->first();
-
-            //update the purchasing
-            switch ($status) {
-                case Purchasing::STATUS_PURCHASING_SHIPPING_CREATED :
-                    //1
-                    $purchasing_order->shipment_status = Purchasing::STATUS_PURCHASING_SHIPPING_CREATED;
-                    $purchasing_order->created_at = now();
-                    $purchasing_order->created_by = Auth::user()->id;
-                    # code...
-                    break;
-                case Purchasing::STATUS_PURCHASING_SHIPPING_IN_PROGRESS :
-                    //2
-                    $purchasing_order->shipment_status = Purchasing::STATUS_PURCHASING_SHIPPING_IN_PROGRESS;
-                    $purchasing_order->in_progress_at = now();
-                    $purchasing_order->in_progress_by = Auth::user()->id;
-                    # code...
-                    break;
-                case Purchasing::STATUS_PURCHASING_SHIPPING_DEPATURE :
-                    //3
-                    $purchasing_order->shipment_status = Purchasing::STATUS_PURCHASING_SHIPPING_DEPATURE;
-                    $purchasing_order->depatured_at = now();
-                    $purchasing_order->depatured_by = Auth::user()->id;
-                    # code...
-                    break;
-                case Purchasing::STATUS_PURCHASING_SHIPPING_ARRIVAL :
-                    //4
-                    $purchasing_order->shipment_status = Purchasing::STATUS_PURCHASING_SHIPPING_ARRIVAL;
-                    $purchasing_order->arrival_at = now();
-                    $purchasing_order->arrival_by = Auth::user()->id;
-                    # code...
-                    break;
-                case Purchasing::STATUS_PURCHASING_TRANSFER_SHIPMENT :
-                    //5
-                    $purchasing_order->transfer_status = Purchasing::STATUS_PURCHASING_TRANSFER_SHIPMENT;
-                    $purchasing_order->shipped_at = now();
-                    $purchasing_order->shipped_by = Auth::user()->id;
-                    # code...
-                    break;
-                case Purchasing::STATUS_PURCHASING_TRANSFER_STOCK :
-                    //6
-                    //create stock trnasfer
-                    
-                    $purchasing_order->transfer_status = Purchasing::STATUS_PURCHASING_TRANSFER_STOCK;
-                    $purchasing_order->transfered_stock_at = now();
-                    $purchasing_order->transfered_stock_by = Auth::user()->id;
-                    # code...
-                    break;
-                case Purchasing::STATUS_PURCHASING_TRANSFER_COMPLETE :
-                    //7
-                    $purchasing_order->transfer_status = Purchasing::STATUS_PURCHASING_TRANSFER_COMPLETE;
-                    $purchasing_order->transfered_complete_at = now();
-                    $purchasing_order->transfered_complete_by = Auth::user()->id;
-                    # code...
-                    break;
-                case Purchasing::STATUS_PURCHASING_REQUEST :
-                    //8
-                    $purchasing_order->request_status = Purchasing::STATUS_PURCHASING_REQUEST;
-                    $purchasing_order->request = now();
-                    $purchasing_order->request_by = Auth::user()->id;
-                    # code...
-                    break;
-                case Purchasing::STATUS_PURCHASING_DONE :
-                    //9
-                    $purchasing_order->request_status = Purchasing::STATUS_PURCHASING_DONE;
-                    $purchasing_order->done_at = now();
-                    $purchasing_order->done_by = Auth::user()->id;
-                    # code...
-                    break;
-                default:
-                    //first created
-                    $purchasing_order->shipment_status = Purchasing::STATUS_PURCHASING_SHIPPING_CREATED;
-                    $purchasing_order->transfer_status = Purchasing::STATUS_PURCHASING_TRANSFER_REQUESTED;
-                    $purchasing_order->request_status = Purchasing::STATUS_PURCHASING_REQUEST;
-                    $purchasing_order->updated_at = now();
-                    $purchasing_order->updated_by = Auth::user()->id;
-                    # code...
-                    break;
-            }
-
-            $purchasing_order->save();
-        } 
+        $purchasing_order->save();
 
 
         
@@ -248,24 +266,95 @@ class EloquentPurchasing extends EloquentRepository implements BaseRepository, P
 
     public function store(Request $request)
     {
-            foreach($request->product as $product){
-                $product = [
-                    'purchasing_order_id' => null,
-                    'inventory_id' => null, //not null if request is warehouse
-                    'product_id' => (int) $product['product_id'], //change to product id
-                    // 'manufacture_id' => $product['manufacture_skuid'], //not null
-                    'stock_transfer_id' => null, //not null if request is warehouse
-                    'request_quantity' => (int) $product['quantity'] ?? 0,
-                    // 'price' => (int) $product['price'] ?? 0,
-                    'shipment_status' => Purchasing::STATUS_PURCHASING_SHIPPING_CREATED,
-                    'transfer_status' => Purchasing::STATUS_PURCHASING_TRANSFER_REQUESTED,
-                    'request_status' => Purchasing::STATUS_PURCHASING_REQUEST,
-                ];
+        $warehouse_bogor_id = Shop::where('slug', 'warehouse-bogor')->first()->id;
 
-                PurchasingItem::create($product);
+        $inventory_id = null;
+        $shop_id = $warehouse_bogor_id;
+
+        foreach($request->product as $product){
+            //create the stock transfer if it arrival the inventory stock is increased
+
+            if (!Auth::user()->isFromPlatform()) {
+                $item = Inventory::where(['product_id' => (int) $product['product_id'], 'shop_id' => (int) $warehouse_bogor_id])->first();   
+                
+                if(!$item){
+                    //TODO: create if not exist. 
+                    //get the product data 
+                    $product = Product::find((int) $product['product_id']);
+                    //product => inventory
+                    /**
+                     * 
+                     * name => title
+                     * id => product_id
+                     * shop_id => $warehouse_bogor_id
+                     * manufacture_skuid => sku
+                     * - => condition = 'new'
+                     * 0 => stock_quantity
+                     * 0 => sold_quantity
+                     * 0 => sale_price
+                     * today => available_from
+                     * 0 => length
+                     * 0 => width
+                     * 0 => height
+                     * 0 => distance_unit
+                     * 0 => expired_date
+                     * 0 => uom
+                     * 
+                     */
+
+                    $item = Inventory::create([
+                        'title' => $product->name,
+                        'product_id' => $product->id,
+                        'shop_id' => $warehouse_bogor_id,
+                        'sku' => $product->manufacture_skuid,
+                        'slug' => $product->slug,
+                        'condition' => 'new',
+                        'condition_note' => 'purchasing request',
+                        'stock_quantity' => 0,
+                        'sold_quantity' => 0,
+                        'sale_price' => 0,
+                        'length' => 0,
+                        'width' => 0,
+                        'height' => 0,
+                        'distance_unit' => 0,
+                        'expired_date' => 0,
+                        'user_id' => Auth::user()->id,
+                        'uom' => $product->type_uom,
+                    ]);
+                }
+
+                //search item in warehouse
+                $shop_id = Auth::user()->merchantId();
+                $inventory_id = $item->id;
             }
 
-            return true;
+            $product = [
+                'purchasing_order_id' => null,
+                'shop_request_id' => $shop_id,
+                //TODO: requester shop_id, if bogor return 22
+                'inventory_id' => $inventory_id, //not null if request is warehouse //find & create inventory bogor.
+                'product_id' => (int) $product['product_id'], //change to product id
+                // 'manufacture_id' => $product['manufacture_skuid'], //not null
+                'stock_transfer_id' => null, //not null if request is warehouse
+                'request_quantity' => (int) $product['quantity'] ?? 0,
+                // 'price' => (int) $product['price'] ?? 0,
+                'currency' => $request->currency, //USD / CNY
+                'currency_amount' => $request->currency_amount, //USD / CNY
+                'currency_timestamp' => $request->currency_timestamp, //USD / CNY
+                // 'timestamp_currency' => $timestamp_currency,
+                // 'current_rate' => $rate,
+                // 'converted_price' => $converted_rate,
+                'shipment_status' => Purchasing::STATUS_PURCHASING_SHIPPING_CREATED,
+                'transfer_status' => Purchasing::STATUS_PURCHASING_TRANSFER_REQUESTED,
+                'request_status' => Purchasing::STATUS_PURCHASING_REQUEST,
+            ];
+
+            //stock transfer item
+
+            PurchasingItem::create($product);
+        }
+
+        return true;
         
         //create purchasing item
     }

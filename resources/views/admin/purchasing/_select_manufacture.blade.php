@@ -1,11 +1,28 @@
 @extends('admin.layouts.master')
 
 @section('content')
-{!! Form::open(['route' => ['admin.purchasing.purchasing.generateInvoice'], 'files' => true,'method' => 'post', 'class' => 'form']) !!}
+<!-- Add this right after your manufacturer select -->
+<div class="alert alert-info alert-dismissible" id="manufactureError" style="display: none;">
+	<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+	<strong>{{ trans('app.important') }}: </strong>
+	{!! trans('app.please_select_manufacture') !!}
+</div>
+
+{!! Form::open(['route' => ['admin.purchasing.purchasing.generateInvoice'], 'files' => true,'method' => 'post', 'class' => 'form', 'id' => 'purchaseForm']) !!}
 
 {{ Form::hidden('purchasing_invoice_number', $inv_number, ['id' => 'purchasing_invoice_number']) }}
 {{ Form::hidden('manufacture_number', $manufacture_number, ['id' => 'shipping_rate_id']) }}
+
+@foreach ($ids as $value) 
+	{{ Form::hidden('ids[]', $value, ['id' => 'ids']) }}
+@endforeach
+
 <div class="row">
+	<div class="col-md-12">
+		<h3 class="box-title">
+			{{ trans('app.assign_manufacture') }}
+		  </h3>
+	</div>
     <div class="col-md-8">
 		<div class="box">
 			<div class="box-header with-border">
@@ -45,21 +62,21 @@
 					<tbody id="items">
 						<thead>
 							<tr>
+							  <th>{{ trans('app.sku') }}</th>
+							  <th>{{ trans('app.manufacturer') }}</th>
 							  <th>{{ trans('app.product_name') }}</th>
 							  <th>{{ trans('app.form.request_quantity') }}</th>
-							  <th>{{ trans('app.price') }} <small>( {{ trans('app.excl_tax') }} )</small> </th>
 							</tr>
 						  </thead>
 						  <tbody>
+							{{-- grouping the product --}}
 							@foreach ($purchasing as $items)
-							{{ Form::hidden('product['.$items->id.'][id]', $items->id, ['id' => 'product_id']) }}
+							{{ Form::hidden('product['.$items->product_id.'][id]', $items->id, ['id' => 'product_id']) }}
 							<tr>
+								<td>{{ $items->product->manufacture_skuid ?? '0'}}</td>
+								<td>{{ $items->product->manufacturer->name ?? '0'}}</td>
 								<td>{{ $items->product->name}}</td>
 								<td>{{ $items->request_quantity ?? '0'}}</td>
-								<td class="nopadding-right text-center" width="40%">
-									<span>price</span>
-									<input name="product[{{$items->id}}][price]" value="{{ $items->price ?? 0 }}" type="number" class="form-control itemQtt no-border" placeholder="{{ trans('app.price') }}" required>
-								</td>
 							<tr>
 							@endforeach
 					</tbody>
@@ -113,53 +130,40 @@
 			</div> <!-- /.box-header -->
 			<div class="box-body">
 
-				@if (!auth()->user()->shop_id)
-					{!! Form::label('warehouse_destination', trans('app.form.warehouse_requester')) !!}
-					{!! Form::select('shop_requester_id', $warehouse, null, ['class' => 'form-control select2', 'placeholder' => trans('app.placeholder.choose_warehouse_requester')]) !!}
-				@endif
-
 				{{-- <a href="{{ route('admin.order.order.invoice', 1) }}" class="btn btn-sm btn-default btn-flat">{{ trans('app.purchasing_invoice') }}</a> --}}
-			</div>
-		</div>
-		<div class="box">
-			<div class="box-header with-border">
-				<h3 class="box-title"> {{ trans('app.purchasing_status') }}</h3>
-			</div> <!-- /.box-header -->
-				<div class="box-body">
-					<div class="form-group">
-						{!! Form::label('shipment_status', trans('app.form.shipment_status') . '*') !!}
-						{!! Form::select('shipment_status', [
-							'1' => 'Created',
-							'2' => 'In Progress',
-							'3' => 'Depature',
-							'4' => 'Arrival',
-						], '1', ['class' => 'form-control select2-normal', 'placeholder' => trans('app.placeholder.payment'), 'required']) !!}
-						<div class="help-block with-errors"></div>
-					</div>
-
-					<div class="form-group">
-						{!! Form::label('transfer_status', trans('app.form.transfer_status') . '*') !!}
-						{!! Form::select('transfer_status', [
-							'10' => 'Requested',
-							'5' => 'Shipment',
-							'6' => 'Stock',
-							'7' => 'Complete',
-						], '10', ['class' => 'form-control select2-normal', 'placeholder' => trans('app.placeholder.payment'), 'required']) !!}
-						<div class="help-block with-errors"></div>
-					</div>
-
-					<div class="form-group">
-						{!! Form::label('request_status', trans('app.form.request_status') . '*') !!}
-						{!! Form::select('request_status', [
-							'8' => 'Request',
-							'9' => 'Done',
-						], '8', ['class' => 'form-control select2-normal', 'placeholder' => trans('app.placeholder.payment'), 'required']) !!}
-						<div class="help-block with-errors"></div>
-					</div>
-				</div>	
 			</div>
 		</div>
 	</div>
 </div>
 {!! Form::close() !!}
+
+<script>
+	document.getElementById('purchaseForm').addEventListener('submit', function(e) {
+		e.preventDefault();
+		
+		const manufactureSelect = document.querySelector('select[name="manufacture"]');
+		const errorDiv = document.getElementById('manufactureError');
+		
+		// Hide previous error if any
+		errorDiv.style.display = 'none';
+		
+		if (!manufactureSelect.value) {
+			errorDiv.style.display = 'block';
+			manufactureSelect.focus();
+			window.scrollTo({
+				top: manufactureSelect.offsetTop - 100,
+				behavior: 'smooth'
+			});
+			return false;
+		}
+		
+		// If validation passes, submit the form
+		this.submit();
+	});
+	
+	// Optional: Hide error message when user selects a manufacturer
+	document.querySelector('select[name="manufacture"]').addEventListener('change', function() {
+		document.getElementById('manufactureError').style.display = 'none';
+	});
+</script>
 @endsection

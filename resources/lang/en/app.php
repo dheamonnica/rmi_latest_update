@@ -74,6 +74,7 @@ return [
         'loan' => 'Loan',
         'timeoff' => 'Time Off',
         'absence' => 'Absence',
+        'purchasing' => 'Purchase Order',
     ],
 
     // Application Levels
@@ -1520,6 +1521,15 @@ return [
         'clock_out_img' => 'Clock Out Image',
         'office' => 'Office',
         'total_hours' => 'Total Hours',
+
+        'currency' => 'Currency',
+        'status_history' => 'Status History',
+
+        'item_quantity' => 'Item Request',
+        'total_quantity' => 'Total Request',
+        'total_price' => 'Total Price',
+        'kurs' => 'Kurs',
+        'currency_timestamp' => 'Currency Time',
     ],
 
     'placeholder' => [
@@ -1769,6 +1779,11 @@ return [
         //purchasing
         'choose_manufacture' => 'Choose Manufacture',
         'choose_warehouse_requester' => 'Choose Warehouse Requester',
+
+        'kurs' => 'Exchange Rate',
+        'currency_timestamp' => 'Currency Time',
+
+
     ],
 
     // Version 1.3.0
@@ -2197,6 +2212,25 @@ return [
     'purchasing_status' => 'Purchasing Status',
     'request_date' => 'Request Date',
     'save' => 'Save',
+
+    'purchasing_invoice' => 'Purchasing Invoice',
+    'purchasing_order_details' => 'Purchasing Order Details',
+    'manufacture' => 'Manufacture',
+    'request_quantity' => 'Request Quantity',
+    'shipment_status' => 'Shipment Status',
+    'set_as_arrival' => 'Set As Arrival',
+    'set_as_depature' => 'Set As Depature',
+    'set_as_in_progress' => 'Set As In Progress',
+    'create_new_purchasing' => 'Create New Purchasing',
+    'add_to_request' => 'Add To Request',
+    'request_purchasing' => 'Request Purchasing',
+    'purchasing_number' => 'Purchasing Number',
+    'purchasing' => 'Purchasing',
+    'request' => 'Request',
+    'please_select_manufacture' => 'Please select manufacture',
+    'price_total' => 'Price Total (IDR)', 
+    'total_with_currency' => 'Total ', 
+
 ];
 
 

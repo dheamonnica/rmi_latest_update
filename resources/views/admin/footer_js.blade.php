@@ -2127,24 +2127,32 @@
                     'searchable': false
                 },
                 {
+                    'data': 'number_po',
+                    'name': 'number_po',
+                },
+                {
                     'data': 'manufacture_number',
                     'name': 'manufacture_number',
                 },
                 {
-                    'data': 'warehouse',
-                    'name': 'warehouse'
-                },
-                {
-                    'data': 'product',
-                    'name': 'product'
+                    'data': 'item_quantity',
+                    'name': 'item_quantity'
                 },
                 {
                     'data': 'quantity',
                     'name': 'quantity'
                 },
                 {
-                    'data': 'price',
-                    'name': 'price'
+                    'data': 'currency',
+                    'name': 'currency'
+                },
+                {
+                    'data': 'rate',
+                    'name': 'rate'
+                },
+                {
+                    'data': 'grand_total',
+                    'name': 'grand_total',
                 },
                 {
                     'data': 'shipment_status',
@@ -2174,6 +2182,65 @@
             },
         }));
 
+        var tableRequestList = $('#all-request-table').DataTable($.extend({}, dataTableOptions, {
+            "ajax": "{{ route('admin.purchasing.purchasing.getMoreRequest') }}",
+            "columns": [{
+                    'data': 'checkbox',
+                    'name': 'checkbox',
+                    'orderable': false,
+                    'searchable': false,
+                    'exportable': false,
+                    'printable': false
+                },
+                {
+                    'data': 'warehouse',
+                    'name': 'warehouse'
+                },
+                {
+                    'data': 'request_date',
+                    'name': 'request_date',
+                    'orderable': false,
+                    'searchable': false
+                },
+                {
+                    'data': 'number_po',
+                    'name': 'number_po',
+                },
+                {
+                    'data': 'product',
+                    'name': 'product'
+                },
+                {
+                    'data': 'quantity',
+                    'name': 'quantity'
+                },
+                {
+                    'data': 'shipment_status',
+                    'name': 'shipment_status'
+                },
+                {
+                    'data': 'transfer_status',
+                    'name': 'transfer_status'
+                },
+                {
+                    'data': 'request_status',
+                    'name': 'request_status'
+                },
+                {
+                    'data': 'option',
+                    'name': 'option',
+                    'orderable': false,
+                    'searchable': false,
+                    'exportable': false,
+                    'printable': false
+                }
+            ],
+            "drawCallback": function(settings) {
+                $(".massAction, .checkbox-toggle").unbind();
+                $(".fa", '.checkbox-toggle').removeClass("fa-check-square-o").addClass('fa-square-o');
+                initMassActions();
+            },
+        }));
         // filter by warehouse, marketing, and leader
         @if (Auth::user()->role_id === 3 || Auth::user()->role_id === 8 || Auth::user()->role_id === 13)
             tableTargetsReport.column('shop_id:name').search('{{ Auth::user()->shop_id }}').draw();

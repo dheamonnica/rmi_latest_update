@@ -30,6 +30,7 @@ class PurchasingItem extends Inspectable
      */
     protected $fillable = [
         'purchasing_order_id',
+        'shop_request_id',
         'inventory_id',
         'product_id',
         'manufacture_id',
@@ -46,6 +47,9 @@ class PurchasingItem extends Inspectable
         'shipment_status',
         'transfer_status',
         'request_status',
+        'currency',
+        'currency_amount',
+        'currency_timestamp',
 	];
 
     public function product() {
@@ -63,6 +67,11 @@ class PurchasingItem extends Inspectable
 	public function inventory()
 	{
 		return $this->belongsTo(Inventory::class, 'inventory_id');
+	}
+
+    public function requester()
+	{
+		return $this->belongsTo(Shop::class, 'shop_request_id');
 	}
 
 	public function purchasing()
@@ -83,5 +92,10 @@ class PurchasingItem extends Inspectable
 	public function fulfilledBy()
     {
         return $this->belongsTo(User::class, 'fulfilled_by');
+    }
+
+    public function scopeMine($query)
+    {
+        return $query->whereNotNull('shop_request_id')->where('shop_request_id', Auth::user()->merchantId());
     }
 }
