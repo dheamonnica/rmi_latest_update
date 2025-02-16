@@ -14,6 +14,8 @@ use App\Http\Requests\Validations\DeliveredConfirmedOrderRequest;
 use App\Models\Order;
 use App\Models\Merchant;
 use App\Models\Customer;
+use App\Models\OrderItem;
+use App\Models\OrderPurchaseForm;
 use App\Repositories\Order\OrderRepository;
 use App\Services\FCMService;
 use Illuminate\Http\Request;
@@ -23,6 +25,7 @@ use Yajra\Datatables\Datatables;
 use Illuminate\Support\Facades\URL;
 use ZipArchive;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 
 // use App\Services\PdfInvoice;
 // use Konekt\PdfInvoice\InvoicePrinter;
@@ -1088,14 +1091,14 @@ class OrderController extends Controller
         if ($request->file('doc_faktur_pajak') && $request->file('doc_faktur_pajak_terbayar')) {
             // DOC FAKTUR PAJAK
             $pdfFileFP = $request->file('doc_faktur_pajak');
-            $originalFilenameFP = now()->format('d-m-Y') . '/PoNumberRef_' . str_replace(['/', '#'],'_', $orderData->po_number_ref) . '/' . 'FP_' . $pdfFileFP->getClientOriginalName(); // Add a timestamp to the original filename
+            $originalFilenameFP = now()->format('d-m-Y') . '/PoNumberRef_' . str_replace(['/', '#'], '_', $orderData->po_number_ref) . '/' . 'FP_' . $pdfFileFP->getClientOriginalName(); // Add a timestamp to the original filename
             $pdfFileFP->storeAs('payment_documents', $originalFilenameFP, 'public');
             $orderData->doc_faktur_pajak = 'payment_documents/' . $originalFilenameFP;
             $orderData->doc_faktur_pajak_uploaded_at = $request->input('doc_faktur_pajak_uploaded_at');
 
             // DOC FAKTUR PAJAK TERBAYAR
             $pdfFileFPT = $request->file('doc_faktur_pajak_terbayar');
-            $originalFilenameFPT = now()->format('d-m-Y') . '/PoNumberRef_' . str_replace(['/', '#'],'_', $orderData->po_number_ref) . '/' . 'FPT_' . $pdfFileFPT->getClientOriginalName(); // Add a timestamp to the original filename
+            $originalFilenameFPT = now()->format('d-m-Y') . '/PoNumberRef_' . str_replace(['/', '#'], '_', $orderData->po_number_ref) . '/' . 'FPT_' . $pdfFileFPT->getClientOriginalName(); // Add a timestamp to the original filename
             $pdfFileFPT->storeAs('payment_documents', $originalFilenameFPT, 'public');
             $orderData->doc_faktur_pajak_terbayar = 'payment_documents/' . $originalFilenameFPT;
             $orderData->doc_faktur_pajak_terbayar_uploaded_at = $request->input('doc_faktur_pajak_terbayar_uploaded_at');
@@ -1104,7 +1107,7 @@ class OrderController extends Controller
         } else if ($request->file('doc_faktur_pajak')) {
             // DOC FAKTUR PAJAK
             $pdfFileFP = $request->file('doc_faktur_pajak');
-            $originalFilenameFP = now()->format('d-m-Y') . '/PoNumberRef_' . str_replace(['/', '#'],'_', $orderData->po_number_ref) . '/' . 'FP_' . $pdfFileFP->getClientOriginalName(); // Add a timestamp to the original filename
+            $originalFilenameFP = now()->format('d-m-Y') . '/PoNumberRef_' . str_replace(['/', '#'], '_', $orderData->po_number_ref) . '/' . 'FP_' . $pdfFileFP->getClientOriginalName(); // Add a timestamp to the original filename
             $pdfFileFP->storeAs('payment_documents', $originalFilenameFP, 'public');
             $orderData->doc_faktur_pajak = 'payment_documents/' . $originalFilenameFP;
             $orderData->doc_faktur_pajak_uploaded_at = $request->input('doc_faktur_pajak_uploaded_at');
@@ -1113,12 +1116,90 @@ class OrderController extends Controller
         } else if ($request->file('doc_faktur_pajak_terbayar')) {
             // DOC FAKTUR PAJAK TERBAYAR
             $pdfFileFPT = $request->file('doc_faktur_pajak_terbayar');
-            $originalFilenameFPT = now()->format('d-m-Y') . '/PoNumberRef_' . str_replace(['/', '#'],'_', $orderData->po_number_ref) . '/' . 'FPT_' . $pdfFileFPT->getClientOriginalName(); // Add a timestamp to the original filename
+            $originalFilenameFPT = now()->format('d-m-Y') . '/PoNumberRef_' . str_replace(['/', '#'], '_', $orderData->po_number_ref) . '/' . 'FPT_' . $pdfFileFPT->getClientOriginalName(); // Add a timestamp to the original filename
             $pdfFileFPT->storeAs('payment_documents', $originalFilenameFPT, 'public');
             $orderData->doc_faktur_pajak_terbayar = 'payment_documents/' . $originalFilenameFPT;
             $orderData->doc_faktur_pajak_terbayar_uploaded_at = $request->input('doc_faktur_pajak_terbayar_uploaded_at');
 
             $orderData->save();
+        }
+
+        return back()->with('success', trans('messages.updated', ['model' => $this->model_name]));
+    }
+
+    public function orderForm()
+    {
+        return view('admin.order.form.index');
+    }
+
+    public function getOrderForm(Request $request)
+    {
+        $orders = Order::orderBy('created_at', 'desc')->get();
+
+        return Datatables::of($orders)
+            ->editColumn('checkbox', function ($order) {
+                return view('admin.partials.actions.order.checkbox', compact('order'));
+            })
+            ->addColumn('created_at', function ($order) {
+                return date('Y-m-d h:i:s', strtotime($order->created_at));
+            })
+            ->addColumn('po_number_ref', function ($order) {
+                return $order->po_number_ref;
+            })
+            ->addColumn('purchase_order_id', function ($order) {
+                return view('admin.order.form.option', compact('order'));
+            })
+
+            ->rawColumns(['checkbox', 'created_at', 'po_number_ref', 'purchase_order_id'])
+            ->make(true);
+    }
+
+    public function orderFormEdit($id)
+    {
+        $orderItems = OrderItem::where('order_id', $id)->get();
+        $order = Order::find($id);
+
+        // // Check if order_id already exists
+        $existingOrderPurchase = OrderPurchaseForm::where('order_id', $id)->exists();
+
+
+        $OrderPurchaseFormData = OrderPurchaseForm::where('order_id', $id)->get();
+
+
+        $orderData = !$existingOrderPurchase ? $orderItems : $OrderPurchaseFormData;
+        return view('admin.order.form._edit', compact('order', 'orderItems', 'orderData'));
+    }
+
+    public function updateForm(Request $request, $id)
+    {
+        $orderFormPurchaseDataId = $request->input('order_id');
+
+        // Log::info('data', $request->all());
+
+        foreach ($request->inventory_id as $index => $inventoryId) {
+            OrderPurchaseForm::updateOrCreate(
+                [
+                    'order_id' => $orderFormPurchaseDataId,
+                    'inventory_id' => $inventoryId, // Unique identifier per row
+                ],
+                [
+                    'manufacture_id' => $request->manufacture_id,
+                    'product_id' => $request->product_id[$index],
+                    'inventory_id' => $request->inventory_id[$index],
+                    'po_number_ref' => $request->po_number_ref,
+                    'sku' => $request->sku[$index],
+                    'kode_reg_alkes' => $request->kode_reg_alkes[$index],
+                    'hs_code' => $request->hs_code[$index] ?? null,
+                    'product_name' => $request->product_name[$index] ?? null,
+                    'order_qty' => $request->order_qty[$index] ?? 0,
+                    'price_pcs' => $request->price_pcs[$index] ?? 0,
+                    'subtotal' => $request->subtotal[$index] ?? 0,
+                    'shipping_fee' => $request->shipping_fee[$index] ?? 0,
+                    'total' => $request->total[$index] ?? 0,
+                    'updated_by' => Auth::user()->id,
+                    'updated_at' => now()
+                ]
+            );
         }
 
         return back()->with('success', trans('messages.updated', ['model' => $this->model_name]));

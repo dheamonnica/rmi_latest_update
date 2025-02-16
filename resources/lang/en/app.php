@@ -1318,6 +1318,13 @@ return [
         'tukar_faktur_pajak' => 'Tukar Faktur Pajak',
         'sla_tukar_faktur_pajak' => 'SLA Tukar Faktur Pajak',
         'sla_faktur_pajak_terbayar' => 'SLA Faktur Pajak Terbayar',
+        'purchase_order' => 'Purchase Order',
+        'kode_reg_alkes' => 'Kode Reg Alkes',
+        'hs_code' => 'HS Code',
+        'order_qty' => 'Order Qty',
+        'price_pcs' => 'Price Pcs',
+        'subtotal' => 'Subtotal',
+        'shipping_fee' => 'Shipping Fee',
 
         // manufacture
         'manufacture_pic_name' => 'Manufacture PIC Name',

@@ -359,6 +359,11 @@
                                     {{ trans('nav.orders') }}
                                 </a>
                             </li>
+                            <li class="{{ Request::is('admin/order/order-form') ? 'active' : '' }}">
+                                <a href="{{ url('admin/order/order-form') }}">
+                                    Order Form
+                                </a>
+                            </li>
                             @if ((new \App\Helpers\Authorize(Auth::user(), 'view_order_report'))->check())
                                 <li class="{{ Request::is('admin/order/order-report') ? 'active' : '' }}">
                                     <a href="{{ url('admin/order/order-report') }}">

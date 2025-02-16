@@ -1436,10 +1436,6 @@
             order: [[2, 'desc']] // Sort by the 3rd column (index 2) in ascending order
         }));
 
-         // if isFromPlatform
-         @if (!Auth::user()->isAdmin())
-         orderTableData.column('shop_id:name').search('{{ Auth::user()->shop_id }}').draw();
-         @endif
 
         function filterByWarehouseOrderTbl() {
             var selectedMerchant = $('#merchantOrderTableFilter').val();
@@ -1484,6 +1480,53 @@
         $('#statusOrderTableFilter').on('change', filterByStatusOrderTbl);
         $('#paymentStatusOrderTableFilter').on('change', filterByPaymentStatusOrderTbl);
         // END ORDER TABLE
+
+        // ORDER FORM TABLE
+        var orderFormTableData = $('#order-form-table').DataTable($.extend({}, dataTableOptions, {
+            "ajax": "{{ route('admin.order.getOrderForm')}}",
+
+            "columns": [{
+                    'data': 'checkbox',
+                    'name': 'checkbox',
+                    'orderable': false,
+                    'searchable': false,
+                    'exportable': false,
+                    'printable': false
+                },
+                {
+                    'data': 'created_at',
+                    'name': 'created_at'
+                },
+                {
+                    'data': 'po_number_ref',
+                    'name': 'po_number_ref'
+                },
+                {
+                    'data': 'purchase_order_id',
+                    'name': 'purchase_order_id',
+                    'orderable': false,
+                    'searchable': false,
+                    'exportable': false,
+                    'printable': false
+                }
+            ],
+            order: [[1, 'desc']] // Sort by the 3rd column (index 2) in ascending order
+        }));
+
+        function filterByDateRangeOrderFormTbl() {
+            var startDate = $('#startDateOrderFormTableFilter').val();
+            var endDate = $('#endDateOrderFormTableFilter').val();
+
+            // If both dates are selected, filter by range
+            if (startDate && endDate) {
+                orderFormTableData.column('order_date:name')
+                    .search(startDate + '|' + endDate, true, false)
+                    .draw();
+            }
+        }
+
+        $('#dateRangeOrderFormTableFilterButton').on('click', filterByDateRangeOrderFormTbl);
+        // END ORDER FORM TABLE
 
         // Load Order Report list by Ajax
         var tableOrderReport = $('#all-order-table-full').DataTable($.extend({}, dataTableOptions, {

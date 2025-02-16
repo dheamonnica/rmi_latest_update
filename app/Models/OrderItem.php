@@ -42,4 +42,8 @@ class OrderItem extends Pivot
     // {
     //        return $this->hasOne(Feedback::class, 'id', 'feedback_id');
     // }
+
+    public function getProduct() {
+        return $this->belongsTo(Product::class, 'product_id');
+    }
 }
