@@ -27,6 +27,7 @@ trait Authorizable
         'pickup'            => 'view',
         'data'              => 'view',
         'paymentDocument'   => 'view',
+        'orderForm'         => 'view',
         'create'            => 'add',
         'add'               => 'add',
         'store'             => 'add',

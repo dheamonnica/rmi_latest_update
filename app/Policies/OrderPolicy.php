@@ -22,6 +22,11 @@ class OrderPolicy
         return (new Authorize($user, 'view_order'))->check();
     }
 
+    public function orderForm(User $user)
+    {
+        return (new Authorize($user, 'view_order'))->check();
+    }
+
     /**
      * Determine whether the user can view the Order.
      *

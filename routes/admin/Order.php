@@ -88,4 +88,16 @@ Route::get('order-payment-document-edit/{order}', [
 
 Route::put('updateDocPayment/{order}', [OrderController::class, 'updateOrderPayment'])->name('order.updateDocPayment');
 
+Route::get('order-form', [
+  OrderController::class, 'orderForm'
+])->name('order.orderForm');
+
+Route::get('/getOrderForm',[OrderController::class, 'getOrderForm'])->name('getOrderForm')->middleware('ajax');
+
+Route::get('order-form-edit/{order}', [
+  OrderController::class, 'orderFormEdit'
+])->name('order.orderFormEdit');
+
+Route::put('updateForm/{order}', [OrderController::class, 'updateForm'])->name('order.updateForm');
+
 Route::resource('order', OrderController::class)->except('update');
