@@ -24,4 +24,16 @@ return [
     'page_of'  => 'of',
     'message' => 'Message',
     'footer_note' => 'This is a computer generated invoice and requires no signature.',
+
+    //purchasing
+    'purchasing_invoice' => 'Purchasing Invoice',
+    'sent_to' => 'Send To',
+    'manufacture_from' => 'Manufacture From',
+    'product' => 'Product Name',
+    'manufacture_sku' => 'Manufacture SKU',
+    'selling_sku' => 'Selling SKU',
+    'currency' => 'Currency',
+    'currency_time' => 'Currency Time',
+    'rate' => 'Rate',
+    'total_currency' => 'Grand Total',
 ];

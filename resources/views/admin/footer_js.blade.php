@@ -2152,6 +2152,138 @@
             ]
         }));
 
+        //load table purchasing
+        var tablePurchasingList = $('#all-purchasing-table').DataTable($.extend({}, dataTableOptions, {
+            "ajax": "{{ route('admin.purchasing.purchasing.getMore') }}",
+            "columns": [{
+                    'data': 'checkbox',
+                    'name': 'checkbox',
+                    'orderable': false,
+                    'searchable': false,
+                    'exportable': false,
+                    'printable': false
+                },
+                {
+                    'data': 'request_date',
+                    'name': 'request_date',
+                    'orderable': false,
+                    'searchable': false
+                },
+                {
+                    'data': 'number_po',
+                    'name': 'number_po',
+                },
+                {
+                    'data': 'manufacture_number',
+                    'name': 'manufacture_number',
+                },
+                {
+                    'data': 'item_quantity',
+                    'name': 'item_quantity'
+                },
+                {
+                    'data': 'quantity',
+                    'name': 'quantity'
+                },
+                {
+                    'data': 'currency',
+                    'name': 'currency'
+                },
+                {
+                    'data': 'rate',
+                    'name': 'rate'
+                },
+                {
+                    'data': 'grand_total',
+                    'name': 'grand_total',
+                },
+                {
+                    'data': 'shipment_status',
+                    'name': 'shipment_status'
+                },
+                {
+                    'data': 'transfer_status',
+                    'name': 'transfer_status'
+                },
+                {
+                    'data': 'request_status',
+                    'name': 'request_status'
+                },
+                {
+                    'data': 'option',
+                    'name': 'option',
+                    'orderable': false,
+                    'searchable': false,
+                    'exportable': false,
+                    'printable': false
+                }
+            ],
+            "drawCallback": function(settings) {
+                $(".massAction, .checkbox-toggle").unbind();
+                $(".fa", '.checkbox-toggle').removeClass("fa-check-square-o").addClass('fa-square-o');
+                initMassActions();
+            },
+        }));
+
+        var tableRequestList = $('#all-request-table').DataTable($.extend({}, dataTableOptions, {
+            "ajax": "{{ route('admin.purchasing.purchasing.getMoreRequest') }}",
+            "columns": [{
+                    'data': 'checkbox',
+                    'name': 'checkbox',
+                    'orderable': false,
+                    'searchable': false,
+                    'exportable': false,
+                    'printable': false
+                },
+                {
+                    'data': 'warehouse',
+                    'name': 'warehouse'
+                },
+                {
+                    'data': 'request_date',
+                    'name': 'request_date',
+                    'orderable': false,
+                    'searchable': false
+                },
+                {
+                    'data': 'number_po',
+                    'name': 'number_po',
+                },
+                {
+                    'data': 'product',
+                    'name': 'product'
+                },
+                {
+                    'data': 'quantity',
+                    'name': 'quantity'
+                },
+                {
+                    'data': 'shipment_status',
+                    'name': 'shipment_status'
+                },
+                {
+                    'data': 'transfer_status',
+                    'name': 'transfer_status'
+                },
+                {
+                    'data': 'request_status',
+                    'name': 'request_status'
+                },
+                {
+                    'data': 'option',
+                    'name': 'option',
+                    'orderable': false,
+                    'searchable': false,
+                    'exportable': false,
+                    'printable': false
+                }
+            ],
+            "drawCallback": function(settings) {
+                $(".massAction, .checkbox-toggle").unbind();
+                $(".fa", '.checkbox-toggle').removeClass("fa-check-square-o").addClass('fa-square-o');
+                initMassActions();
+            },
+        }));
         // filter by warehouse, marketing, and leader
         @if (Auth::user()->role_id === 3 || Auth::user()->role_id === 8 || Auth::user()->role_id === 13)
             tableTargetsReport.column('shop_id:name').search('{{ Auth::user()->shop_id }}').draw();
@@ -4772,6 +4904,157 @@
             $(this).data("clicks", !clicks);
         });
 
+         /**
+         * Trigger the mass action functionality.
+         * If the response has a 'download' property, call a function.
+         */
+         $('.massActionPurchasing').on('click', function(e) {
+            // const modal = document.getElementById('select-manufacture');
+            e.preventDefault();
+
+            var node = $(this);
+            var doAfter = $(this).data('doafter');
+            var msg = $(this).data("confirm");
+            if (!msg) {
+                msg = "{{ trans('app.are_you_sure') }}";
+            }
+
+            var allVals = [];
+            $(".massCheck:checked").each(function() {
+                allVals.push($(this).attr('id'));
+            });
+
+            if (allVals.length <= 0) {
+                notie.alert(3, "{{ trans('responses.select_some_item') }}", 2);
+            } else {
+                return new Promise(function(resolve, reject) {
+                    $.confirm({
+                        title: "{{ trans('app.confirmation') }}",
+                        content: msg,
+                        type: 'red',
+                        buttons: {
+                            'confirm': {
+                                text: '{{ trans('app.proceed') }}',
+                                keys: ['enter'],
+                                btnClass: 'btn-red',
+                                action: function() {
+                                    notie.alert(4,
+                                        "{{ trans('messages.confirmed') }}",
+                                        2);
+
+                                    $.ajax({
+                                        url: node.data('link'),
+                                        type: 'POST',
+                                        data: {
+                                            "_token": "{{ csrf_token() }}",
+                                            "ids": allVals,
+                                        },
+                                        success: function(data) {
+                                            if (data[
+                                                    'success'
+                                                ]) {
+                                                notie.alert(1,
+                                                    data[
+                                                        'success'
+                                                    ], 2
+                                                );
+                                                switch (
+                                                    doAfter) {
+                                                    
+                                                    case 'reload':
+                                                        window
+                                                            .location
+                                                            .reload();
+                                                        break;
+                                                    case 'remove':
+                                                        $(".massCheck:checked")
+                                                            .each(
+                                                                function() {
+                                                                    $(this)
+                                                                        .parents(
+                                                                            "tr"
+                                                                        )
+                                                                        .remove();
+                                                                }
+                                                            );
+                                                        break;
+                                                    default:
+                                                        unCheckAll
+                                                            (
+                                                                "#massSelectArea"
+                                                            ); //Uncheck all checkboxes
+                                                }
+                                            } else if (data[
+                                                    'error']) {
+                                                notie.alert(3,
+                                                    data[
+                                                        'error'
+                                                    ], 2
+                                                );
+                                            } else if (data[
+                                                    'download'
+                                                ]) { // For downloading selected items
+                                                notie.alert(1,
+                                                    data[
+                                                        'download'
+                                                    ], 2
+                                                );
+
+                                                var downloadLink =
+                                                    document
+                                                    .createElement(
+                                                        'a');
+                                                downloadLink
+                                                    .href = data
+                                                    .download_url;
+                                                downloadLink
+                                                    .download =
+                                                    data
+                                                    .download_file_name;
+                                                downloadLink
+                                                    .click();
+                                            } else {
+                                                notie.alert(3,
+                                                    "{{ trans('responses.failed') }}",
+                                                    2);
+                                            }
+                                        },
+                                        error: function(data) {
+                                            if (data.status ==
+                                                403) {
+                                                notie.alert(2,
+                                                    "{{ trans('responses.denied') }}",
+                                                    3);
+                                            } else if (data
+                                                .status == 444
+                                            ) {
+                                                notie.alert(2,
+                                                    "{{ trans('messages.demo_restriction') }}",
+                                                    5);
+                                            } else {
+                                                notie.alert(3,
+                                                    "{{ trans('responses.error') }}",
+                                                    2);
+                                            }
+                                        }
+                                    });
+                                }
+                            },
+                            'cancel': {
+                                text: '{{ trans('app.cancel') }}',
+                                action: function() {
+                                    // node.toggleClass('active');
+                                    notie.alert(2,
+                                        "{{ trans('messages.canceled') }}",
+                                        2);
+                                }
+                            },
+                        }
+                    });
+                });
+            }
+        });
+
         /**
          * Trigger the mass action functionality.
          * If the response has a 'download' property, call a function.
@@ -4834,6 +5117,37 @@
                                                             .location
                                                             .reload();
                                                         break;
+                                                    case 'redirect':
+                                                    // Handle redirect after a short delay to show the success message
+                                                    if (data.redirect) {
+                                                        setTimeout(() => {
+                                                            // Create a hidden form for POST redirect
+                                                            const form = document.createElement('form');
+                                                            form.method = 'POST';
+                                                            form.action = data.redirect;
+                                                            
+                                                            // Add CSRF token
+                                                            const csrfToken = document.createElement('input');
+                                                            csrfToken.type = 'hidden';
+                                                            csrfToken.name = '_token';
+                                                            csrfToken.value = "{{ csrf_token() }}";
+                                                            form.appendChild(csrfToken);
+                                                            
+                                                            // Add selected IDs
+                                                            allVals.forEach(id => {
+                                                                const input = document.createElement('input');
+                                                                input.type = 'hidden';
+                                                                input.name = 'ids[]';
+                                                                input.value = id;
+                                                                form.appendChild(input);
+                                                            });
+                                                            
+                                                            // Add the form to the document and submit
+                                                            document.body.appendChild(form);
+                                                            form.submit();
+                                                        }, 1000); // 1 second delay
+                                                    }
+                                                    break;
                                                     case 'remove':
                                                         $(".massCheck:checked")
                                                             .each(

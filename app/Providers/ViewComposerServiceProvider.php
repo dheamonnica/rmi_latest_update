@@ -15,6 +15,7 @@ use App\Charts\SalesByPeriod;
 use App\Helpers\CharttHelper;
 use App\Models\PaymentMethod;
 use App\Charts\VisitorsOfMonths;
+use App\Models\Product;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\View;
@@ -145,6 +146,8 @@ class ViewComposerServiceProvider extends ServiceProvider
         $this->composeWarehouseForm();
 
         $this->composeCreateStockTransferForm();
+
+        $this->composeCreatePurchasingForm();
     }
 
     /**
@@ -793,6 +796,35 @@ class ViewComposerServiceProvider extends ServiceProvider
                 $view->with('products', isset($items) ? $items : []);
                 $view->with('inventories', isset($product_info) ? $product_info : []);
 
+            }
+        );
+    }
+
+    /**
+     * compose partial view of invoice and order filter
+     */
+    private function composeCreatePurchasingForm()
+    {
+        View::composer(
+            'admin.purchasing._form',
+
+            function ($view) {
+                $products = Product::get();
+
+                foreach ($products as $product) {
+                    $str = '-';
+
+                    $str = substr($str, 0, -3);
+
+                    $items[$product->id] = $product->manufacture_skuid . '(sku): ' . $product->name . $str . ' - '.
+                    $product->manufacturer->name . '(manufaturer)';
+
+                    $product_info[$product->id] = [
+                        'id' => $product->id,
+                    ];
+                }
+                
+                $view->with('products', isset($items) ? $items : []);
             }
         );
     }

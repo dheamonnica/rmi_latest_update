@@ -100,4 +100,7 @@ return [
 
     // Version 2.13.0
     'shipping_methods' => 'Shipping Methods',
+
+    // Version 3.X.X
+    'purchasing' => 'Purchasing',
 ];
