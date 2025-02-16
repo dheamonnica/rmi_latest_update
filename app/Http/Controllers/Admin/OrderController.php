@@ -1162,9 +1162,7 @@ class OrderController extends Controller
         // // Check if order_id already exists
         $existingOrderPurchase = OrderPurchaseForm::where('order_id', $id)->exists();
 
-
         $OrderPurchaseFormData = OrderPurchaseForm::where('order_id', $id)->get();
-
 
         $orderData = !$existingOrderPurchase ? $orderItems : $OrderPurchaseFormData;
         return view('admin.order.form._edit', compact('order', 'orderItems', 'orderData'));
