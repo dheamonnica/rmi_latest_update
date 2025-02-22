@@ -74,6 +74,7 @@ return [
         'loan' => 'Loan',
         'timeoff' => 'Time Off',
         'absence' => 'Absence',
+        'logistic' => 'Logistic',
         'purchasing' => 'Purchase Order',
     ],
 
@@ -1469,6 +1470,15 @@ return [
         'create_department' => 'Create Department',
         'department_name' => 'Department Name',
         'department' => 'Department',
+
+        // logistic
+        'pic_email' => 'PIC Email',
+        'pic_phone' => 'PIC Phone',
+        'create_logistic' => 'Create Logistic',
+        'logistic_name' => 'Logistic Name',
+        'logistic_pic_name' => 'Logistic PIC Name',
+        'logistic_pic_email' => 'Logistic PIC Email',
+        'logistic_pic_phone' => 'Logistic PIC Phone',
 
         // overtime
         'create_overtime' => 'Create Overtime',

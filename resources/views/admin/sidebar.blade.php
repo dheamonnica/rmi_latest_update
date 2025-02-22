@@ -24,6 +24,7 @@
                     <a href="javascript:void(0)">
                         <i class="fa fa-tags"></i>
                         <span>{{ trans('nav.catalog') }}</span>
+                        <i class="fa fa-angle-left pull-right"></i>
                     </a>
                     <ul class="treeview-menu">
                         @if (Gate::allows('index', \App\Models\Category::class) ||
@@ -79,6 +80,14 @@
                                 </a>
                             </li>
                         @endcan
+
+                        @if ((new \App\Helpers\Authorize(Auth::user(), 'view_logistic'))->check())
+                            <li class="{{ Request::is('admin/logistic') ? 'active' : '' }}">
+                                <a href="{{ url('admin/logistic') }}">
+                                    {{ trans('nav.logistics') }}
+                                </a>
+                            </li>
+                        @endif
                     </ul>
                 </li>
             @endif
