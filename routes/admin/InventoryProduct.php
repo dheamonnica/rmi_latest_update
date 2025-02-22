@@ -28,10 +28,10 @@ Route::post('product/{product}/saveVariant', [ProductController::class, 'saveSin
 
 Route::get('product/getCombinations', [ProductController::class, 'getCombinations'])->name('product.getCombinations');
 
-Route::get('product/digital', [ProductController::class, 'index'])->name('product.index');
+Route::get('product/digital', [ProductController::class, 'index'])->name('product.digital.index');
 
-Route::get('product/physical', [ProductController::class, 'index'])->name('product.index');
+Route::get('product/physical', [ProductController::class, 'index'])->name('product.pysical.index');
 
-Route::get('product/auction', [ProductController::class, 'index'])->name('product.index');
+Route::get('product/auction', [ProductController::class, 'index'])->name('product.auction.index');
 
 Route::resource('product', ProductController::class)->except('store', 'update');

@@ -175,5 +175,9 @@ class RepositoryServiceProvider extends ServiceProvider
             \App\Repositories\DeliveryBoy\DeliveryBoyRepository::class,
             \App\Repositories\DeliveryBoy\EloquentDeliveryBoy::class
         );
+        $this->app->singleton(
+            \App\Repositories\Purchasing\PurchasingRepository::class,
+            \App\Repositories\Purchasing\EloquentPurchasing::class
+        );
     }
 }

@@ -924,5 +924,7 @@ return [
     'expired_date' => 'Expired product date.',
     'uom' => 'Unit of measurement of product.',
 
-    'backdate' => 'Optional for back date order item, you can set the backdate of fullfils & delivery right after order created.'
+    'backdate' => 'Optional for back date order item, you can set the backdate of fullfils & delivery right after order created.',
+
+    'remove_this_product_item' => 'Remove this product item',
 ];

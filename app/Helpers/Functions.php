@@ -24,6 +24,7 @@ use App\Models\Cancellation;
 use App\Models\Manufacturer;
 use App\Models\ShippingRate;
 use App\Models\PaymentMethod;
+use App\Models\Purchasing;
 use App\Models\ShippingMethod;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
@@ -1338,6 +1339,56 @@ if (!function_exists('get_formated_movement_number')) {
 
         // return '#MOV/'.getShopConfig($shop_from_id, 'order_number_suffix').'/'.getShopConfig($shop_to_id, 'order_number_suffix') .'/' . $date_stamp .'/'. $stock_transfer_id;
         return '#MOV/'.$shop_from.'/'.$shop_to.'/' . $date_stamp .'/'. $stock_transfer_id;
+    }
+}
+
+if (!function_exists('get_formated_purchasing_number')) {
+    function get_formated_purchasing_number($warehouse_id = null, $purchasing_id = null)
+    {
+        $purchasing_id = $purchasing_id ?? str_pad(rand(1, 999999), 6, '0', STR_PAD_LEFT);
+
+        $date_stamp = date('Ymd');
+
+        $pattern = '/#INV\/([A-Z]{3})\//';
+        $warehouse = getShopConfig((int) $warehouse_id, 'order_number_prefix');
+
+        preg_match($pattern, $warehouse, $matcheFrom);
+
+        if (isset($matcheFrom[1])) {
+            $shop_from = $matcheFrom[1];  // Output: BGR
+        }
+
+        if (!$warehouse_id) {
+            $shop_from = 'MGT';
+        }
+
+        // return '#MOV/'.getShopConfig($shop_from_id, 'order_number_suffix').'/'.getShopConfig($shop_to_id, 'order_number_suffix') .'/' . $date_stamp .'/'. $purchasing_id;
+        return '#INV-PURCHASING/'.$shop_from.'/'. $date_stamp .'/'. $purchasing_id;
+    }
+}
+
+if (!function_exists('get_formated_manufacture_number')) {
+    function get_formated_manufacture_number($warehouse_id = null, $purchasing_id = null)
+    {
+        $purchasing_id = $purchasing_id ?? str_pad(rand(1, 999999), 6, '0', STR_PAD_LEFT);
+
+        $date_stamp = date('Ymd');
+
+        $pattern = '/#INV\/([A-Z]{3})\//';
+        $warehouse = getShopConfig((int) $warehouse_id, 'order_number_prefix');
+
+        preg_match($pattern, $warehouse, $matcheFrom);
+
+        if (isset($matcheFrom[1])) {
+            $shop_from = $matcheFrom[1];  // Output: BGR
+        }
+
+        if (!$warehouse_id) {
+            $shop_from = 'MGT';
+        }
+
+        // return '#MOV/'.getShopConfig($shop_from_id, 'order_number_suffix').'/'.getShopConfig($shop_to_id, 'order_number_suffix') .'/' . $date_stamp .'/'. $purchasing_id;
+        return '#MANUFACTURE/'.$shop_from.'/'. $date_stamp .'/'. $purchasing_id;
     }
 }
 
@@ -3180,6 +3231,51 @@ if (!function_exists('get_stock_transfer_status_name')) {
                 return trans('app.statuses.stock_transfer.approved');
             default:
                 return trans('app.statuses.packed');
+        }
+    }
+}
+
+if (!function_exists('get_purchasing_status_name')) {
+    /**
+     * get_order_status_name
+     *
+     * @param  int $label
+     *
+     * @return string
+        * const STATUS_PURCHASING_SHIPPING_CREATED = 1;
+        * const STATUS_PURCHASING_SHIPPING_IN_PROGRESS = 2;
+        * const STATUS_PURCHASING_SHIPPING_DEPATURE = 3;
+        * const STATUS_PURCHASING_SHIPPING_ARRIVAL = 4;
+        * const STATUS_PURCHASING_TRANSFER_SHIPMENT = 5;
+        * const STATUS_PURCHASING_TRANSFER_STOCK = 6;
+        * const STATUS_PURCHASING_TRANSFER_COMPLETE = 7;
+        * const STATUS_PURCHASING_REQUEST = 8;
+        * const STATUS_PURCHASING_DONE = 9;
+        * const STATUS_PURCHASING_TRANSFER_REQUESTED = 10;
+     */
+    function get_purchasing_status_name($status = 1)
+    {
+        switch ($status) {
+            case Purchasing::STATUS_PURCHASING_SHIPPING_CREATED:
+                return trans('app.statuses.purchasing.created');
+            case Purchasing::STATUS_PURCHASING_SHIPPING_IN_PROGRESS:
+                return trans('app.statuses.purchasing.in_progress');     
+            case Purchasing::STATUS_PURCHASING_SHIPPING_DEPATURE:
+                return trans('app.statuses.purchasing.depature'); 
+            case Purchasing::STATUS_PURCHASING_SHIPPING_ARRIVAL:
+                return trans('app.statuses.purchasing.arrival');
+            case Purchasing::STATUS_PURCHASING_TRANSFER_SHIPMENT:
+                return trans('app.statuses.purchasing.transfer_shipment');
+            case Purchasing::STATUS_PURCHASING_TRANSFER_STOCK:
+                return trans('app.statuses.purchasing.transfer_stock');
+            case Purchasing::STATUS_PURCHASING_TRANSFER_COMPLETE:
+                return trans('app.statuses.purchasing.transfer_complete');
+            case Purchasing::STATUS_PURCHASING_REQUEST:
+                return trans('app.statuses.purchasing.requested');
+            case Purchasing::STATUS_PURCHASING_DONE:
+                return trans('app.statuses.purchasing.done');
+            default:
+                return trans('app.statuses.purchasing.created');
         }
     }
 }

@@ -113,6 +113,11 @@ Route::middleware('auth')->name('admin.')->prefix('admin')->group(function () {
             include 'admin/DeliveryBoy.php';
         });
 
+         // Purchasing Routes for Admin/Merchant
+         Route::name('purchasing.')->prefix('purchasing')->group(function () {
+            include 'admin/Purchasing.php';
+        });
+
         // Vendors Routes for Admin
         Route::name('vendor.')->prefix('vendor')->group(function () {
             include 'admin/Merchant.php';

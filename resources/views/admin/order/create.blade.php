@@ -215,7 +215,7 @@
             <i class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="{{ trans('help.backdate') }}"></i>
             <div class="input-group">
               <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-              {!! Form::text('backdate', null, ['class' => 'datepicker form-control', 'placeholder' => trans('app.form.backdate'), '']) !!}
+              {!! Form::text('backdate', null, ['class' => 'datetimepicker form-control', 'placeholder' => trans('app.form.backdate'), '']) !!}
             </div>
           </div>
         </div>
@@ -307,7 +307,8 @@
         <div class="box-body">
           <div class="form-group">
             {!! Form::label('payment_method_id', trans('app.form.payment_method') . '*') !!}
-            {!! Form::select('payment_method_id', $payment_methods, isset($cart->payment_method_id) ? $cart->payment_method_id : config('shop_settings.default_payment_method_id'), ['class' => 'form-control select2-normal', 'placeholder' => trans('app.placeholder.payment'), 'required']) !!}
+            {{-- {!! Form::select('payment_method_id', $payment_methods, isset($cart->payment_method_id) ? $cart->payment_method_id : config('shop_settings.default_payment_method_id'), ['class' => 'form-control select2-normal', 'placeholder' => trans('app.placeholder.payment'), 'required']) !!} default --}}
+            {!! Form::select('payment_method_id', $payment_methods, isset($cart->payment_method_id) ? $cart->payment_method_id : 4 , ['class' => 'form-control select2-normal', 'placeholder' => trans('app.placeholder.payment'), 'required']) !!}
             <div class="help-block with-errors"></div>
           </div>
           <div class="form-group">
@@ -509,95 +510,100 @@
       // Add to Cart
       $('#add-to-cart-btn').click(
         function() {
-          var ID = $("#product-to-add").select2('data')[0].id;
+          if($("#product-to-add").select2('data')[0].id){
+            var ID = $("#product-to-add").select2('data')[0].id;
 
-          if(productObj[ID].stockQtt === 0) {
-            $("#global-alert-msg").html('{{ trans('messages.notice.out_of_stock') }}');
-            $("#global-alert-box").removeClass('hidden');
-          } else {
-            var itemDescription = $("#product-to-add").select2('data')[0].text;
+            if(productObj[ID].stockQtt === 0) {
+              $("#global-alert-msg").html('{{ trans('messages.notice.out_of_stock') }}');
+              $("#global-alert-box").removeClass('hidden');
+            } else {
+              var itemDescription = $("#product-to-add").select2('data')[0].text;
 
-            var isPartial = "0";
+              var isPartial = "0";
 
-              if (ID == '' || itemDescription == '') {
-                return false;
-              } else {
-                $("#empty-cart").hide(); // Hide the empty cart message
-              }
+                if (ID == '' || itemDescription == '') {
+                  return false;
+                } else {
+                  $("#empty-cart").hide(); // Hide the empty cart message
+                }
 
-              $("#product-to-add").select2("val", ""); // Reset the product search dropdown
+                $("#product-to-add").select2("val", ""); // Reset the product search dropdown
 
-              // Check if the product is already on the cart, Is so then just increase the qtt
-              if ($("tr#" + ID).length) {
-                increaseQttByOne(ID);
-                calculateItemTotal(ID);
-                return;
-              }
+                // Check if the product is already on the cart, Is so then just increase the qtt
+                if ($("tr#" + ID).length) {
+                  increaseQttByOne(ID);
+                  calculateItemTotal(ID);
+                  return;
+                }
 
-              //Pick the string after the - to get the item description
-              // itemDescription = itemDescription.substring(itemDescription.indexOf(" - ") - 1);
-              // Find the first occurrence of " - "
-              var indexOfSeparator = itemDescription.indexOf(") - ");
-              // Check if the separator exists
-              if (indexOfSeparator != -1) {
-                // Extract the substring from the beginning to before the separator
-                itemDescription = itemDescription.substring(0, indexOfSeparator + 2);
-              }
+                //Pick the string after the - to get the item description
+                // itemDescription = itemDescription.substring(itemDescription.indexOf(" - ") - 1);
+                // Find the first occurrence of " - "
+                var indexOfSeparator = itemDescription.indexOf(") - ");
+                // Check if the separator exists
+                if (indexOfSeparator != -1) {
+                  // Extract the substring from the beginning to before the separator
+                  itemDescription = itemDescription.substring(0, indexOfSeparator + 2);
+                }
 
-              var imgSrc = getFromPHPHelper('get_product_img_src', ID, 'tiny');
+                var imgSrc = getFromPHPHelper('get_product_img_src', ID, 'tiny');
 
-              var numOfRows = $("tbody#items tr").length;
+                var numOfRows = $("tbody#items tr").length;
 
-              var dateOfferAvailable = productObj[ID].dateNow > productObj[ID].offerStart && productObj[ID].dateNow < productObj[ID].offerEnd;
-              // var isOfferAvailable = dateOfferAvailable ? 'Offer Available' : 'Offer Unavailable';
-              var price = productObj[ID].offerPrice > 0 ? productObj[ID].offerPrice : productObj[ID].salePrice;
-              //cart item added
-              var node = '<tr id="' + ID + '">' +
-                '<td><img src="' + imgSrc + '" class="img-circle img-md" alt="{{ trans('app.image') }}"></td>' +
-                '<td class="nopadding-right" width="55%">' + itemDescription +
-                '<input type="hidden" name="cart[' + numOfRows + '][inventory_id]" value="' + ID + '"></input>' +
-                '<input type="hidden" name="cart[' + numOfRows + '][item_description]" value="' + itemDescription + '"></input>' +
-                '<input type="hidden" name="cart[' + numOfRows + '][product_id]" value="' + productObj[ID].product_id + '"></input>' +
-                '<input type="hidden" name="cart[' + numOfRows + '][shipping_weight]" value="' + productObj[ID].shipping_weight + '" id="weight-' + ID + '" class="itemWeight"></input>' +
-                '<input type="hidden" name="cart[' + numOfRows + '][stock_quantity]" value="' + productObj[ID].stockQtt + '" id="stock-' + ID + '" class="itemStock"></input>' +
-                '<input type="hidden" name="cart[' + numOfRows + '][partial_status]" value="0" id="partial-' + ID + '" class="partialStatus"></input>' +
-                '</td>' +
-                // '<td class="small" width="15%">'+ isOfferAvailable + ` <i class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="" data-original-title="Offer Date: ${productObj[ID].offerStart} - ${productObj[ID].offerEnd}"></i></td>` +
-                '<td class="nopadding-right" width="15%">' +
-                '<input name="cart[' + numOfRows + '][unit_price]" value="' + getFormatedValue(price) + '" id="price-' + ID + '" type="hidden" class="form-control itemPrice no-border" placeholder="{{ trans('app.price') }}" required readonly>' +
-                'Rp ' + price.toLocaleString('id-ID') +
-                '</div>' +
-                '<td>x</td>' +
-                '<td class="nopadding-right text-center" width="10%">' +
-                '<span>order qty</span>' +
-                '<input name="cart[' + numOfRows + '][quantity]" value="1" type="number" max="' + productObj[ID].stockQtt + '" id="qtt-' + ID + '" class="form-control itemQtt no-border" placeholder="{{ trans('app.quantity') }}" required>' +
-                '</td>' +
-                '<td class="nopadding-right text-center" width="10%">' +
-                '<span>request qty</span>' +
-                '<input name="cart[' + numOfRows + '][req_quantity]" value="1" type="number" id="req-qtt-' + ID + '" class="form-control itemReqQtt no-border" placeholder="{{ trans('app.req_quantity') }}" required>' +
-                '</td>' +
-                '<td class="nopadding-right text-center" width="10%">{{ get_formated_currency_symbol() }}' +
-                '<span id="total-' + ID + '"  class="itemTotal hidden">' +
-                  price +
-                '</span>' +
-                '<span id="total-view-' + ID + '"  class="itemTotalView">' +
-                  price.toLocaleString('id-ID') +
-                '</span>' +
-                '</td>' +
-                '<td class="small"><i class="fa fa-trash text-muted deleteThisRow" data-toggle="tooltip" data-placement="left" title="{{ trans('help.remove_this_cart_item') }}"></i></td>' +
-                '</tr>';
+                var dateOfferAvailable = productObj[ID].dateNow > productObj[ID].offerStart && productObj[ID].dateNow < productObj[ID].offerEnd;
+                // var isOfferAvailable = dateOfferAvailable ? 'Offer Available' : 'Offer Unavailable';
+                var price = productObj[ID].offerPrice > 0 ? productObj[ID].offerPrice : productObj[ID].salePrice;
+                //cart item added
+                var node = '<tr id="' + ID + '">' +
+                  '<td><img src="' + imgSrc + '" class="img-circle img-md" alt="{{ trans('app.image') }}"></td>' +
+                  '<td class="nopadding-right" width="55%">' + itemDescription +
+                  '<input type="hidden" name="cart[' + numOfRows + '][inventory_id]" value="' + ID + '"></input>' +
+                  '<input type="hidden" name="cart[' + numOfRows + '][item_description]" value="' + itemDescription + '"></input>' +
+                  '<input type="hidden" name="cart[' + numOfRows + '][product_id]" value="' + productObj[ID].product_id + '"></input>' +
+                  '<input type="hidden" name="cart[' + numOfRows + '][shipping_weight]" value="' + productObj[ID].shipping_weight + '" id="weight-' + ID + '" class="itemWeight"></input>' +
+                  '<input type="hidden" name="cart[' + numOfRows + '][stock_quantity]" value="' + productObj[ID].stockQtt + '" id="stock-' + ID + '" class="itemStock"></input>' +
+                  '<input type="hidden" name="cart[' + numOfRows + '][partial_status]" value="0" id="partial-' + ID + '" class="partialStatus"></input>' +
+                  '</td>' +
+                  // '<td class="small" width="15%">'+ isOfferAvailable + ` <i class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="" data-original-title="Offer Date: ${productObj[ID].offerStart} - ${productObj[ID].offerEnd}"></i></td>` +
+                  '<td class="nopadding-right" width="15%">' +
+                  '<input name="cart[' + numOfRows + '][unit_price]" value="' + getFormatedValue(price) + '" id="price-' + ID + '" type="hidden" class="form-control itemPrice no-border" placeholder="{{ trans('app.price') }}" required readonly>' +
+                  'Rp ' + price.toLocaleString('id-ID') +
+                  '</div>' +
+                  '<td>x</td>' +
+                  '<td class="nopadding-right text-center" width="10%">' +
+                  '<span>order qty</span>' +
+                  '<input name="cart[' + numOfRows + '][quantity]" value="1" type="number" max="' + productObj[ID].stockQtt + '" id="qtt-' + ID + '" class="form-control itemQtt no-border" placeholder="{{ trans('app.quantity') }}" required>' +
+                  '</td>' +
+                  '<td class="nopadding-right text-center" width="10%">' +
+                  '<span>request qty</span>' +
+                  '<input name="cart[' + numOfRows + '][req_quantity]" value="1" type="number" id="req-qtt-' + ID + '" class="form-control itemReqQtt no-border" placeholder="{{ trans('app.req_quantity') }}" required>' +
+                  '</td>' +
+                  '<td class="nopadding-right text-center" width="10%">{{ get_formated_currency_symbol() }}' +
+                  '<span id="total-' + ID + '"  class="itemTotal hidden">' +
+                    price +
+                  '</span>' +
+                  '<span id="total-view-' + ID + '"  class="itemTotalView">' +
+                    price.toLocaleString('id-ID') +
+                  '</span>' +
+                  '</td>' +
+                  '<td class="small"><i class="fa fa-trash text-muted deleteThisRow" data-toggle="tooltip" data-placement="left" title="{{ trans('help.remove_this_cart_item') }}"></i></td>' +
+                  '</tr>';
 
-                /**
-                  * '<input name="cart[' + numOfRows + '][quantity]" value="1" max="' + productObj[ID].stockQtt + '" type="number" id="qtt-' + ID + '" class="form-control itemQtt no-border" placeholder="{{ trans('app.quantity') }}" required>' +
-                 */
+                  /**
+                    * '<input name="cart[' + numOfRows + '][quantity]" value="1" max="' + productObj[ID].stockQtt + '" type="number" id="qtt-' + ID + '" class="form-control itemQtt no-border" placeholder="{{ trans('app.quantity') }}" required>' +
+                  */
 
-              $('tbody#items').append(node);
+                $('tbody#items').append(node);
 
-              calculateOrderTotal();
+                calculateOrderTotal();
 
-              return false; //Return false to prevent unspected form submition
-          }
-         
+                return false; //Return false to prevent unspected form submition
+            }
+          } 
+          $("#global-alert-msg").html('{{ trans('messages.notice.please_choose_at_least_one_product') }}');
+          $("#global-alert-box").removeClass('hidden');
+
+          return false;
         }
       );
 

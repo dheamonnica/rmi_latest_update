@@ -91,9 +91,15 @@ class EloquentOrder extends EloquentRepository implements BaseRepository, OrderR
         setAdditionalCartInfo($request); // Set some system information using helper function
 
         if ($request->input('backdate')) {
-            $backdate = Carbon::createFromFormat('Y-m-d', $request->input('backdate'))->format('Ymd');
-            $request['created_at'] = $request->input('backdate');
-            $request['updated_at']= $request->input('backdate');
+
+            $backdate = Carbon::createFromFormat('Y-m-d h:i a', $request->input('backdate'))
+                ->format('Ymd');
+            
+            $timestamp = Carbon::createFromFormat('Y-m-d h:i a', $request->input('backdate'))
+                ->setTimezone('UTC');
+            
+            $request['created_at'] = $timestamp->format('Y-m-d H:i:s');
+            $request['updated_at'] = $timestamp->format('Y-m-d H:i:s');
             $request['is_backdate']= 1;
             $request['order_number'] = preg_replace('/\d{8}/', $backdate, $request->order_number);
         }
@@ -271,6 +277,7 @@ class EloquentOrder extends EloquentRepository implements BaseRepository, OrderR
             $temp[$id] = [
                 'item_description' => $item->item_description,
                 'quantity' => $item->quantity,
+                'request_quantity' => $item->quantity,
                 'unit_price' => $item->unit_price,
                 'product_id' => $item->product_id,
                 'created_at' => $order->created_at, 
