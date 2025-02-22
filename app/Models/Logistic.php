@@ -23,7 +23,6 @@ class Logistic extends BaseModel
      * @var array
      */
     protected $fillable = [
-        'shop_id',
         'name',
         'active',
         'email',
