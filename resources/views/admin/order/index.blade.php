@@ -227,4 +227,4 @@
             </table>
         </div> <!-- /.box-body -->
     </div> <!-- /.box -->
-</div @endsection
+</div> @endsection

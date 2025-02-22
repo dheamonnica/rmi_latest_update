@@ -363,51 +363,60 @@ class EloquentInventory extends EloquentRepository implements BaseRepository, In
 
             if(!$dest_stock){
                 //get item inventory from , create to;(duplicate change shop_id)
-                $currect_inventory = Inventory::where(['id' => $item['inventory_id']])->first();
+                $currect_inventory = Inventory::where(['id' => $item['inventory_id']])->first(); 
+                //check destination product
+                $dest_stock = Inventory::where(['product_id' => (int) $item['product_id'], 'shop_id' => (int) $request->input('shop_arrival_id')])->first();
+                //check constraint
 
+                if(!$arrival_product){
+                    //create new items 
+                    $new_stock = Inventory::create([
+                        'parent_id' => $currect_inventory->parent_id,
+                        'shop_id'  => (int) $request->input('shop_arrival_id'),//new shop id
+                        'title'  => $currect_inventory->title,
+                        'warehouse_id'  => $currect_inventory->warehouse_id,
+                        'product_id'  => $currect_inventory->product_id,
+                        'brand'  => $currect_inventory->brand,
+                        'supplier_id'  => $currect_inventory->supplier_id,
+                        'sku'  => $currect_inventory->sku,
+                        'condition'  => $currect_inventory->condition,
+                        'condition_note'  => $currect_inventory->condition_note,
+                        'description'  => $currect_inventory->description,
+                        'download_limit'  => $currect_inventory->download_limit,
+                        'key_features'  => $currect_inventory->key_features,
+                        'user_id'  => $currect_inventory->user_id,
+                        'purchase_price'  => $currect_inventory->purchase_price,
+                        'sale_price'  => $currect_inventory->sale_price,
+                        'offer_price'  => $currect_inventory->offer_price,
+                        // 'offer_start'  => $currect_inventory->offer_start,
+                        // 'offer_end'  => $currect_inventory->offer_end,
+                        'shipping_weight'  => $currect_inventory->shipping_weight,
+                        'length'  => $currect_inventory->length,
+                        'width'  => $currect_inventory->width,
+                        'height'  => $currect_inventory->height,
+                        'free_shipping'  => $currect_inventory->free_shipping,
+                        'stuff_pick'  => $currect_inventory->stuff_pick,
+                        // 'available_from'  => $currect_inventory->available_from,
+                        'expiry_date'  => $currect_inventory->expiry_date,
+                        'min_order_quantity'  => $currect_inventory->min_order_quantity,
+                        'linked_items'  => $currect_inventory->linked_items,
+                        'slug'  => $currect_inventory->slug,
+                        'meta_title'  => $currect_inventory->meta_title,
+                        'meta_description'  => $currect_inventory->meta_description,
+                        'active'  => $currect_inventory->active,
+                        // 'auctionable'  => $currect_inventory->auctionable,
+                        // 'auction_status'  => $currect_inventory->auction_status,
+                        // 'base_price'  => $currect_inventory->base_price,
+                        // 'auction_end'  => $currect_inventory->auction_end,
+                        // 'bid_accept_action'  => $currect_inventory->bid_accept_action,
+                        'expired_date'  => $currect_inventory->expired_date,
+                        'uom'  => $currect_inventory->uom,
+                    ]);
+
+                    $dest_stock = $new_stock;
+                }
                 //force create new items
-                $dest_stock = Inventory::create([
-                    'parent_id' => $currect_inventory->parent_id,
-                    'shop_id'  => (int) $request->input('shop_arrival_id'),//new shop id
-                    'title'  => $currect_inventory->title,
-                    'warehouse_id'  => $currect_inventory->warehouse_id,
-                    'product_id'  => $currect_inventory->product_id,
-                    'brand'  => $currect_inventory->brand,
-                    'supplier_id'  => $currect_inventory->supplier_id,
-                    'sku'  => $currect_inventory->sku,
-                    'condition'  => $currect_inventory->condition,
-                    'condition_note'  => $currect_inventory->condition_note,
-                    'description'  => $currect_inventory->description,
-                    'download_limit'  => $currect_inventory->download_limit,
-                    'key_features'  => $currect_inventory->key_features,
-                    'user_id'  => $currect_inventory->user_id,
-                    'purchase_price'  => $currect_inventory->purchase_price,
-                    'sale_price'  => $currect_inventory->sale_price,
-                    'offer_price'  => $currect_inventory->offer_price,
-                    // 'offer_start'  => $currect_inventory->offer_start,
-                    // 'offer_end'  => $currect_inventory->offer_end,
-                    'shipping_weight'  => $currect_inventory->shipping_weight,
-                    'length'  => $currect_inventory->length,
-                    'width'  => $currect_inventory->width,
-                    'height'  => $currect_inventory->height,
-                    'free_shipping'  => $currect_inventory->free_shipping,
-                    'stuff_pick'  => $currect_inventory->stuff_pick,
-                    // 'available_from'  => $currect_inventory->available_from,
-                    'expiry_date'  => $currect_inventory->expiry_date,
-                    'min_order_quantity'  => $currect_inventory->min_order_quantity,
-                    'linked_items'  => $currect_inventory->linked_items,
-                    'slug'  => $currect_inventory->slug,
-                    'meta_title'  => $currect_inventory->meta_title,
-                    'meta_description'  => $currect_inventory->meta_description,
-                    'active'  => $currect_inventory->active,
-                    // 'auctionable'  => $currect_inventory->auctionable,
-                    // 'auction_status'  => $currect_inventory->auction_status,
-                    // 'base_price'  => $currect_inventory->base_price,
-                    // 'auction_end'  => $currect_inventory->auction_end,
-                    // 'bid_accept_action'  => $currect_inventory->bid_accept_action,
-                    'expired_date'  => $currect_inventory->expired_date,
-                    'uom'  => $currect_inventory->uom,
-                ]);
+                
             }
 
             $transferStock = [
@@ -497,7 +506,7 @@ class EloquentInventory extends EloquentRepository implements BaseRepository, In
                 $updateFromInventory = Inventory::where('id', $item->from_inventory_id)->first();
                 $updateFromInventory->update(['stock_quantity' => $updateFromInventory->stock_quantity - $item->transfer_qty, 'updated_by' => $userId]);
                 $updateToInventory = Inventory::where('id', $item->to_inventory_id)->first();
-                $updateToInventory->update(['stock_quantity' => $updateToInventory->stock_quantity - $item->transfer_qty, 'updated_by' => $userId]);
+                $updateToInventory->update(['stock_quantity' => $updateToInventory->stock_quantity + $item->transfer_qty, 'updated_by' => $userId]);
 
             }
         }

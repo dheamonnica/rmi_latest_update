@@ -95,6 +95,11 @@ class InventoryController extends Controller
         } elseif ($status == 'outOfStock') {
             $inventory = $inventory->stockOut();
         } elseif ($status == 'stockTransfer') {
+            if (!Auth::user()->isFromPlatform()) {
+                $inventory = $inventory->where('shop_arrival_id', Auth::user()->shop_id)
+                    ->orWhere('shop_depature_id', Auth::user()->shop_id);
+            }
+
             $inventory = $inventory->stockTransfer();
         }
 

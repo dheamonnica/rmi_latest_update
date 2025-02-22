@@ -242,7 +242,7 @@ class Order extends BaseModel
         // ->withPivot(['item_description', 'quantity', 'unit_price','feedback_id'])->withTimestamps();
 
         return $this->belongsToMany(Inventory::class, 'order_items')
-            ->withPivot(['item_description', 'quantity', 'unit_price', 'feedback_id', 'download'])
+            ->withPivot(['item_description', 'quantity', 'unit_price', 'feedback_id', 'download', 'request_quantity'])
             ->withTimestamps();
     }
 
@@ -802,7 +802,8 @@ class Order extends BaseModel
         //http://backend_rmi.test/image/images/66af7419ed6f3.webp
         //echo '<img src="'.get_logo_url('system', 'logo').'" width="30">';
         //dd(get_logo_url('system', 'logo'));
-        $invoice->setLogo(get_logo_url('system', 'logo'), 25, 25);
+        $invoice->setLogo(get_logo_url('system', 'logo'), 75, 75);
+        $invoice->setLogo('https://rmi-testing.ideaprojects.my.id/image/images/logo.png', 75, 75);
 
         $invoice->setReference($this->order_number);   // Reference
         $invoice->setDate($this->created_at->format('M d, Y'));   //Billing Date
@@ -819,7 +820,9 @@ class Order extends BaseModel
         $invoice->setNetAmountWord(Terbilang::make($this->grand_total));
         $invoice->setReceiverName($this->receiver_name);
 
-        $invoice->setBarcode(DNS1D::getBarcodePNGPath($this->order_number, 'C128', 3, 50, array(1,1,1) ,true));
+        $barcode_path = DNS1D::getBarcodePNGPath($this->order_number, 'C128', 3, 50, array(1,1,1) ,true);
+
+        $invoice->setBarcode(url($barcode_path));
 
         if(Storage::exists($this->digital_sign_image)){
             $invoice->setSignature(url($this->digital_sign_image), 100, 100, 150, 150);
