@@ -1159,10 +1159,22 @@ class OrderController extends Controller
         $orderItems = OrderItem::where('order_id', $id)->get();
         $order = Order::find($id);
 
-        // // Check if order_id already exists
+        // Check if order_id already exists
         $existingOrderPurchase = OrderPurchaseForm::where('order_id', $id)->exists();
 
-        $OrderPurchaseFormData = OrderPurchaseForm::where('order_id', $id)->get();
+        $OrderPurchaseFormData = OrderPurchaseForm::where('order_id', $id)->get()->map(function ($item) {
+            $data = $item->toArray(); // Convert model to array
+
+            // Modify only the necessary keys
+            $data['quantity'] = $data['order_qty'];
+            unset($data['order_qty']); // Remove old key
+
+            $data['unit_price'] = $data['price_pcs'];
+            unset($data['price_pcs']); // Remove old key
+
+            // Return as an object to keep relationship access
+            return (object) array_merge($data, ['getProduct' => $item->getProduct]);
+        });
 
         $orderData = !$existingOrderPurchase ? $orderItems : $OrderPurchaseFormData;
         return view('admin.order.form._edit', compact('order', 'orderItems', 'orderData'));
@@ -1187,13 +1199,15 @@ class OrderController extends Controller
                     'po_number_ref' => $request->po_number_ref,
                     'sku' => $request->sku[$index],
                     'kode_reg_alkes' => $request->kode_reg_alkes[$index],
-                    'hs_code' => $request->hs_code[$index] ?? null,
-                    'product_name' => $request->product_name[$index] ?? null,
-                    'order_qty' => $request->order_qty[$index] ?? 0,
-                    'price_pcs' => $request->price_pcs[$index] ?? 0,
-                    'subtotal' => $request->subtotal[$index] ?? 0,
-                    'shipping_fee' => $request->shipping_fee[$index] ?? 0,
-                    'total' => $request->total[$index] ?? 0,
+                    'hs_code' => $request->hs_code[$index],
+                    'product_name' => $request->product_name[$index],
+                    'order_qty' => $request->order_qty[$index],
+                    'price_pcs' => $request->price_pcs_hidden[$index],
+                    'subtotal' => $request->subtotal_hidden[$index],
+                    'shipping_fee' => $request->shipping_fee[$index],
+                    'total' => $request->total_hidden[$index],
+                    'created_by' => Auth::user()->id,
+                    'created_at' => now(),
                     'updated_by' => Auth::user()->id,
                     'updated_at' => now()
                 ]
