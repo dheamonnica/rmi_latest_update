@@ -3,7 +3,6 @@
     <div class="form-group">
       {!! Form::label('name', trans('app.form.name') . '*', ['class' => 'with-help']) !!}
       {!! Form::text('name', null, ['class' => 'form-control', 'placeholder' => trans('app.form.logistic_name'), 'required']) !!}
-      {!! Form::hidden('shop_id', Auth::user()->shop_id, ['class' => 'form-control', 'placeholder' => trans('app.form.shop'), 'required']) !!}
       <div class="help-block with-errors"></div>
     </div>  
   </div>
