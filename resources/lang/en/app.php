@@ -2247,6 +2247,11 @@ return [
     'please_select_manufacture' => 'Please select manufacture',
     'price_total' => 'Price Total (IDR)', 
     'total_with_currency' => 'Total ', 
+    'alamat_penerimaan' => 'Receiver Address', 
+    'progress_purchasing' => 'Progress Purchasing', 
+    'request_completed' => 'Request Complete', 
+    'done_at' => 'Done at', 
+    'update_request_purchasing' => 'Update Request Purchasing', 
 
 ];
 

@@ -67,16 +67,23 @@ class EloquentPurchasing extends EloquentRepository implements BaseRepository, P
 
         $purchasing_order = $this->model->where('id', $id)->first();
 
+        // dd($request->all());
+
         foreach($request->product as $item){
             $p_item = PurchasingItem::where(['purchasing_order_id'=> $item['purchasing_order_id'], 'product_id' => $item['product_id']])->get();
 
-            $status = $item['shipping_status'] ?? 9;
+            $status = $request->shipment_status ?? 9;
 
             foreach($p_item as $purchasing_item){
                 $update_p_item = PurchasingItem::find($purchasing_item->id);
+                $update_p_item->shipment_status = $request->shipment_status;
+                $update_p_item->transfer_status = $request->transfer_status;
+                $update_p_item->request_status = $request->request_status;
+                $update_p_item->updated_at = now();
+                $update_p_item->updated_by = Auth::user()->id;
 
-                if(isset($item['shipping_status'])) {
-                    switch ($item['shipping_status']) {
+                if(isset($request->shipment_status)) {
+                    switch ($request->shipment_status) {
                         // item status
                         case Purchasing::STATUS_PURCHASING_SHIPPING_IN_PROGRESS :
                             //2

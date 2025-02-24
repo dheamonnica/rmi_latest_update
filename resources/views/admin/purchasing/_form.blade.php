@@ -3,6 +3,7 @@
 @endphp
 @csrf
 <div class="row">
+	{{-- TODO: Edit Form change manufacture but same items --}}
     <div class="col-md-8">
       <div class="box">
         <div class="box-header with-border">
@@ -21,6 +22,9 @@
 				<div class="col-md-12">
 					  <table class="table table-sripe">
 						<tbody id="items">
+							@if (!isset($purchasing))
+							{{-- show data edit  --}}
+              				@endif
 						</tbody>
 					</table>
 				  </div>
@@ -33,7 +37,7 @@
 					<div class="form-group pt-5">
 						{!! Form::label('admin_note', trans('app.form.admin_note'), ['class' => 'with-help']) !!}
 						<i class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="{{ trans('help.admin_note') }}"></i>
-						{!! Form::textarea('admin_note', isset($cart->admin_note) ? $cart->admin_note : null, ['class' => 'form-control summernote-without-toolbar', 'rows' => '2', 'placeholder' => trans('app.placeholder.admin_note')]) !!}
+						{!! Form::textarea('admin_note', isset($purchasing->admin_note) ? $purchasing->admin_note : null, ['class' => 'form-control summernote-without-toolbar', 'rows' => '2', 'placeholder' => trans('app.placeholder.admin_note')]) !!}
 					</div>
 				</div>
 				<div class="col-md-6" id="summary-block">
@@ -79,7 +83,9 @@
 				</div> <!-- /.box-header -->
 				<div class="box-body">
 				<div class="form-group">
-					{{-- {{ auth()->user()->merchantId() }} --}}
+					{{-- TODO: alamat from platform config (addressable) --}}
+					Warehouse Bogor
+					{!! get_platform_address() !!}
 				</div>
 				</div>	
 			</div>

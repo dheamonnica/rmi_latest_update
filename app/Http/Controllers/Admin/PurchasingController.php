@@ -97,16 +97,16 @@ class PurchasingController extends Controller
                 return view('admin.partials.actions.purchasing.checkbox', compact('purchasing'));
             })
             ->addColumn('total_price', function ($purchasing) {
-                return $purchasing->total_price;
+                return number_format($purchasing->total_price, 0, ',', '.');
             })
             ->addColumn('currency', function ($purchasing) {
                 return $purchasing->currency ?? 'IDR';
             })
             ->addColumn('rate', function ($purchasing) {
-                return $purchasing->exchange_rate;
+                return "IDR " . number_format($purchasing->exchange_rate, 0, ',', '.');
             })
             ->addColumn('grand_total', function ($purchasing) {
-                return $purchasing->total_price * $purchasing->exchange_rate;
+                return $purchasing->currency ?? 'IDR'. " ". number_format((($purchasing->total_price ?? 1) / ($purchasing->exchange_rate ?? 1)), 2, ',', '.');
             })
             ->addColumn('option', function ($purchasing) {
                 return view('admin.partials.actions.purchasing.options', compact('purchasing'));
@@ -115,19 +115,13 @@ class PurchasingController extends Controller
                 return $purchasing->requester->name ?? '-';
             })
             ->editColumn('price', function ($purchasing) {
-                return $purchasing->price ?? '-';
+                return number_format($purchasing->price, 0, ',', '.');
             })
-            ->editColumn('shipment_status', function ($purchasing) {
-                return '<span class="label label-success">'.get_purchasing_status_name($purchasing->shipment_status).'</span>';
-            })
-            ->editColumn('transfer_status', function ($purchasing) {
-                return '<span class="label label-secondary">'.get_purchasing_status_name($purchasing->transfer_status).'</span>';
-            })
-            ->editColumn('request_status', function ($purchasing) {
-                return '<span class="label label-primary">'.get_purchasing_status_name($purchasing->request_status).'</span>';
+            ->editColumn('status', function ($purchasing) {
+                return '<span class="label label-success">'.get_purchasing_status_name($purchasing->shipment_status).'</span><br><span class="label label-secondary">'.get_purchasing_status_name($purchasing->transfer_status).'</span><br><span class="label label-secondary">'.get_purchasing_status_name($purchasing->request_status).'</span>';
             })
             ->editColumn('request_date', function ($purchasing) {
-                return $purchasing->request_date ?? $purchasing->created_at;
+                return $purchasing->request_date;
             })
             ->editColumn('manufacture_number', function ($purchasing) {
                 return $purchasing->manufacture_number ?? 'Manufacture Not Assigned';
@@ -135,7 +129,7 @@ class PurchasingController extends Controller
             ->editColumn('number_po', function ($purchasing) {
                 return $purchasing->number_po ?? 'Request Not Assigned';
             })
-            ->rawColumns(['grand_total','checkbox', 'option', 'request_date', 'manufacture_number', 'shipment_status', 'transfer_status', 'request_status'])
+            ->rawColumns(['grand_total','checkbox', 'option', 'request_date', 'manufacture_number', 'status'])
             ->make(true);
     }
 
@@ -148,10 +142,10 @@ class PurchasingController extends Controller
             'purchasing_order_items.manufacture_number' ,
             'purchasing_order_items.id as item_id' ,
             'purchasing_order_items.shop_request_id as shop_request_id' ,
-            'purchasing_orders.request_at as request_date',
+            'purchasing_order_items.created_at as request_date',
             'shops.name as warehouse',
             'products.name as product',
-            'purchasing_order_items.request_quantity as quantity',
+            DB::raw('SUM(purchasing_order_items.request_quantity) as quantity'),
             'purchasing_order_items.price',
             'purchasing_order_items.shipment_status as shipment_status',
             'purchasing_orders.transfer_status as transfer_status',
@@ -161,8 +155,84 @@ class PurchasingController extends Controller
         ->leftjoin('purchasing_orders', 'purchasing_orders.id', '=', 'purchasing_order_items.purchasing_order_id')
         ->leftjoin('shops', 'shops.id', '=', 'purchasing_orders.shop_requester_id')
         ->leftjoin('products', 'products.id', '=', 'purchasing_order_items.product_id')
-        ->whereNull('purchasing_order_items.purchasing_order_id')
-        ->whereNull('purchasing_order_items.manufacture_number');
+        ->whereNull('purchasing_orders.done_at')
+        ->whereNull('purchasing_order_items.purchasing_order_id');
+
+        //TODO: Grouping if administrator -> group by items. then get the all id if it same product id. then get the sum of quantity then create the purchasing.
+
+        if (!Auth::user()->isFromPlatform()) {
+            $purchasing->mine()->groupBy(['purchasing_order_items.product_id', 'purchasing_order_items.shop_request_id'])->orderBy('purchasing_order_items.created_at', 'DESC')->get();
+        } else {
+            $purchasing->groupBy(['purchasing_order_items.product_id', 'purchasing_order_items.shop_request_id'])->orderBy('purchasing_order_items.created_at', 'DESC')->get();
+        }
+
+        return Datatables::of($purchasing)
+            ->editColumn('checkbox', function ($purchasing) {
+                return view('admin.partials.actions.purchasing.checkbox', compact('purchasing'));
+            })
+            ->addColumn('option', function ($purchasing) {
+                return view('admin.partials.actions.purchasing.options_items', compact('purchasing'));
+            })
+            ->editColumn('warehouse', function ($purchasing) {
+                return $purchasing->requester->name ?? '-';
+            })
+            ->editColumn('price', function ($purchasing) {
+                return number_format($purchasing->exchange_rate, 0, '.', '.');
+            })
+            ->editColumn('exchange_rate', function ($purchasing) {
+                return number_format($purchasing->exchange_rate, 0, '.', '.');
+            })
+            ->editColumn('shipment_status', function ($purchasing) {
+                return get_purchasing_status_name($purchasing->shipment_status);
+            })
+            ->editColumn('transfer_status', function ($purchasing) {
+                return get_purchasing_status_name($purchasing->transfer_status);
+            })
+            ->editColumn('request_status', function ($purchasing) {
+                return get_purchasing_status_name($purchasing->request_status);
+            })
+            ->editColumn('request_date', function ($purchasing) {
+                return $purchasing->request_date ;
+            })
+            ->editColumn('manufacture_number', function ($purchasing) {
+                return $purchasing->manufacture_number ?? 'Manufacture Not Assigned';
+            })
+            ->editColumn('number_po', function ($purchasing) {
+                return $purchasing->number_po ?? 'Request Not Assigned';
+            })
+            ->rawColumns(['checkbox', 'option', 'request_date', 'manufacture_number'])
+            ->make(true);
+    }
+
+    public function getRequestComplete(Request $request)
+    {
+        $purchasing = PurchasingItem::
+        select(
+            'purchasing_orders.id' ,
+            'purchasing_orders.purchasing_invoice_number as number_po',
+            'purchasing_order_items.manufacture_number' ,
+            'purchasing_order_items.id as item_id' ,
+            'purchasing_order_items.shop_request_id as shop_request_id' ,
+            'purchasing_orders.request_at as request_date',
+            'purchasing_orders.done_at',
+            'shops.name as warehouse',
+            'products.name as product',
+            DB::raw('SUM(purchasing_order_items.request_quantity) as quantity'),
+            'purchasing_order_items.price',
+            'purchasing_order_items.shipment_status as shipment_status',
+            'purchasing_orders.transfer_status as transfer_status',
+            'purchasing_orders.request_status as request_status',
+            'purchasing_order_items.created_at as created_at',
+        )
+        ->leftjoin('purchasing_orders', 'purchasing_orders.id', '=', 'purchasing_order_items.purchasing_order_id')
+        ->leftjoin('shops', 'shops.id', '=', 'purchasing_orders.shop_requester_id')
+        ->leftjoin('products', 'products.id', '=', 'purchasing_order_items.product_id')
+        ->whereNotNull('purchasing_orders.done_at')
+        ->groupBy(['purchasing_order_items.product_id', 'purchasing_order_items.shop_request_id'])
+        ->whereNotNull('purchasing_order_items.purchasing_order_id');
+        // ->where('purchasing_orders.request_status', 9)
+        // ->whereNull('purchasing_order_items.purchasing_order_id')
+        // ->whereNull('purchasing_order_items.manufacture_number');
 
         //TODO: Grouping if administrator -> group by items. then get the all id if it same product id. then get the sum of quantity then create the purchasing.
 
@@ -183,10 +253,10 @@ class PurchasingController extends Controller
                 return $purchasing->requester->name ?? '-';
             })
             ->editColumn('price', function ($purchasing) {
-                return $purchasing->price ?? '-';
+                return number_format($purchasing->exchange_rate, 0, '.', '.');
             })
             ->editColumn('exchange_rate', function ($purchasing) {
-                return number_format($purchasing->exchange_rate, 2);
+                return number_format($purchasing->exchange_rate, 0, '.', '.');
             })
             ->editColumn('shipment_status', function ($purchasing) {
                 return get_purchasing_status_name($purchasing->shipment_status);
@@ -198,7 +268,7 @@ class PurchasingController extends Controller
                 return get_purchasing_status_name($purchasing->request_status);
             })
             ->editColumn('request_date', function ($purchasing) {
-                return $purchasing->request_date ?? $purchasing->created_at;
+                return $purchasing->request_date;
             })
             ->editColumn('manufacture_number', function ($purchasing) {
                 return $purchasing->manufacture_number ?? 'Manufacture Not Assigned';
@@ -307,11 +377,36 @@ class PurchasingController extends Controller
      */
     public function edit($id)
     {
-        $Purchasing = $this->purchasing->fing($id);
+        $purchasing_data = $this->purchasing->find($id);
 
-        $this->authorize('edit', $purchasing);
+        $ids = $purchasing_data->items->pluck('id')->toArray();
 
-        return view('admin.purchasing.edit', compact('order'));
+        $purchasing = PurchasingItem::whereIn('id', $ids)
+            ->with('product')
+            ->select('product_id', 'price')
+            ->selectRaw('COUNT(*) as count')
+            ->selectRaw('SUM(request_quantity) as request_quantity')  // Example aggregate
+            ->groupBy('product_id')
+            ->get();
+
+        // $this->authorize('edit', $purchasing);
+        //purchasing product must be grouping first. 
+        $manufacture = Manufacturer::select('id', 'name')->pluck('name', 'id');
+        $warehouse = Shop::select('id', 'name')->pluck('name', 'id');
+        $inv_number = $purchasing_data->purchasing_invoice_number;
+        $manufacture_number = $purchasing_data->items[0]->manufacture_number;
+ 
+
+        return view('admin.purchasing.edit', [
+            'ids' => $ids,
+            'inv_number' => $inv_number,
+            'manufacture_id' => $purchasing_data->items[0]->manufacture_id,
+            'manufacture_number' => $manufacture_number,
+            'purchasing' => $purchasing,
+            'manufacture' => $manufacture,
+            'warehouse' => $warehouse,
+            'data' => $purchasing_data,
+        ]);
     }
 
     /**
@@ -432,6 +527,8 @@ class PurchasingController extends Controller
     }
 
     public function generateInvoice(Request $request){
+        // dd($request->all());
+
         $warehouse_bogor_id = Shop::where('slug', 'warehouse-bogor')->first()->id;
         $data = $request->all();
 
@@ -457,7 +554,7 @@ class PurchasingController extends Controller
             'shop_requester_id' => $shop_id,
             'stock_transfer_id' => $stock_transfer_id,
             'purchasing_invoice_number' => $request->purchasing_invoice_number,
-            'purchasing_date' => date('Y-m-d'),
+            'purchasing_date' => date('Y-m-d G:is'),
             'request_by' => auth()->user()->id,
             'request_at' => now(),
             'shipment_status' => (int) $request->shipment_status,
@@ -481,6 +578,31 @@ class PurchasingController extends Controller
                 $item->shipment_status = Purchasing::STATUS_PURCHASING_SHIPPING_IN_PROGRESS;
                 $item->transfer_status = Purchasing::STATUS_PURCHASING_TRANSFER_REQUESTED;
                 $item->request_status = Purchasing::STATUS_PURCHASING_REQUEST;
+                $item->save();
+            }
+        }
+
+        return redirect()->route('admin.purchasing.purchasing.index')->with('success', trans('messages.created', ['model' => $this->model_name]));
+    }
+
+    public function updateManufacture(Request $request){
+        $warehouse_bogor_id = Shop::where('slug', 'warehouse-bogor')->first()->id;
+        $data = $request->all();
+
+        if (!Auth::user()->isFromPlatform()) {
+            $shop_id = auth()->user()->shop_id;
+        }
+
+        $purchasing = Purchasing::find($request->id)->update([
+            'admin_note' => $request->admin_note,
+        ]);
+
+        // dd($request->all());
+
+        if($purchasing) {
+            foreach($request->ids as $item_id) {
+                $item = PurchasingItem::where('id', $item_id)->first();
+                $item->manufacture_id = $request->manufacture;
                 $item->save();
             }
         }

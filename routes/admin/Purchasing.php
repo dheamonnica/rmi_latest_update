@@ -28,6 +28,8 @@ Route::post('purchasing/{purchasing}/setShippingStatus', [PurchasingController::
 
 Route::post('purchasing/{purchasing}/setPrice', [PurchasingController::class, 'setPrice'])->name('purchasing.setPrice');
 
+Route::post('purchasing/updateManufacture', [PurchasingController::class, 'updateManufacture'])->name('purchasing.updateManufacture');
+
 Route::post('purchasing/massManufacture', [PurchasingController::class, 'massManufacture'])->name('purchasing.assignManufacture');
 
 Route::post('purchasing/assignManufacture', [PurchasingController::class, 'assignManufacture'])->name('purchasing.assignMassManufacture');
@@ -35,6 +37,8 @@ Route::post('purchasing/assignManufacture', [PurchasingController::class, 'assig
 Route::post('purchasing/generateInvoice', [PurchasingController::class, 'generateInvoice'])->name('purchasing.generateInvoice');
 
 Route::get('purchasing/getPurchasing', [PurchasingController::class, 'getPurchasing'])->name('purchasing.getMore');
+
+Route::get('purchasing/getRequestComplete', [PurchasingController::class, 'getRequestComplete'])->name('purchasing.getRequestComplete');
 
 Route::get('purchasing/getRequest', [PurchasingController::class, 'getRequest'])->name('purchasing.getMoreRequest');
 

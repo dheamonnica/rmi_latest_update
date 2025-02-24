@@ -19,7 +19,7 @@
 				  <div class="col-sm-12">
 					<div class="well well-lg">
 					  <span class="lead">
-						{{ trans('app.form.purchasing_date') . ': '. date('d-m-Y')}}
+						{{ trans('app.form.purchasing_date') . ': '. date('d-m-Y G:i:s')}}
 					  </span>
   
 					</div>
@@ -39,7 +39,6 @@
 							  <th>{{ trans('app.manufacture') }}</th>
 							  <th>{{ trans('app.request_quantity') }}</th>
 							  <th>{{ trans('app.price') }} (IDR)<small>( {{ trans('app.excl_tax') }} )</small> </th>
-							  <th>{{ trans('app.shipment_status') }}</th>
 							  <th>{{ trans('app.action') }}</th>
 							</tr>
 						  </thead>
@@ -59,36 +58,6 @@
 
 								{{-- can change price --}}
 								<td>{{ get_purchasing_status_name($items->shipment_status)}}
-								</td>
-								<td>
-									@php
-										$statusOptions = [
-											1 => 'Pending',
-											2 => 'In Progress',
-											3 => 'Departure',
-											4 => 'Arrival'
-										];
-										
-										// Keep the hidden fields if needed
-										$showDropdown = $items->shipment_status < 4;
-									@endphp
-
-									@if ($showDropdown)
-										<div class="form-group">
-											{{ Form::select(
-												'product['.$items->product_id.'][shipping_status]', 
-												$statusOptions,
-												$items->shipment_status,
-												[
-													'class' => 'form-control',
-													'id' => 'shipment_status_'.$items->id,
-													'disabled' => !$showDropdown
-												]
-											) }}
-										</div>
-									@else
-										<i class="fa fa-check"></i> Item Ready
-									@endif
 								</td>
 								<tr>
 							@endforeach
@@ -118,28 +87,28 @@
 						 <tr>
 							<td class="text-right">{{ trans('app.price_total') }}</td>
 							<td class="text-right" width="40%">
-							  <span id="summary-price-total">{{ get_formated_decimal($purchasing->items->sum('price') , true, 0) }}&nbsp;IDR</span>
+							  <span id="summary-price-total">{{ number_format($purchasing->items->sum('price'), 0, '.', ',') }}&nbsp;IDR</span>
 							</td>
 						  </tr>
 
 						  <tr>
 							<td class="text-right">{{ trans('app.total_with_currency') }}</td>
 							<td class="text-right" width="40%">
-							  <span id="summary-currency-total">{{ get_formated_decimal(floor(($purchasing->items->sum('price') ?? 0) / ($purchasing->exchange_rate ?? 1)), true, 2) }}&nbsp;{{ $purchasing->currency ?? 'IDR' }}</span>
+							  <span id="summary-currency-total">{{ number_format($purchasing->items->sum('price') ?? 0 / $purchasing->exchange_rate ?? 1, 0, ',', '.') }}&nbsp;{{ $purchasing->currency ?? 'IDR' }}</span>
 							</td>
 						  </tr>
 
 						  <tr>
 							<td class="text-right">{{ trans('app.quantity_total') }}</td>
 							<td class="text-right" width="40%">
-							  <span id="summary-qty-total">{{ get_formated_decimal($purchasing->items->sum('request_quantity'), true, 0) }}&nbsp;Pc</span>
+							  <span id="summary-qty-total">{{ number_format($purchasing->items->sum('request_quantity'), 0, '.', ',') }}&nbsp;Pc</span>
 							</td>
 						  </tr>
 
 						  <tr>
 							<td class="text-right">{{ trans('app.product_total') }}</td>
 							<td class="text-right" width="40%">
-							  <span id="summary-product-total">{{ get_formated_decimal($purchasing->items->count(), true, 0) }}&nbsp;Item</span>
+							  <span id="summary-product-total">{{ number_format($purchasing->items->count(), 0, '.', ',') }}&nbsp;Item</span>
 							</td>
 						  </tr>
 					</table>
@@ -156,11 +125,10 @@
 			<div class="box-body">
 				
 				{{-- disabled jika curency belum di update / save --}}
-				<a href="{{ route('admin.purchasing.purchasing.invoice', $purchasing->id) }}" class="btn btn-sm btn-default btn-flat">{{ trans('app.purchasing_invoice') }}</a>
+				<a href="{{ route('admin.purchasing.purchasing.invoice', $purchasing->id) }}" class="btn btn-default btn-invoice disabled">{{ trans('app.purchasing_invoice') }}</a>
 			</div>
 		</div>
 		<div class="box">
-
 			<div class="box-header with-border">
 				<h3 class="box-title"> {{ trans('app.purchasing_status') }}</h3>
 			</div> <!-- /.box-header -->
@@ -169,17 +137,6 @@
 				@foreach ($purchasing->items as $items)
 					{{ Form::hidden('ids[]', $items->id) }}
 				@endforeach
-
-				<div class="form-group">
-					{!! Form::label('transfer_status', trans('app.form.transfer_status') . '*') !!}
-					{!! Form::select('transfer_status', [
-						10 => 'Requested',
-						5 => 'Shipment',
-						6 => 'In Stock',
-						7 => 'Complete',
-					], $purchasing->transfer_status ?? 10, ['class' => 'form-control select2-normal', 'placeholder' => trans('app.placeholder.transfer_status'), 'required']) !!}
-					<div class="help-block with-errors"></div>
-				</div>
 
 				{{-- <span>currency is updated at : </span> --}}
 
@@ -195,7 +152,7 @@
 
 				<div class="form-group">
 					{!! Form::label('kurs', trans('app.form.kurs') . '*') !!}
-					{!! Form::text('exchange_rate', get_formated_decimal(floor($purchasing->exchange_rate ?? 1 ), 2), ['class' => 'form-control', 'placeholder' => trans('app.placeholder.kurs'),'id' => 'exchange_rate', 'required']) !!}
+					{!! Form::text('exchange_rate', (int) ($purchasing->exchange_rate ?? 1), ['class' => 'form-control', 'placeholder' => trans('app.placeholder.kurs'),'id' => 'exchange_rate', 'required']) !!}
 					<div class="help-block with-errors"></div>
 				</div>
 
@@ -205,6 +162,28 @@
 					<div class="help-block with-errors"></div>
 				</div>
 				{{-- TODO: currency form --}}
+
+				<div class="form-group">
+					{!! Form::label('transfer_status', trans('app.form.shipment_status') . '*') !!}
+					{!! Form::select('shipment_status', [
+						1 => 'Pending',
+						2 => 'In Progress',
+						3 => 'Departure',
+						4 => 'Arrival'
+					], $purchasing->shipment_status ?? 4, ['class' => 'form-control select2-normal', 'placeholder' => trans('app.placeholder.shipment_status'), 'required']) !!}
+					<div class="help-block with-errors"></div>
+				</div>
+
+				<div class="form-group">
+					{!! Form::label('transfer_status', trans('app.form.transfer_status') . '*') !!}
+					{!! Form::select('transfer_status', [
+						10 => 'Requested',
+						5 => 'Shipment',
+						6 => 'In Stock',
+						7 => 'Complete',
+					], $purchasing->transfer_status ?? 10, ['class' => 'form-control select2-normal', 'placeholder' => trans('app.placeholder.transfer_status'), 'required']) !!}
+					<div class="help-block with-errors"></div>
+				</div>
 
 				<div class="form-group">
 					{!! Form::label('request_status', trans('app.form.request_status') . '*') !!}
@@ -244,11 +223,11 @@
 		function updateInvoiceButtonState() {
 			const exchangeRate = parseFloat($('#exchange_rate').val()) || 0;
 			const currency = $('#currency').val();
-			const $invoiceBtn = $('.btn-flat');
+			const $invoiceBtn = $('.btn-invoice');
 			
-			if (exchangeRate === 0 || !currency) {
+			if (exchangeRate === 0 || exchangeRate <= 1) {
 				$invoiceBtn.addClass('disabled').attr('disabled', true);
-				$invoiceBtn.attr('title', 'Please update currency and exchange rate first');
+				$invoiceBtn.attr('title', 'Please update exchange rate first');
 			} else {
 				$invoiceBtn.removeClass('disabled').attr('disabled', false);
 				$invoiceBtn.attr('title', '');
@@ -265,7 +244,7 @@
         let priceTotal = 0;
         let qtyTotal = 0;
         let productCount = 0;
-        let exchangeRate = parseFloat($('#exchange_rate').val()) || 1;
+        let exchangeRate = parseInt($('#exchange_rate').val()) || 1;
         let currency = $('#currency').val() || 'IDR';
 
         // Calculate totals from all item rows
@@ -281,14 +260,18 @@
 
         // Update summary block
         $('#summary-price-total').text(formatNumber(priceTotal) + ' IDR');
-		$('#summary-currency-total').text(formatNumber((priceTotal / exchangeRate).toFixed(2)) + ' ' + currency);
+		$('#summary-currency-total').text(formatNumberConverter((priceTotal / exchangeRate).toFixed(2)) + ' ' + currency);
         $('#summary-qty-total').text(formatNumber(qtyTotal) + ' Pc');
         $('#summary-product-total').text(formatNumber(productCount) + ' Item');
     }
 
     // Format numbers with thousand separators
     function formatNumber(num) {
-        return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    }
+
+    function formatNumberConverter(num) {
+        return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "");
     }
 
     // Event listeners

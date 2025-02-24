@@ -2245,16 +2245,8 @@
                     'name': 'grand_total',
                 },
                 {
-                    'data': 'shipment_status',
-                    'name': 'shipment_status'
-                },
-                {
-                    'data': 'transfer_status',
-                    'name': 'transfer_status'
-                },
-                {
-                    'data': 'request_status',
-                    'name': 'request_status'
+                    'data': 'status',
+                    'name': 'status',
                 },
                 {
                     'data': 'option',
@@ -2324,6 +2316,54 @@
                     'exportable': false,
                     'printable': false
                 }
+            ],
+            "drawCallback": function(settings) {
+                $(".massAction, .checkbox-toggle").unbind();
+                $(".fa", '.checkbox-toggle').removeClass("fa-check-square-o").addClass('fa-square-o');
+                initMassActions();
+            },
+        }));
+
+        var tableRequestCompleteList = $('#all-request-complete-table').DataTable($.extend({}, dataTableOptions, {
+            "ajax": "{{ route('admin.purchasing.purchasing.getRequestComplete') }}",
+            "columns": [{
+                    'data': 'checkbox',
+                    'name': 'checkbox',
+                    'orderable': false,
+                    'searchable': false,
+                    'exportable': false,
+                    'printable': false
+                },
+                {
+                    'data': 'warehouse',
+                    'name': 'warehouse'
+                },
+                {
+                    'data': 'request_date',
+                    'name': 'request_date',
+                    'searchable': false
+                },
+                {
+                    'data': 'done_at',
+                    'name': 'done_at',
+                    'searchable': false
+                },
+                {
+                    'data': 'number_po',
+                    'name': 'number_po',
+                },
+                {
+                    'data': 'product',
+                    'name': 'product'
+                },
+                {
+                    'data': 'quantity',
+                    'name': 'quantity'
+                },
+                {
+                    'data': 'request_status',
+                    'name': 'request_status'
+                },
             ],
             "drawCallback": function(settings) {
                 $(".massAction, .checkbox-toggle").unbind();

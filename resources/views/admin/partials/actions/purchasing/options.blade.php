@@ -10,6 +10,12 @@
     <a href="{{ route('admin.purchasing.purchasing.edit', $purchasing->id) }}"><i data-toggle="tooltip" data-placement="top" title="{{ trans('app.edit') }}" class="fa fa-edit"></i></a>&nbsp;
   @endif
 
+  @if ($purchasing->exchange_rate != null || $purchasing->exchange_rate > 1) 
+  <a href="{{ route('admin.purchasing.purchasing.invoice', $purchasing->id) }}">
+    <i data-toggle="tooltip" data-placement="top" title="{{ trans('app.download') }} {{ trans('app.invoice') }}"
+        class="fa fa-download"></i>
+  </a>&nbsp;
+  @endif
 
   {!! Form::open(['route' => ['admin.purchasing.purchasing.trash', $purchasing->id], 'method' => 'delete', 'class' => 'data-form']) !!}
   {!! Form::button('<i class="fa fa-trash-o"></i>', ['type' => 'submit', 'class' => 'confirm ajax-silent', 'title' => trans('app.trash'), 'data-toggle' => 'tooltip', 'data-placement' => 'top']) !!}

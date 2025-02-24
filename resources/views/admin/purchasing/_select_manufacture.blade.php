@@ -18,10 +18,13 @@
 @endforeach
 
 <div class="row">
+	<div class="col-sm-12">
+		<a href="{{ route('admin.purchasing.purchasing.index') }}" class="btn btn-icon"><i class="fa fa-chevron-left 2x" aria-hidden="true"></i> Back</a>
+	</div>
 	<div class="col-md-12">
 		<h3 class="box-title">
 			{{ trans('app.assign_manufacture') }}
-		  </h3>
+		</h3>
 	</div>
     <div class="col-md-8">
 		<div class="box">
@@ -39,7 +42,7 @@
 				<div class="col-sm-12">
 				  <div class="well well-lg">
 					<span class="lead">
-					  {{ trans('app.form.purchasing_date') . ': '. date('d-m-Y')}}
+					  {{ trans('app.form.purchasing_date') . ': '. date('d-m-Y G:i:s')}}
 					</span>
 
 				  </div>
@@ -63,7 +66,7 @@
 						<thead>
 							<tr>
 							  <th>{{ trans('app.sku') }}</th>
-							  <th>{{ trans('app.manufacturer') }}</th>
+							  {{-- <th>{{ trans('app.manufacturer') }}</th> --}}
 							  <th>{{ trans('app.product_name') }}</th>
 							  <th>{{ trans('app.form.request_quantity') }}</th>
 							</tr>
@@ -74,7 +77,7 @@
 							{{ Form::hidden('product['.$items->product_id.'][id]', $items->id, ['id' => 'product_id']) }}
 							<tr>
 								<td>{{ $items->product->manufacture_skuid ?? '0'}}</td>
-								<td>{{ $items->product->manufacturer->name ?? '0'}}</td>
+								{{-- <td>{{ $items->product->manufacturer->name ?? '0'}}</td> --}}
 								<td>{{ $items->product->name}}</td>
 								<td>{{ $items->request_quantity ?? '0'}}</td>
 							<tr>

@@ -73,7 +73,13 @@
         <li class="{{ Request::has('tab') ? '' : 'active' }}">
           <a href="#purchasing" data-toggle="tab">
             <i class="fa fa-superpowers hidden-sm"></i>
-            {{ trans('app.purchasing') }}
+            {{ trans('app.progress_purchasing') }}
+          </a>
+        </li>
+        <li class="{{ Request::input('tab') == 'request_completed' ? 'active' : '' }}">
+          <a href="#request_completed" data-toggle="tab">
+            <i class="fa fa-check-o hidden-sm"></i>
+            {{ trans('app.request_completed') }}
           </a>
         </li>
         <li class="{{ Request::input('tab') == 'inactive_listings' ? 'active' : '' }}">
@@ -85,7 +91,7 @@
       </ul>
       <div class="tab-content">
         <div class="tab-pane {{ Request::has('tab') ? '' : 'active' }} responsive-table" id="purchasing">
-          <table class="table table-hover" id="all-purchasing-table">
+          <table class="table table-hover " id="all-purchasing-table">
             <thead>
               <tr>
                 @can('massDelete', \App\Models\Purchasing::class)
@@ -127,10 +133,55 @@
                 <th>{{ trans('app.form.currency') }}</th>
                 <th>{{ trans('app.form.rate') }}</th>
                 <th>{{ trans('app.form.grand_total') }}</th>
-                <th>{{ trans('app.form.shipment_status') }}</th>
-                <th>{{ trans('app.form.transfer_status') }}</th>
-                <th>{{ trans('app.form.request_status') }}</th>
+                <th>{{ trans('app.form.status') }}</th>
                 <th>{{ trans('app.option') }}</th>
+              </tr>
+            </thead>
+            <tbody id="massSelectArea">
+            </tbody>
+          </table>
+        </div> <!-- /.tab-pane -->
+        
+        <div class="tab-pane {{ Request::input('tab') == 'request_completed' ? 'active' : '' }} responsive-table" id="request_completed">
+          <table class="table table-hover" id="all-request-complete-table">
+            <thead>
+              <tr>
+                @can('massDelete', \App\Models\Purchasing::class)
+                  <th class="massActionWrapper">
+                    <!-- Check all button -->
+                    <div class="btn-group ">
+                      <button type="button" class="btn btn-xs btn-default checkbox-toggle">
+                      <i class="fa fa-square-o" data-toggle="tooltip" data-placement="top" title="{{ trans('app.select_all') }}"></i>
+                      </button>
+
+                      <button type="button" class="btn btn-xs btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                        <span class="caret"></span>
+                        <span class="sr-only">{{ trans('app.toggle_dropdown') }}</span>
+                      </button>
+
+                      <ul class="dropdown-menu" role="menu">
+                        <li>
+                          <a href="javascript:void(0)" data-link="{{ route('admin.catalog.product.massTrash') }}" class="massAction" data-doafter="reload"><i class="fa fa-trash"></i> {{ trans('app.trash') }}</a>
+                        </li>
+                        <li>
+                          <a href="javascript:void(0)" data-link="{{ route('admin.catalog.product.massDestroy') }}" class="massAction" data-doafter="reload"><i class="fa fa-times"></i> {{ trans('app.delete_permanently') }}</a>
+                        </li>
+                        <li>
+                          <a href="javascript:void(0)" data-link="{{ route('admin.catalog.product.massDestroy') }}" class="massAction" data-doafter="reload"><i class="fa fa-factory"></i> {{ trans('app.assign_manufacture') }}</a>
+                        </li>
+                      </ul>
+                    </div>
+                  </th>
+                @else
+                  <th></th>
+                @endcan
+                <th>{{ trans('app.warehouse') }}</th>
+                <th>{{ trans('app.request_date') }}</th>
+                <th>{{ trans('app.done_at') }}</th>
+                <th>{{ trans('app.purchasing_number') }}</th>
+                <th>{{ trans('app.form.product') }}</th>
+                <th>{{ trans('app.form.quantity') }}</th>
+                <th>{{ trans('app.form.request_status') }}</th>
               </tr>
             </thead>
             <tbody id="massSelectArea">
